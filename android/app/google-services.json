@@ -1,52 +1,27 @@
 {
   "project_info": {
-    "project_number": "278552578451",
-    "firebase_url": "https://start-up-names-eb03e-default-rtdb.firebaseio.com",
-    "project_id": "start-up-names-eb03e",
-    "storage_bucket": "start-up-names-eb03e.appspot.com"
+    "project_number": "909036204720",
+    "firebase_url": "https://beta-fitness-af1c1-default-rtdb.firebaseio.com",
+    "project_id": "beta-fitness-af1c1",
+    "storage_bucket": "beta-fitness-af1c1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:278552578451:android:aef0d830132eb535744066",
+        "mobilesdk_app_id": "1:909036204720:android:38f242d4034f0728040175",
         "android_client_info": {
-          "package_name": "com.example.firstapp"
+          "package_name": "com.example.beta_fitness"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "278552578451-0qafpesrkckm2lbaetvpb7n0kp1utk59.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.firstapp",
-            "certificate_hash": "4c1469f353a6c83c07d5c3a4bf5ae129f465b622"
-          }
-        },
-        {
-          "client_id": "278552578451-u8q5jngjfh3d6cl1ds4s35jp7t3222sq.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC31rEKb-Jx7hg1seHbDxuKLY-KFOzEQ5M"
+          "current_key": "AIzaSyDkOGc9LADS_Whq6CjCpidj2bdKU3x9Af4"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "278552578451-u8q5jngjfh3d6cl1ds4s35jp7t3222sq.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "278552578451-l05jl1196kr84cno3ot92fkbfnhec3jv.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.firstapp"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
