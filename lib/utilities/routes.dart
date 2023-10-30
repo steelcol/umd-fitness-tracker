@@ -3,3 +3,4 @@ const String homePageRoute = '/';
 const String workoutPageRoute = '/workout';
 const String statsPageRoute = '/stats';
 const String createWorkoutRoute = '/createWorkout';
+const String eventsPageRoute = '/events';
