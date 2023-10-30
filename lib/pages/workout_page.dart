@@ -26,6 +26,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
       ),
       body: Center(),
       floatingActionButton: FloatingActionButton.extended(
+        // Dialog to select the workout type and navigate to that page
         onPressed: () async {
           await showDialog(context: context,
               builder: (context) => AlertDialog(
