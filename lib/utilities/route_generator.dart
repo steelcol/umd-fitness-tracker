@@ -1,3 +1,4 @@
+//import 'dart:js';
 import 'package:BetaFitness/utilities/create_workout_arguments.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:BetaFitness/pages/workout_page.dart';
 import 'package:BetaFitness/pages/stats_page.dart';
 import 'package:BetaFitness/pages/create_workout_page.dart';
 import 'package:BetaFitness/pages/events_page.dart';
+import 'package:BetaFitness/pages/schedule_page.dart';
 
 // Class to handle our navigation, if you need to add arguments to your page
 // add a arguments class (look at create_workout_arguments.dart) and look at the
@@ -24,6 +26,8 @@ class RouteNavigator {
         return MaterialPageRoute<StatsPage>(builder: (context) => StatsPage());
       case eventsPageRoute:
         return MaterialPageRoute<EventsPage>(builder: (context) => EventsPage());
+      case schedulePageRoute:
+        return MaterialPageRoute<SchedulePage>(builder: (context) => SchedulePage());
       default:
         return MaterialPageRoute<HomePage>(builder: (context) => HomePage());
     }
