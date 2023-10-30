@@ -1,82 +1,44 @@
 import 'dart:core';
 
+import 'package:BetaFitness/utilities/route_generator.dart';
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'dart:math';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(Home());
+  runApp(BetaFitness());
 }
 
-class Home extends StatelessWidget {
+class BetaFitness extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData(
-          primaryColor: Colors.green,
-        ),
-        home: Builder(
-            builder: (context) => Scaffold(
-              appBar: AppBar(
-                title: Text("GetFit!"),
-              ),
-              body: Center(
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                      child: Text("GetFit!",style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green), textScaleFactor: 4,)
-                      ,),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.green
-                      ),
-                      child: Text('Begin'),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                          return MyApp();
-                        }));
-                      },
-                    )
-                  ],
-                )
-              ),
-            )
-        )
-    );
-  }
-}
-
-class MyApp extends StatefulWidget {
-  @override
-  _MyApp createState() => _MyApp();
-}
-
-class _MyApp extends State<MyApp> {
-  final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GetFit!',
-      theme: ThemeData(
-        primaryColor: Colors.green,
-      ),
-      home: FutureBuilder(
-        future: _fbApp,
+    return FutureBuilder(
+      // Here we initialize firebase
+        future: Firebase.initializeApp(),
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            print('Error: ${snapshot.error.toString()}');
-            return Text("Something went wrong!");
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
+          // Check for errors
+          if(snapshot.hasError) {
+            // Print error for now
+            print("Could not connect to FireBase");
+          }
+          // Completion here
+          if(snapshot.connectionState == ConnectionState.done) {
+            return MaterialApp(
+              title: "BetaFitness",
+              theme: ThemeData(
+                primarySwatch: Colors.green,
+              ),
+              themeMode: ThemeMode.dark,
+              darkTheme: ThemeData(brightness: Brightness.dark),
+              // Routes us to initial page
+              initialRoute: '/',
+              // Generates our routes for our app
+              onGenerateRoute: RouteNavigator.generateRoute,
             );
           }
-        },
-      ),
+          Widget loading = MaterialApp();
+          return loading;
+        }
     );
   }
 }
