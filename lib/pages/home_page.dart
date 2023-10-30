@@ -55,6 +55,15 @@ class HomePage extends StatelessWidget {
                     padding: EdgeInsets.all(20),
                   ),
                 ),
+                ElevatedButton(
+                  onPressed: () => Navigator.pushNamed(context, eventsPageRoute),
+                  child: Icon(Icons.event),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    shape: CircleBorder(),
+                    padding: EdgeInsets.all(20),
+                  ),
+                ),
               ],
             )
           ],
