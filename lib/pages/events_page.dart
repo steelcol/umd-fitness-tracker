@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class StatsPage extends StatefulWidget {
-  const StatsPage({Key? key}) : super(key: key);
+class EventsPage extends StatefulWidget {
+  const EventsPage({Key? key}) : super(key: key);
 
-  State<StatsPage> createState() => _StatsPageState();
+  State<EventsPage> createState() => _EventsPageState();
 }
 
-class _StatsPageState extends State<StatsPage> {
+class _EventsPageState extends State<EventsPage>{
 
   @override
   void initState() {
@@ -21,7 +21,7 @@ class _StatsPageState extends State<StatsPage> {
         title: const Text("BetaFitness"),
       ),
       body: Center(
-        // Build stats page here
+        // Build events page here
       ),
     );
   }
