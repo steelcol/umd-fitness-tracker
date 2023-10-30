@@ -1,5 +1,6 @@
 import 'package:BetaFitness/utilities/create_workout_arguments.dart';
 import 'package:BetaFitness/utilities/routes.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:BetaFitness/pages/home_page.dart';
 import 'package:BetaFitness/pages/workout_page.dart';
@@ -24,6 +25,28 @@ class RouteNavigator {
         return MaterialPageRoute<StatsPage>(builder: (context) => StatsPage());
       case eventsPageRoute:
         return MaterialPageRoute<EventsPage>(builder: (context) => EventsPage());
+      case signInRoute:
+        return MaterialPageRoute<SignInScreen>(builder: (context) => SignInScreen(
+          providers: [EmailAuthProvider()],
+          actions: [
+            AuthStateChangeAction<SignedIn>((context, state) {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pushReplacementNamed(context, homePageRoute);
+            })
+          ],
+        ));
+      case profileRoute:
+        return MaterialPageRoute<ProfileScreen>(builder: (context) => ProfileScreen(
+          appBar: AppBar(
+            title: const Text("BetaFitness"),
+          ),
+          providers: [EmailAuthProvider()],
+          actions: [
+            SignedOutAction((context) {
+              Navigator.pushReplacementNamed(context, signInRoute);
+            })
+          ],
+        ));
       default:
         return MaterialPageRoute<HomePage>(builder: (context) => HomePage());
     }

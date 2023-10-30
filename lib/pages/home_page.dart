@@ -9,6 +9,12 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("BetaFitness"),
+        actions: [
+          IconButton(
+              onPressed: () => Navigator.pushNamed(context, profileRoute),
+              icon: Icon(Icons.account_circle_sharp)
+          )
+        ],
       ),
       body: Center(
         child: Column(

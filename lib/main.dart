@@ -1,8 +1,10 @@
 import 'dart:core';
 
 import 'package:BetaFitness/utilities/route_generator.dart';
+import 'package:BetaFitness/utilities/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +33,7 @@ class BetaFitness extends StatelessWidget {
               themeMode: ThemeMode.dark,
               darkTheme: ThemeData(brightness: Brightness.dark),
               // Routes us to initial page
-              initialRoute: '/',
+              initialRoute: FirebaseAuth.instance.currentUser == null ? signInRoute : homePageRoute,
               // Generates our routes for our app
               onGenerateRoute: RouteNavigator.generateRoute,
             );
