@@ -2,6 +2,8 @@ import 'package:BetaFitness/utilities/create_workout_arguments.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:flutter/material.dart';
 
+import '../controllers/database_controller.dart';
+
 class WorkoutPage extends StatefulWidget {
   const WorkoutPage({Key? key}) : super(key: key);
 
@@ -11,10 +13,12 @@ class WorkoutPage extends StatefulWidget {
 
 class _WorkoutPageState extends State<WorkoutPage> {
   //final List<WorkoutTile> workouts;
+  final DatabaseController handler = new DatabaseController();
 
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
   }
 
@@ -63,6 +67,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                               context, 
                               createWorkoutRoute,
                               arguments: args);
+                            //handler.printData();
                           },
                           child: const Text("Weight Training",
                             style: TextStyle(

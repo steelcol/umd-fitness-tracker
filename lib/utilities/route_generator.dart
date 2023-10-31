@@ -40,7 +40,8 @@ class RouteNavigator {
               final user = FirebaseAuth.instance.currentUser;
 
               if(user != null) {
-                FirebaseFirestore.instance.collection('Users').add({
+                final docUser = FirebaseFirestore.instance.collection('Users').doc(user.uid);
+                docUser.set({
                   'uid': user.uid,
                   'email': user.email
                 });
