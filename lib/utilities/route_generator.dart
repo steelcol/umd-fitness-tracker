@@ -1,7 +1,11 @@
 import 'package:BetaFitness/utilities/create_workout_arguments.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+// Pages
 import 'package:BetaFitness/pages/home_page.dart';
 import 'package:BetaFitness/pages/workout_page.dart';
 import 'package:BetaFitness/pages/stats_page.dart';
@@ -32,6 +36,17 @@ class RouteNavigator {
             AuthStateChangeAction<SignedIn>((context, state) {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.pushReplacementNamed(context, homePageRoute);
+            }),
+            AuthStateChangeAction<UserCreated>((context, state) {
+              final user = FirebaseAuth.instance.currentUser;
+
+              if(user != null) {
+                final doc = FirebaseFirestore.instance.collection('Users').doc(user.uid);
+                doc.set({
+                  "uid" : user.uid,
+                  "email" : user.email
+                });
+              }
             })
           ],
         ));
