@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:BetaFitness/utilities/utils.dart';
+import 'package:BetaFitness/utilities/utils_for_schedule_page.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({Key? key}) : super(key: key);
@@ -58,33 +58,3 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 }
 
-
-/*
-
-class SchedulePage extends StatefulWidget {
-  const SchedulePage({Key? key}) : super(key: key);
-
-  State<SchedulePage> createState() => _SchedulePageState();
-}
-
-class _SchedulePageState extends State<SchedulePage> {
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("BetaFitness"),
-      ),
-      body: Center(
-        // Build stats page here
-      ),
-    );
-  }
-}
-*/
