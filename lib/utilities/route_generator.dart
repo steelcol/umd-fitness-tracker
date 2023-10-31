@@ -7,11 +7,14 @@ import 'package:BetaFitness/pages/workout_page.dart';
 import 'package:BetaFitness/pages/stats_page.dart';
 import 'package:BetaFitness/pages/create_workout_page.dart';
 import 'package:BetaFitness/pages/events_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 
 // Class to handle our navigation, if you need to add arguments to your page
 // add a arguments class (look at create_workout_arguments.dart) and look at the
 // (case createWorkoutRoute:) to see how to pass arguments.
 class RouteNavigator {
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case homePageRoute:
@@ -32,6 +35,16 @@ class RouteNavigator {
             AuthStateChangeAction<SignedIn>((context, state) {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.pushReplacementNamed(context, homePageRoute);
+            }),
+            AuthStateChangeAction<UserCreated>((context, state) {
+              final user = FirebaseAuth.instance.currentUser;
+
+              if(user != null) {
+                FirebaseFirestore.instance.collection('Users').add({
+                  'uid': user.uid,
+                  'email': user.email
+                });
+              }
             })
           ],
         ));
