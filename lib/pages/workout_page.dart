@@ -2,7 +2,7 @@ import 'package:BetaFitness/utilities/create_workout_arguments.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:flutter/material.dart';
 
-import '../controllers/database_controller.dart';
+import '../controllers/workout_controller.dart';
 
 class WorkoutPage extends StatefulWidget {
   const WorkoutPage({Key? key}) : super(key: key);
@@ -12,13 +12,21 @@ class WorkoutPage extends StatefulWidget {
 }
 
 class _WorkoutPageState extends State<WorkoutPage> {
-  //final List<WorkoutTile> workouts;
-  final DatabaseController handler = new DatabaseController();
+  // Handles all database related functionality
+  late WorkoutController controller = new WorkoutController();
+  bool _isLoading = true;
+
+  void getWorkoutData() async {
+    await controller.setup();
+    _isLoading = false;
+    // Do this to load the workout data, what about changing data though?
+    setState(() {});
+  }
 
   @override
   void initState() {
     // TODO: implement initState
-
+    getWorkoutData();
     super.initState();
   }
 
@@ -28,7 +36,40 @@ class _WorkoutPageState extends State<WorkoutPage> {
       appBar: AppBar(
         title: const Text("BetaFitness"),
       ),
-      body: Center(),
+      body: _isLoading
+        ? const Center()
+        : SingleChildScrollView(
+        physics: ScrollPhysics(),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: controller.runningWorkouts.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height/8,
+                      child: Card(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(controller.runningWorkouts[index].workoutName),
+                            Text(controller.runningWorkouts[index].distance.toString()),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         // Dialog to select the workout type and navigate to that page
         onPressed: () async {
@@ -67,7 +108,6 @@ class _WorkoutPageState extends State<WorkoutPage> {
                               context, 
                               createWorkoutRoute,
                               arguments: args);
-                            //handler.printData();
                           },
                           child: const Text("Weight Training",
                             style: TextStyle(
