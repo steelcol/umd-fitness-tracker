@@ -1,6 +1,6 @@
-// data_converter.dart
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' show Timestamp;
+import 'event_item.dart';
 
 class DataConverter {
   static Map<String, dynamic> eventItemToMap(EventItem event) {
