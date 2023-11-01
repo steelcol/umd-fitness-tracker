@@ -1,6 +1,10 @@
+import 'dart:js';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:BetaFitness/utilities/utils_for_schedule_page.dart';
+import 'dart:collection';
+import 'package:intl/intl.dart';
+
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({Key? key}) : super(key: key);
@@ -17,9 +21,10 @@ class _SchedulePageState extends State<SchedulePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TableCalendar - Basics'),
+        title: Text('Your Calendar'),
       ),
       body: TableCalendar(
+
         firstDay: kFirstDay,
         lastDay: kLastDay,
         focusedDay: _focusedDay,
@@ -32,6 +37,7 @@ class _SchedulePageState extends State<SchedulePage> {
           // the time-part of compared DateTime objects.
           return isSameDay(_selectedDay, day);
         },
+
         onDaySelected: (selectedDay, focusedDay) {
           if (!isSameDay(_selectedDay, selectedDay)) {
             // Call `setState()` when updating the selected day
@@ -54,7 +60,18 @@ class _SchedulePageState extends State<SchedulePage> {
           _focusedDay = focusedDay;
         },
       ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+
+            setState(() {
+              //?
+            });
+          },
+          child: Icon(Icons.add),
+      backgroundColor: Colors.blueGrey,
+      ),
     );
   }
 }
+
 
