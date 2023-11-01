@@ -25,7 +25,11 @@ class RouteNavigator {
         return MaterialPageRoute<WorkoutPage>(builder: (context) => WorkoutPage());
       case createWorkoutRoute:
         final args = settings.arguments as CreateWorkoutArguments;
-        return MaterialPageRoute<CreateWorkoutPage>(builder: (context) => CreateWorkoutPage(pageType: args.pageType));
+        return MaterialPageRoute<CreateWorkoutPage>(builder: (context) => CreateWorkoutPage(
+            pageType: args.pageType,
+            controller: args.controller,
+            updateList: args.updateList
+        ));
       case statsPageRoute:
         return MaterialPageRoute<StatsPage>(builder: (context) => StatsPage());
       case eventsPageRoute:

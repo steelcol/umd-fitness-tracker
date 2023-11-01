@@ -1,11 +1,19 @@
+import 'package:BetaFitness/controllers/workout_controller.dart';
+import 'package:BetaFitness/models/running_workout_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // This page more than likely will need to be split up
 class CreateWorkoutPage extends StatefulWidget {
-  CreateWorkoutPage({Key? key, required this.pageType}) : super(key: key);
+  CreateWorkoutPage({Key? key,
+    required this.pageType,
+    required  this.controller,
+    required this.updateList})
+      : super(key: key);
 
   final String pageType;
+  final WorkoutController controller;
+  final Function updateList;
 
   @override
   State<CreateWorkoutPage> createState() => _CreateWorkoutPageState();
@@ -14,6 +22,7 @@ class CreateWorkoutPage extends StatefulWidget {
 class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
   // Key for our form
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _runningNameController = new TextEditingController();
   final TextEditingController _distanceController = new TextEditingController();
 
   // Holds our text fields for our weight training form
@@ -40,9 +49,22 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
               child: Column(
                 children: [
                   TextFormField(
+                    controller: _runningNameController,
+                      decoration: const InputDecoration(
+                        labelText: "Workout Name",
+                        hintText: "Enter name of your workout",
+                      ),
+                    keyboardType: TextInputType.name,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a workout name';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
                     controller: _distanceController,
                     decoration: const InputDecoration(
-                      icon: Icon(Icons.run_circle_outlined, size: 40),
                       labelText: "Distance",
                       hintText: "Enter your desired distance",
                     ),
@@ -58,12 +80,20 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         // Submit to database here for the user
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Processing Data')),
                         );
+                         // Create new object and send to database
+                        RunningWorkout workout = new RunningWorkout(
+                            workoutName: _runningNameController.text,
+                            distance: double.parse(_distanceController.text)
+                        );
+                        await widget.controller.addRunningWorkout(workout);
+                        await widget.updateList();
+                        Navigator.pop(context);
                       }
                     },
                     child: const Text("Create Workout"),

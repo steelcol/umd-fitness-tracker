@@ -11,14 +11,15 @@ class WorkoutController {
   List<RunningWorkout> runningWorkouts = [];
   List<WeightWorkout> weightWorkouts = [];
 
+  // Public functions
+
   // Setup function to grab workouts only if we have them
   // Will set us up for less database use and easier setup later on
- Future<void> setup() async{
+ Future<void> setup() async {
     await _checkExist();
 
     if(_runExist) {
       await _getRunningWorkouts();
-      print(runningWorkouts);
     }
 
     /*
@@ -27,12 +28,26 @@ class WorkoutController {
       print(weightWorkouts);
     }
      */
-
-
   }
 
+  Future<void> updateList() async {
+    runningWorkouts = [];
+    await _getRunningWorkouts();
+  }
+
+  Future<void> addRunningWorkout(RunningWorkout workout) async {
+    await dbRef.collection("RunningWorkouts")
+        .doc(user!.uid)
+        .update({"Workouts": FieldValue.arrayUnion([{
+          "Distance": workout.distance,
+          "WorkoutName": workout.workoutName
+        }])});
+  }
+
+  // Private functions
+
+  // Check if document exists for both weights and running
   Future<void> _checkExist() async {
-    // Check if document exists for running workouts
     DocumentSnapshot<Map<String, dynamic>> document = await FirebaseFirestore
         .instance
         .collection("RunningWorkouts")
@@ -75,6 +90,7 @@ class WorkoutController {
     }
   }
 
+  // Get all the weight workouts
   Future<void> _getWeightWorkouts() async {
     await dbRef.collection("WeightWorkouts").doc(user!.uid).get().then((value) {
       List.from(value.data()!["Workouts"]).forEach((element) {

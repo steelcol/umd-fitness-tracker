@@ -23,6 +23,11 @@ class _WorkoutPageState extends State<WorkoutPage> {
     setState(() {});
   }
 
+  void updateList() async {
+    await controller.updateList();
+    setState(() {});
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -50,7 +55,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                 itemCount: controller.runningWorkouts.length,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5),
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height/8,
                       child: Card(
@@ -82,7 +87,11 @@ class _WorkoutPageState extends State<WorkoutPage> {
                     children: [
                       ElevatedButton(
                           onPressed: () {
-                            final args = CreateWorkoutArguments(pageType: 'cardio');
+                            final args = CreateWorkoutArguments(
+                                pageType: 'cardio',
+                                controller: controller,
+                                updateList: updateList
+                            );
                             Navigator.pushNamed(
                               context, 
                               createWorkoutRoute, 
@@ -103,7 +112,11 @@ class _WorkoutPageState extends State<WorkoutPage> {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            final args = CreateWorkoutArguments(pageType: 'weight_train');
+                            final args = CreateWorkoutArguments(
+                                pageType: 'weight_train',
+                                controller: controller,
+                                updateList: updateList
+                            );
                             Navigator.pushNamed(
                               context, 
                               createWorkoutRoute,
