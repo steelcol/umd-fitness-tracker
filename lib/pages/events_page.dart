@@ -48,6 +48,12 @@ class _EventsPageState extends State<EventsPage>{
               hintText: 'Enter event',
             ),
           ),
+          //TextField(
+          //  controller: myController,
+          //  decoration: InputDecoration(border: OutlineInputBorder(),
+          //    hintText: 'Enter event description',
+          //  ),
+          //),
           TextButton(onPressed: createEvent, child: Text(createText)),
           TextButton(
               onPressed: () {
