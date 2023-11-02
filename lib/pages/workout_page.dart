@@ -47,7 +47,6 @@ class _WorkoutPageState extends State<WorkoutPage> {
   @override
   void initState() {
     // TODO: implement initState
-    getWorkoutData();
     super.initState();
   }
 

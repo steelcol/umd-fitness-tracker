@@ -11,12 +11,12 @@ import 'package:BetaFitness/pages/workout_page.dart';
 import 'package:BetaFitness/pages/stats_page.dart';
 import 'package:BetaFitness/pages/create_workout_page.dart';
 import 'package:BetaFitness/pages/events_page.dart';
+import 'package:BetaFitness/pages/schedule_page.dart';
 
 // Class to handle our navigation, if you need to add arguments to your page
 // add a arguments class (look at create_workout_arguments.dart) and look at the
 // (case createWorkoutRoute:) to see how to pass arguments.
 class RouteNavigator {
-
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case homePageRoute:
@@ -34,6 +34,8 @@ class RouteNavigator {
         return MaterialPageRoute<StatsPage>(builder: (context) => StatsPage());
       case eventsPageRoute:
         return MaterialPageRoute<EventsPage>(builder: (context) => EventsPage());
+      case schedulePageRoute:
+        return MaterialPageRoute<SchedulePage>(builder: (context) => SchedulePage());
       case signInRoute:
         return MaterialPageRoute<SignInScreen>(builder: (context) => SignInScreen(
           providers: [EmailAuthProvider()],

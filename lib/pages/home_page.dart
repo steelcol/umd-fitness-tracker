@@ -44,6 +44,15 @@ class HomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
+                  onPressed: () => Navigator.pushNamed(context, schedulePageRoute),
+                  child: Icon(Icons.access_alarm_outlined),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    shape: CircleBorder(),
+                    padding: EdgeInsets.all(20),
+                  ),
+                ),
+                ElevatedButton(
                   onPressed: () => Navigator.pushNamed(context, statsPageRoute),
                   child: Icon(Icons.data_thresholding_sharp),
                   style: ElevatedButton.styleFrom(
