@@ -6,35 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class WorkoutController {
   final dbRef = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser;
-  bool _runExist = false, _weightExist = false;
-
-  List<RunningWorkout> runningWorkouts = [];
-  List<WeightWorkout> weightWorkouts = [];
+  bool runExist = false, weightExist = false;
 
   // Public functions
-
-  // Setup function to grab workouts only if we have them
-  // Will set us up for less database use and easier setup later on
- Future<void> setup() async {
-    await _checkExist();
-
-    if(_runExist) {
-      await _getRunningWorkouts();
-    }
-
-    /*
-    if(_weightExist) {
-      _getWeightWorkouts();
-      print(weightWorkouts);
-    }
-     */
-  }
-
-  Future<void> updateList() async {
-    runningWorkouts = [];
-    await _getRunningWorkouts();
-  }
-
   Future<void> addRunningWorkout(RunningWorkout workout) async {
     await dbRef.collection("RunningWorkouts")
         .doc(user!.uid)
@@ -47,14 +21,13 @@ class WorkoutController {
   // Private functions
 
   // Check if document exists for both weights and running
-  Future<void> _checkExist() async {
-    DocumentSnapshot<Map<String, dynamic>> document = await FirebaseFirestore
-        .instance
+  Future<void> checkExist() async {
+    DocumentSnapshot<Map<String, dynamic>> document = await dbRef
         .collection("RunningWorkouts")
         .doc(user!.uid)
         .get();
     if(document.exists) {
-      _runExist = true;
+      runExist = true;
     }
 
     // Check if document exists for weight workouts
@@ -64,13 +37,14 @@ class WorkoutController {
         .doc(user!.uid)
         .get();
     if(document.exists) {
-      _weightExist = true;
+      weightExist = true;
     }
   }
 
   // Get running workouts
-  Future<void> _getRunningWorkouts() async {
+  Future<List<RunningWorkout>> getRunningWorkouts() async {
     // Grabs all the array and converts the FireStore data to custom objects
+    List<RunningWorkout> runningWorkouts = [];
     try{
       await dbRef.collection("RunningWorkouts").doc(user!.uid).get().then((value) {
         List.from(value.data()!['Workouts']).forEach((element){
@@ -83,15 +57,16 @@ class WorkoutController {
         });
       });
 
-      print(runningWorkouts);
+      return runningWorkouts;
     }
     catch (e) {
       throw new Future.error("ERROR $e");
     }
   }
 
+  /*
   // Get all the weight workouts
-  Future<void> _getWeightWorkouts() async {
+  Future<List<WeightWorkout>> getWeightWorkouts() async {
     await dbRef.collection("WeightWorkouts").doc(user!.uid).get().then((value) {
       List.from(value.data()!["Workouts"]).forEach((element) {
         WeightWorkout workout = new WeightWorkout(
@@ -102,4 +77,5 @@ class WorkoutController {
       });
     });
   }
+   */
 }

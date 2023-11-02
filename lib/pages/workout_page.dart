@@ -1,5 +1,7 @@
 import 'package:BetaFitness/utilities/create_workout_arguments.dart';
 import 'package:BetaFitness/utilities/routes.dart';
+import 'package:BetaFitness/models/running_workout_model.dart';
+import 'package:BetaFitness/models/weight_workout_model.dart';
 import 'package:flutter/material.dart';
 
 import '../controllers/workout_controller.dart';
@@ -13,18 +15,32 @@ class WorkoutPage extends StatefulWidget {
 
 class _WorkoutPageState extends State<WorkoutPage> {
   // Handles all database related functionality
+  List<RunningWorkout> runningWorkouts = [];
+  List<WeightWorkout> weightWorkouts = [];
+
   late WorkoutController controller = new WorkoutController();
   bool _isLoading = true;
 
   void getWorkoutData() async {
-    await controller.setup();
+    await controller.checkExist();
+
+    if(controller.runExist) {
+      runningWorkouts = await controller.getRunningWorkouts();
+    }
+    /*
+    if(controller.weightExist) {
+      weightWorkouts = await controller.getWeightWorkouts();
+    }
+     */
+
     _isLoading = false;
     // Do this to load the workout data, what about changing data though?
     setState(() {});
   }
 
   void updateList() async {
-    await controller.updateList();
+    runningWorkouts = await controller.getRunningWorkouts();
+    //weightWorkouts = await controller.getWeightWorkouts();
     setState(() {});
   }
 
@@ -52,7 +68,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
               child: ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: controller.runningWorkouts.length,
+                itemCount: runningWorkouts.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -62,8 +78,8 @@ class _WorkoutPageState extends State<WorkoutPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(controller.runningWorkouts[index].workoutName),
-                            Text(controller.runningWorkouts[index].distance.toString()),
+                            Text(runningWorkouts[index].workoutName),
+                            Text(runningWorkouts[index].distance.toString()),
                           ],
                         ),
                       ),
