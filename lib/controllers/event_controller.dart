@@ -13,7 +13,9 @@ class EventController {
     await dbRef.collection("Events")
         .doc(user!.uid)
         .update({"Events_Array": FieldValue.arrayUnion([{
-          "EventName": event.eventName
+          "EventName": event.eventName,
+          "Description": event.description,
+          "Date": event.date
     }])});
   }
 }

@@ -77,7 +77,9 @@ class SingletonStorage {
           .get().then((value) {
             List.from(value.data()!['Events_Array']).forEach((element) {
               Event event = new Event(
-                eventName: element['EventName']
+                eventName: element['EventName'],
+                description: element['Description'],
+                date: element['Date']
               );
 
               events.add(event);
