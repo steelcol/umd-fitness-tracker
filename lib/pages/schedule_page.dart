@@ -1,10 +1,13 @@
+import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:BetaFitness/utilities/utils_for_schedule_page.dart';
 
 
 class SchedulePage extends StatefulWidget {
-  const SchedulePage({Key? key}) : super(key: key);
+  const SchedulePage({Key? key, required this.storage}) : super(key: key);
+
+  final SingletonStorage storage;
 
   State<SchedulePage> createState() => _SchedulePageState();
 }

@@ -1,46 +1,21 @@
-import 'package:BetaFitness/utilities/create_workout_arguments.dart';
+import 'package:BetaFitness/arguments/create_workout_arguments.dart';
+import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:BetaFitness/utilities/routes.dart';
-import 'package:BetaFitness/models/running_workout_model.dart';
-import 'package:BetaFitness/models/weight_workout_model.dart';
 import 'package:flutter/material.dart';
 
-import '../controllers/workout_controller.dart';
-
 class WorkoutPage extends StatefulWidget {
-  const WorkoutPage({Key? key}) : super(key: key);
+  const WorkoutPage({Key? key, required this.storage}) : super(key: key);
+
+  final SingletonStorage storage;
 
   @override
   State<WorkoutPage> createState() => _WorkoutPageState();
 }
 
 class _WorkoutPageState extends State<WorkoutPage> {
-  // Handles all database related functionality
-  List<RunningWorkout> runningWorkouts = [];
-  List<WeightWorkout> weightWorkouts = [];
 
-  late WorkoutController controller = new WorkoutController();
-  bool _isLoading = true;
-
-  void getWorkoutData() async {
-    await controller.checkExist();
-
-    if(controller.runExist) {
-      runningWorkouts = await controller.getRunningWorkouts();
-    }
-    /*
-    if(controller.weightExist) {
-      weightWorkouts = await controller.getWeightWorkouts();
-    }
-     */
-
-    _isLoading = false;
-    // Do this to load the workout data, what about changing data though?
-    setState(() {});
-  }
-
-  void updateList() async {
-    runningWorkouts = await controller.getRunningWorkouts();
-    //weightWorkouts = await controller.getWeightWorkouts();
+  void updateList() {
+    // Updates the page when the list of workouts is changed
     setState(() {});
   }
 
@@ -56,9 +31,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
       appBar: AppBar(
         title: const Text("BetaFitness"),
       ),
-      body: _isLoading
-        ? const Center()
-        : SingleChildScrollView(
+      body: SingleChildScrollView(
         physics: ScrollPhysics(),
         child: Column(
           children: [
@@ -67,7 +40,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
               child: ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: runningWorkouts.length,
+                itemCount: widget.storage.runningWorkouts.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -77,8 +50,8 @@ class _WorkoutPageState extends State<WorkoutPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(runningWorkouts[index].workoutName),
-                            Text(runningWorkouts[index].distance.toString()),
+                            Text(widget.storage.runningWorkouts[index].workoutName),
+                            Text(widget.storage.runningWorkouts[index].distance.toString()),
                           ],
                         ),
                       ),
@@ -104,7 +77,6 @@ class _WorkoutPageState extends State<WorkoutPage> {
                           onPressed: () {
                             final args = CreateWorkoutArguments(
                                 pageType: 'cardio',
-                                controller: controller,
                                 updateList: updateList
                             );
                             Navigator.pushNamed(
@@ -124,28 +96,6 @@ class _WorkoutPageState extends State<WorkoutPage> {
                       ),
                       Padding(
                           padding: EdgeInsets.symmetric(vertical: 10)
-                      ),
-                      ElevatedButton(
-                          onPressed: () {
-                            final args = CreateWorkoutArguments(
-                                pageType: 'weight_train',
-                                controller: controller,
-                                updateList: updateList
-                            );
-                            Navigator.pushNamed(
-                              context, 
-                              createWorkoutRoute,
-                              arguments: args);
-                          },
-                          child: const Text("Weight Training",
-                            style: TextStyle(
-                              fontSize: 30,
-                          )
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: Size(MediaQuery.of(context).size.width/1, MediaQuery.of(context).size.height/15),
-                            backgroundColor: Theme.of(context).colorScheme.secondary,
-                          ),
                       ),
                     ],
                   ),

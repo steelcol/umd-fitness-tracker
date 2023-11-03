@@ -1,9 +1,12 @@
+import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class EventsPage extends StatefulWidget {
-  const EventsPage({Key? key}) : super(key: key);
+  const EventsPage({Key? key, required this.storage}) : super(key: key);
+
+  final SingletonStorage storage;
 
   State<EventsPage> createState() => _EventsPageState();
 }
@@ -21,7 +24,8 @@ class _EventsPageState extends State<EventsPage>{
   }
 
   void createEvent(){
-    databaseReference.doc('ik6WOyW2vjga9AsfyGUc9D4jm5u2').update({"Events_Array": FieldValue.arrayUnion([myController.text])});
+    databaseReference.doc(FirebaseAuth.instance.currentUser!.uid).
+    update({"Events_Array": FieldValue.arrayUnion([myController.text])});
   }
 
 

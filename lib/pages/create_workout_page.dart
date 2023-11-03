@@ -7,12 +7,10 @@ import 'package:flutter/services.dart';
 class CreateWorkoutPage extends StatefulWidget {
   CreateWorkoutPage({Key? key,
     required this.pageType,
-    required  this.controller,
     required this.updateList})
       : super(key: key);
 
   final String pageType;
-  final WorkoutController controller;
   final Function updateList;
 
   @override
@@ -24,6 +22,7 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _runningNameController = new TextEditingController();
   final TextEditingController _distanceController = new TextEditingController();
+  WorkoutController controller = new WorkoutController();
 
   // Holds our text fields for our weight training form
   List<Exercise> exercises = [];
@@ -91,7 +90,7 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
                             workoutName: _runningNameController.text,
                             distance: double.parse(_distanceController.text)
                         );
-                        await widget.controller.addRunningWorkout(workout);
+                        await controller.addRunningWorkout(workout);
                         await widget.updateList();
                         Navigator.pop(context);
                       }

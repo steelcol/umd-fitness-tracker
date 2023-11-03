@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:BetaFitness/utilities/route_generator.dart';
 import 'package:BetaFitness/utilities/routes.dart';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
@@ -25,6 +26,8 @@ class BetaFitness extends StatelessWidget {
           }
           // Completion here
           if(snapshot.connectionState == ConnectionState.done) {
+            // Do our storage setup here once we connect to the database
+
             return MaterialApp(
               title: "BetaFitness",
               theme: ThemeData(

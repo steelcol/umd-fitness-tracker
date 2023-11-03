@@ -1,7 +1,10 @@
+import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
 
 class StatsPage extends StatefulWidget {
-  const StatsPage({Key? key}) : super(key: key);
+  const StatsPage({Key? key, required this.storage}) : super(key: key);
+
+  final SingletonStorage storage;
 
   State<StatsPage> createState() => _StatsPageState();
 }
