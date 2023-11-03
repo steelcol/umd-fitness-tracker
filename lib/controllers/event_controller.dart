@@ -15,7 +15,7 @@ class EventController {
         .update({"Events_Array": FieldValue.arrayUnion([{
           "EventName": event.eventName,
           "Description": event.description,
-          "Date": event.date
+          "Date": event.date.millisecondsSinceEpoch
     }])});
   }
 }
