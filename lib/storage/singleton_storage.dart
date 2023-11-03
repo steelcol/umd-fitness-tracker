@@ -22,6 +22,14 @@ class SingletonStorage {
     return storage;
   }
 
+  // Public function
+  Future<void> updateRunData() async {
+    await _getRunningWorkouts();
+  }
+
+  Future<void> updateEventData() async {
+    await _getEvents();
+  }
 
   // Private functions
 

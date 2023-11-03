@@ -21,13 +21,11 @@ import 'package:BetaFitness/arguments/create_workout_arguments.dart';
 // (case createWorkoutRoute:) to see how to pass arguments.
 class RouteNavigator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-
-    final storageArgs = settings.arguments as StorageArguments;
-
     switch (settings.name) {
       case homePageRoute:
         return MaterialPageRoute<HomePage>(builder: (context) => HomePage());
       case workoutPageRoute:
+        final storageArgs = settings.arguments as StorageArguments;
         return MaterialPageRoute<WorkoutPage>(builder: (context) => WorkoutPage(
           storage: storageArgs.storage
         ));
@@ -38,14 +36,17 @@ class RouteNavigator {
             updateList: args.updateList
         ));
       case statsPageRoute:
+        final storageArgs = settings.arguments as StorageArguments;
         return MaterialPageRoute<StatsPage>(builder: (context) => StatsPage(
           storage: storageArgs.storage
         ));
       case eventsPageRoute:
+        final storageArgs = settings.arguments as StorageArguments;
         return MaterialPageRoute<EventsPage>(builder: (context) => EventsPage(
           storage: storageArgs.storage
         ));
       case schedulePageRoute:
+        final storageArgs = settings.arguments as StorageArguments;
         return MaterialPageRoute<SchedulePage>(builder: (context) => SchedulePage(
           storage: storageArgs.storage
         ));

@@ -14,8 +14,9 @@ class WorkoutPage extends StatefulWidget {
 
 class _WorkoutPageState extends State<WorkoutPage> {
 
-  void updateList() {
+  void updateList() async {
     // Updates the page when the list of workouts is changed
+    await widget.storage.updateRunData();
     setState(() {});
   }
 
