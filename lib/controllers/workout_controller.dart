@@ -17,4 +17,12 @@ class WorkoutController {
           "WorkoutName": workout.workoutName
         }])});
   }
+
+  Future<void> removeRunningWorkout(int idx) async {
+    dbRef.collection("RunningWorkouts")
+        .doc(user!.uid)
+        .update({"Workouts": FieldValue.arrayRemove([{
+          idx
+        }])});
+  }
 }
