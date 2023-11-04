@@ -47,7 +47,10 @@ class _HomePageState extends State<HomePage> {
           ? Center(
         child: LoadingIndicator(
           indicatorType: Indicator.circleStrokeSpin,
-          colors: [Theme.of(context).primaryColor],
+          colors: [Theme
+              .of(context)
+              .primaryColor
+          ],
         ),
       )
           : Padding(
@@ -112,22 +115,28 @@ class _HomePageState extends State<HomePage> {
   Widget _buildActionButton({required IconData icon, required String label, required String route}) {
     return ElevatedButton(
       onPressed: () => Navigator.pushNamed(context, route, arguments: args),
-      child: Column(
-        children: [
-          Icon(icon, size: 36),
-          SizedBox(height: 8),
-          Text(
-            label,
-            style: TextStyle(fontSize: 12),
-          ),
-        ],
-      ),
       style: ElevatedButton.styleFrom(
         primary: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(0), // Remove padding
+        fixedSize: Size(80, 80), // Set a smaller fixed size for all buttons
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Allow the column to shrink
+        children: [
+          Container(
+            width: 40, // Adjust the icon size
+            height: 40,
+            child: Icon(icon, size: 24),
+          ),
+          SizedBox(height: 4), // Adjust the spacing
+          Text(
+            label,
+            style: TextStyle(fontSize: 10), // Adjust the label font size
+          ),
+        ],
       ),
     );
   }
