@@ -18,11 +18,14 @@ class WorkoutController {
         }])});
   }
 
-  Future<void> removeRunningWorkout(int idx) async {
-    dbRef.collection("RunningWorkouts")
-        .doc(user!.uid)
-        .update({"Workouts": FieldValue.arrayRemove([{
-          idx
-        }])});
+  Future<void> deleteRunningWorkout(int idx) async {
+    final docRef = dbRef.collection("RunningWorkouts").doc(user!.uid);
+    final snapshot = await docRef.get();
+    final list = snapshot["Workouts"] as List;
+
+    list.removeAt(idx);
+
+    docRef.set({"Workouts": list});
+
   }
 }

@@ -63,8 +63,8 @@ class _WorkoutPageState extends State<WorkoutPage> {
                             ),
                             IconButton(
                               onPressed: () {
-                                _workoutController.removeRunningWorkout(index);
-                                widget.storage.updateRunData();
+                                _workoutController.deleteRunningWorkout(index);
+                                updateList();
                               },
                               icon: Icon(Icons.delete)
                             ),
