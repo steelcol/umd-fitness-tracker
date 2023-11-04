@@ -1,5 +1,6 @@
 import 'package:BetaFitness/arguments/create_workout_arguments.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
+import 'package:BetaFitness/controllers/workout_controller.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,8 @@ class WorkoutPage extends StatefulWidget {
 }
 
 class _WorkoutPageState extends State<WorkoutPage> {
+
+  final WorkoutController _workoutController = new WorkoutController();
 
   void updateList() async {
     // Updates the page when the list of workouts is changed
@@ -48,12 +51,22 @@ class _WorkoutPageState extends State<WorkoutPage> {
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height/8,
                       child: Card(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Row(
                           children: [
-                            Text(widget.storage.runningWorkouts[index].workoutName),
-                            Text(widget.storage.runningWorkouts[index].distance.toString()),
-                          ],
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(widget.storage.runningWorkouts[index].workoutName),
+                                Text(widget.storage.runningWorkouts[index].distance.toString()),
+
+                              ],
+                            ),
+                            IconButton(
+                              onPressed: () =>
+                                  _workoutController.removeRunningWorkout(index),
+                              icon: Icon(Icons.delete)
+                            ),
+                          ]
                         ),
                       ),
                     ),
