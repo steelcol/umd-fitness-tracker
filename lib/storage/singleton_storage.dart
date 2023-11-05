@@ -9,6 +9,10 @@ class SingletonStorage {
   late List<RunningWorkout> runningWorkouts;
   late List<Event> events;
 
+  // Database shorthand
+  final dbRef = FirebaseFirestore.instance.collection('Users');
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
   // Private constructor
   SingletonStorage._create();
 
@@ -36,23 +40,26 @@ class SingletonStorage {
   // Grab running workouts
   Future<void> _getRunningWorkouts() async {
     // Check if doc exists then grab workouts
-    bool runExists = await _checkExist('RunningWorkouts');
+    bool runExists = await _checkExist('Workouts');
 
     if (runExists) {
       try {
         runningWorkouts = [];
-        await FirebaseFirestore.instance
-            .collection('RunningWorkouts')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .get().then((value){
-              List.from(value.data()!['Workouts']).forEach((element) {
-                RunningWorkout workout = new RunningWorkout(
+
+        await dbRef
+        .doc(userId)
+        .collection('Workouts')
+        .doc(userId)
+        .get().then((value) {
+          List.from(value.data()!['SavedWorkouts']).forEach((element) {
+            if (element['Type'] == 'Cardio') {
+              RunningWorkout workout = new RunningWorkout(
                   workoutName: element['WorkoutName'],
                   distance: element['Distance']
-                );
-
-                runningWorkouts.add(workout);
-              });
+              );
+              runningWorkouts.add(workout);
+            }
+          });
         });
       }
       catch (e) {
@@ -71,19 +78,21 @@ class SingletonStorage {
     if (eventExists) {
       try {
        events = [];
-       await FirebaseFirestore.instance
-          .collection('Events')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .get().then((value) {
-            List.from(value.data()!['Events_Array']).forEach((element) {
-              Event event = new Event(
-                eventName: element['EventName'],
-                description: element['Description'],
-                date: DateTime.fromMicrosecondsSinceEpoch(element['Date'])
-              );
 
-              events.add(event);
-            });
+       await dbRef
+       .doc(userId)
+       .collection('Events')
+       .doc(userId)
+       .get().then((value) {
+         List.from(value.data()!['EventList']).forEach((element) {
+           Event event = new Event(
+             eventName: element['EventName'],
+             description: element['Description'],
+             date: DateTime.fromMicrosecondsSinceEpoch(element['Date'])
+           );
+
+           events.add(event);
+         });
        });
       }
       catch (e) {
@@ -96,10 +105,10 @@ class SingletonStorage {
   }
 
   Future<bool> _checkExist(String collectionId) async {
-    DocumentSnapshot<Map<String, dynamic>> document = await FirebaseFirestore
-        .instance
+    DocumentSnapshot<Map<String, dynamic>> document = await dbRef
+        .doc(userId)
         .collection(collectionId)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .doc(userId)
         .get();
     if(document.exists) {
       return true;
