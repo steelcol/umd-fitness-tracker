@@ -3,29 +3,31 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class WorkoutController {
-  final dbRef = FirebaseFirestore.instance;
-  final user = FirebaseAuth.instance.currentUser;
+  final dbRef = FirebaseFirestore.instance.collection('Users');
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   // Public functions
 
   // Adds a workout to the database
   Future<void> addRunningWorkout(RunningWorkout workout) async {
-    await dbRef.collection("RunningWorkouts")
-        .doc(user!.uid)
-        .update({"Workouts": FieldValue.arrayUnion([{
-          "Distance": workout.distance,
-          "WorkoutName": workout.workoutName
+    await dbRef
+        .doc(userId)
+        .collection('Workouts')
+        .doc(userId)
+        .update({'SavedWorkouts': FieldValue.arrayUnion([{
+          'Distance': workout.distance,
+          'WorkoutName': workout.workoutName,
+          'Type': 'Cardio'
         }])});
   }
 
   Future<void> deleteRunningWorkout(int idx) async {
-    final docRef = dbRef.collection("RunningWorkouts").doc(user!.uid);
+    final docRef = dbRef.doc(userId).collection('Workouts').doc(userId);
     final snapshot = await docRef.get();
-    final list = snapshot["Workouts"] as List;
+    final list = snapshot['Workouts'] as List;
 
     list.removeAt(idx);
 
-    docRef.set({"Workouts": list});
-
+    docRef.set({'Workouts': list});
   }
 }
