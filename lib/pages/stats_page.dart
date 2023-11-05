@@ -18,12 +18,13 @@ class StatsPage extends StatefulWidget {
 }
 
 class _StatsPageState extends State<StatsPage> {
-  List<String> selectedWorkoutType = ['Running', 'Weightlifting'];
+  List<String> selectedWorkoutType = ['Cardio', 'Weight'];
   String selectedExercise = "";
 
   @override
   void initState() {
     super.initState();
+    widget.storage.updateRunData();
     // Initial dropdown display
     if (widget.storage.runningWorkouts.isNotEmpty){
       selectedExercise = widget.storage.runningWorkouts[0].workoutName;
@@ -45,7 +46,7 @@ class _StatsPageState extends State<StatsPage> {
 
   // Get lists of exercise names
   List<String> getExerciseNames(String workoutType) {
-    if (workoutType == 'Running') {
+    if (workoutType == 'Cardio') {
       return widget.storage.runningWorkouts.map((workout) => workout.workoutName).toList();
 
       // TODO: Implement weightlifting state
@@ -199,7 +200,7 @@ class _StatsPageState extends State<StatsPage> {
                 /// DROP DOWN MENUS ///
                 DropdownButton<String>(
                   value: selectedWorkoutType[0], // Display the first workout in the list
-                  items: ['Running', 'Weightlifting'].map((String type) {
+                  items: ['Cardio', 'Weight'].map((String type) {
                     return DropdownMenuItem<String>(
                       value: type,
                       child: Text(type),
@@ -236,7 +237,7 @@ class _StatsPageState extends State<StatsPage> {
 
                 /// DISTANCE TEXT BOX ///
                 /// Will explode if not future'd as data needs to be loaded
-                if (selectedWorkoutType[0] == 'Running' && selectedExercise.isNotEmpty)
+                if (selectedWorkoutType[0] == 'Cardio' && selectedExercise.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: FutureBuilder<RunningWorkout?>(
