@@ -22,12 +22,6 @@ class _SchedulePageState extends State<SchedulePage> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  void printEventDates() {
-      for(Event event in widget.storage.events) {
-          print(event.date);
-      }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,17 +42,14 @@ class _SchedulePageState extends State<SchedulePage> {
             _selectedDay = selectedDay;
             _focusedDay = focusedDay; // update `_focusedDay` here as well
             print("test, next line should print list of events");
-            print(widget.storage.events);//return list of events, search thru events for selected day
-            print(focusedDay);
-            print(_focusedDay);
-            //Event test = new Event(eventName: description, description: test.description, date: DateTime.now());
-            //controller.addEvent(test);
-            //print(test(eventName: eventName, description: description, date: date).date);
-            // Then update the storage list
-            //for(int i = 0; i <= widget.storage.events.length; i++) { //loop thru list of events
-            //  if(_focusedDay == ) { //compare focusedday to list
-            //    //print event.date
-            //  }
+            for(int i = 0; i < widget.storage.events.length; i++) { //loop thru list of events
+              if (_selectedDay!.day ==
+                  widget.storage.events[i].date.day && _selectedDay!.month == widget.storage.events[i].date.month && _selectedDay!.year == widget.storage.events[i].date.year) { //compare selectedDay to list
+                print(widget.storage.events[i].eventName);
+                print(widget.storage.events[i].description);
+                print(widget.storage.events[i].date);
+              }
+            }
             widget.storage.updateEventData();
           });
         },
@@ -100,7 +91,7 @@ class _SchedulePageState extends State<SchedulePage> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            printEventDates();
+  //          printEventDates();
             setState(() {
               //?
             });
