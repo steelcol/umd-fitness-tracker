@@ -49,17 +49,35 @@ class _WorkoutPageState extends State<WorkoutPage> {
                   return Padding(
                     padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     child: SizedBox(
-                      height: MediaQuery.of(context).size.height/8,
+                      height: 80,
                       child: Card(
+                        color: Theme.of(context).primaryColor,
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
+                            Expanded(
+                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(widget.storage.runningWorkouts[index].workoutName),
-                                Text(widget.storage.runningWorkouts[index].distance.toString()),
-
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(widget.storage.runningWorkouts[index].workoutName)
+                                  ],
+                                ),
+                                Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                 children: [
+                                  Text(widget.storage.runningWorkouts[index].distance.toString() + " miles")
+                                 ],
+                                ),
                               ],
+                             )
                             ),
                             IconButton(
                               onPressed: () {
@@ -81,6 +99,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         // Dialog to select the workout type and navigate to that page
+        backgroundColor: Theme.of(context).primaryColor,
         onPressed: () async {
           await showDialog(context: context,
               builder: (context) => AlertDialog(
@@ -107,7 +126,10 @@ class _WorkoutPageState extends State<WorkoutPage> {
                           ),
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size(MediaQuery.of(context).size.width/1, MediaQuery.of(context).size.height/15),
-                            backgroundColor: Theme.of(context).colorScheme.secondary,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            )
                           ),
                       ),
                       Padding(

@@ -5,6 +5,8 @@ import 'package:BetaFitness/utilities/utils_for_schedule_page.dart';
 import 'package:BetaFitness/models/event_model.dart';
 import 'package:BetaFitness/pages/events_page.dart';
 import '../controllers/event_controller.dart';
+import 'package:BetaFitness/utilities/utils_for_schedule_page.dart' hide Event;
+import 'package:BetaFitness/models/event_model.dart';
 
 
 class SchedulePage extends StatefulWidget {
@@ -19,6 +21,12 @@ class _SchedulePageState extends State<SchedulePage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+
+  void printEventDates() {
+      for(Event event in widget.storage.events) {
+          print(event.date);
+      }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +100,7 @@ class _SchedulePageState extends State<SchedulePage> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-
+            printEventDates();
             setState(() {
               //?
             });

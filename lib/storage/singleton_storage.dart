@@ -55,7 +55,7 @@ class SingletonStorage {
             if (element['Type'] == 'Cardio') {
               RunningWorkout workout = new RunningWorkout(
                   workoutName: element['WorkoutName'],
-                  distance: element['Distance']
+                  distance: element['Distance'].toDouble()
               );
               runningWorkouts.add(workout);
             }
