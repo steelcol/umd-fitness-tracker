@@ -106,6 +106,14 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: _buildLongActionButton(
+                icon: Icons.add,
+                label: 'Start Workout',
+                route: activeWorkoutPageRoute,
+              ),
+              ),
           ],
         ),
       ),
@@ -134,10 +142,29 @@ class _HomePageState extends State<HomePage> {
           SizedBox(height: 4), // Adjust the spacing
           Text(
             label,
-            style: TextStyle(fontSize: 10), // Adjust the label font size
+            style: TextStyle(fontSize: 12), // Adjust the label font size
           ),
         ],
       ),
     );
   }
+
+  Widget _buildLongActionButton({required IconData icon, required String label, required String route}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 11.4),
+      child: ElevatedButton.icon(
+        onPressed: () => Navigator.pushNamed(context, workoutPageRoute, arguments: args), // TODO: workoutPageRoute => activeWorkoutPageRoute when dev start
+        icon: Icon(icon),
+        label: Text(label),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).primaryColor,
+          minimumSize: const Size(double.infinity, 70),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      ),
+    );
+  }
+
 }
