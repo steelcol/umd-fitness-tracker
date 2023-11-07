@@ -1,4 +1,5 @@
 import 'package:BetaFitness/models/running_workout_model.dart';
+import 'package:BetaFitness/models/weight_workout_model.dart';
 import 'package:BetaFitness/models/event_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class SingletonStorage {
   // Getters do not have to be made they exists by default
   late List<RunningWorkout> runningWorkouts;
+  late List<WeightWorkout> weightWorkouts;
   late List<Event> events;
 
   // Database shorthand
@@ -21,6 +23,7 @@ class SingletonStorage {
     // Call private constructor
     var storage = SingletonStorage._create();
     await storage._getRunningWorkouts();
+    await storage._getWeightWorkouts();
     await storage._getEvents();
 
     return storage;
@@ -29,6 +32,10 @@ class SingletonStorage {
   // Public function
   Future<void> updateRunData() async {
     await _getRunningWorkouts();
+  }
+
+  Future<void> updateWeightData() async {
+    await _getWeightWorkouts();
   }
 
   Future<void> updateEventData() async {
@@ -68,6 +75,39 @@ class SingletonStorage {
     }
     else {
       runningWorkouts = [];
+    }
+  }
+
+  Future<void> _getWeightWorkouts() async {
+    // Check if doc exists then grab events
+    bool weightExists = await _checkExist('Workouts'); 
+
+    if (weightExists) {
+      try {
+        weightWorkouts = [];
+
+        await dbRef
+        .doc(userId)
+        .collection('Workouts')
+        .doc(userId)
+        .get().then((value) {
+          List.from(value.data()!['SavedWorkouts']).forEach((element) {
+            if (element['Type'] == 'Weight') {
+              WeightWorkout workout = new WeightWorkout(
+                workoutName: element['WorkoutName'],
+                exercises: element['Exercises']
+              );
+              weightWorkouts.add(workout);
+            }
+          });
+        });
+      }
+      catch (e) {
+        throw new Future.error("ERROR $e");
+      }
+    }
+    else {
+      weightWorkouts = [];
     }
   }
 
