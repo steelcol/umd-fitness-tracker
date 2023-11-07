@@ -2,6 +2,10 @@ import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:BetaFitness/utilities/utils_for_schedule_page.dart';
+import 'package:BetaFitness/models/event_model.dart';
+import 'package:BetaFitness/pages/events_page.dart';
+import '../controllers/event_controller.dart';
+import 'package:BetaFitness/utilities/utils_for_schedule_page.dart' hide Event;
 
 
 class SchedulePage extends StatefulWidget {
@@ -30,22 +34,23 @@ class _SchedulePageState extends State<SchedulePage> {
         focusedDay: _focusedDay,
         calendarFormat: _calendarFormat,
         selectedDayPredicate: (day) {
-          // Use `selectedDayPredicate` to determine which day is currently selected.
-          // If this returns true, then `day` will be marked as selected.
-
-          // Using `isSameDay` is recommended to disregard
-          // the time-part of compared DateTime objects.
           return isSameDay(_selectedDay, day);
         },
-
         onDaySelected: (selectedDay, focusedDay) {
-          if (!isSameDay(_selectedDay, selectedDay)) {
-            // Call `setState()` when updating the selected day
-            setState(() {
-              _selectedDay = selectedDay;
-              _focusedDay = focusedDay;
-            });
-          }
+          setState(() {
+            _selectedDay = selectedDay;
+            _focusedDay = focusedDay; // update `_focusedDay` here as well
+            print("test, next line should print list of events");
+            for(int i = 0; i < widget.storage.events.length; i++) { //loop thru list of events
+              if (_selectedDay!.day ==
+                  widget.storage.events[i].date.day && _selectedDay!.month == widget.storage.events[i].date.month && _selectedDay!.year == widget.storage.events[i].date.year) { //compare selectedDay to list
+                print(widget.storage.events[i].eventName);
+                print(widget.storage.events[i].description);
+                print(widget.storage.events[i].date);
+              }
+            }
+            widget.storage.updateEventData();
+          });
         },
         onFormatChanged: (format) {
           if (_calendarFormat != format) {
@@ -55,6 +60,29 @@ class _SchedulePageState extends State<SchedulePage> {
             });
           }
         },
+
+        /*
+          Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+   ElevatedButton(
+            onPressed: () => _selectDate(context), // calls the selectedDate method
+            child: const Text('Select date'),
+          ),
+
+          //when i select a day use the widget.storage.events to return the list of events,
+          //then use for loop to search for event.date(returns datetime )
+
+        */
         onPageChanged: (focusedDay) {
           // No need to call `setState()` here
           _focusedDay = focusedDay;
@@ -62,7 +90,7 @@ class _SchedulePageState extends State<SchedulePage> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-
+  //          printEventDates();
             setState(() {
               //?
             });
