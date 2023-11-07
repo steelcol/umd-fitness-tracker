@@ -1,7 +1,9 @@
 class WeightWorkout {
   final String workoutName;
-  // Add list of exercises later
+  final List<dynamic> exercises;
 
-
-  WeightWorkout({required this.workoutName});
+  WeightWorkout({
+    required this.workoutName,
+    required this.exercises
+  });
 }

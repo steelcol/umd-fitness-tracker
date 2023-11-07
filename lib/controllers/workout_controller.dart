@@ -8,6 +8,7 @@ class WorkoutController {
 
   // Public functions
 
+  // TODO: Need to not use array union if we want duplicate values
   // Adds a workout to the database
   Future<void> addRunningWorkout(RunningWorkout workout) async {
     await dbRef
@@ -21,13 +22,17 @@ class WorkoutController {
         }])});
   }
 
-  Future<void> deleteRunningWorkout(int idx) async {
-    final docRef = dbRef.doc(userId).collection('Workouts').doc(userId);
-    final snapshot = await docRef.get();
-    final list = snapshot['Workouts'] as List;
+  Future<void> deleteRunningWorkout(RunningWorkout workout) async {
+    final docRef = dbRef
+        .doc(userId)
+        .collection('Workouts')
+        .doc(userId);
 
-    list.removeAt(idx);
-
-    docRef.set({'Workouts': list});
+    docRef.update({
+      'SavedWorkouts': FieldValue.arrayRemove([{
+        'Distance': workout.distance,
+        'WorkoutName': workout.workoutName,
+        'Type': 'Cardio'
+      }])});
   }
 }

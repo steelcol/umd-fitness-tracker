@@ -107,13 +107,18 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 15),
+              padding: const EdgeInsets.symmetric(vertical: 15),
               child: _buildLongActionButton(
                 icon: Icons.add,
                 label: 'Start Workout',
                 route: activeWorkoutPageRoute,
               ),
               ),
+            _buildLongActionButton(
+              icon: Icons.add,
+              label: 'Log Run',
+              route: runWorkoutPageRoute,
+            )
           ],
         ),
       ),
@@ -153,7 +158,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 11.4),
       child: ElevatedButton.icon(
-        onPressed: () => Navigator.pushNamed(context, workoutPageRoute, arguments: args), // TODO: workoutPageRoute => activeWorkoutPageRoute when dev start
+        onPressed: () => Navigator.pushNamed(context, route, arguments: args), // TODO: workoutPageRoute => activeWorkoutPageRoute when dev start
         icon: Icon(icon),
         label: Text(label),
         style: ElevatedButton.styleFrom(

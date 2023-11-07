@@ -8,3 +8,5 @@ const String signInRoute = '/sign-in';
 const String profileRoute = '/profile';
 const String schedulePageRoute = '/schedule';
 const String activeWorkoutPageRoute = '/a_workout';
+const String logRunPageRoute = '/log';
+const String runWorkoutPageRoute = '/run';
