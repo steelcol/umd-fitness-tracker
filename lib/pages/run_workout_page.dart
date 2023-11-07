@@ -37,7 +37,16 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const Text('Logged Runs'),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+             child: const Text(
+               'Logged Runs',
+               style: TextStyle(
+                 fontSize: 16,
+                 fontWeight: FontWeight.bold,
+               ),
+             ),
+            ),
             Container(
               padding: EdgeInsets.symmetric(vertical: 10),
               child: ListView.builder(
