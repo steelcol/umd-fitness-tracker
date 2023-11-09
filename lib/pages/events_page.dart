@@ -33,7 +33,7 @@ class _EventsPageState extends State<EventsPage>{
 
     // If you add events or add running workouts please make a controller to add the data correctly
     EventController controller = new EventController();
-    Event event = new Event(eventName: name, description: desc, date: date,);
+    Event event = new Event(eventName: name, description: desc, date: date);
 
     controller.addEvent(event);
     // Then update the storage list
