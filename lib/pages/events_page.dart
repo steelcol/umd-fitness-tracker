@@ -19,7 +19,7 @@ class _EventsPageState extends State<EventsPage>{
   final String createText = "Enter";
   final String showText = "Event";
   DateTime selectedDate = DateTime.now();
-  //controllers
+    //controllers
   final nameController = TextEditingController();
   final descController = TextEditingController();
   final dateController = TextEditingController();
@@ -30,12 +30,14 @@ class _EventsPageState extends State<EventsPage>{
     String name = nameController.text;
     String desc = descController.text;
     DateTime date = selectedDate;
+
     // If you add events or add running workouts please make a controller to add the data correctly
     EventController controller = new EventController();
     Event event = new Event(eventName: name, description: desc, date: date,);
 
     controller.addEvent(event);
     // Then update the storage list
+    print(event.date);
     widget.storage.updateEventData();
   }
 
