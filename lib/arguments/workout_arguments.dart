@@ -2,12 +2,10 @@
 // This class allows us to convert arguments in route_generator.dart to a
 // more usable type.
 
-class CreateWorkoutArguments {
-  final String pageType;
+class WorkoutArguments {
   final Function updateList;
 
-  const CreateWorkoutArguments({
-    required this.pageType,
+  const WorkoutArguments({
     required this.updateList
   });
 }
