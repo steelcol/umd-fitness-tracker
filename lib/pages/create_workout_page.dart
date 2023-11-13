@@ -1,16 +1,13 @@
 import 'package:BetaFitness/controllers/workout_controller.dart';
-import 'package:BetaFitness/models/running_workout_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // This page more than likely will need to be split up
 class CreateWorkoutPage extends StatefulWidget {
   CreateWorkoutPage({Key? key,
-    required this.pageType,
     required this.updateList})
       : super(key: key);
 
-  final String pageType;
   final Function updateList;
 
   @override
@@ -20,8 +17,6 @@ class CreateWorkoutPage extends StatefulWidget {
 class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
   // Key for our form
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _runningNameController = new TextEditingController();
-  final TextEditingController _distanceController = new TextEditingController();
   WorkoutController controller = new WorkoutController();
 
   // Holds our text fields for our weight training form
@@ -35,74 +30,6 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
 
   @override
   Widget build(BuildContext context) {
-    switch (widget.pageType) {
-      case 'cardio':
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text("BetaFitness"),
-          ),
-          body: Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: Center(
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _runningNameController,
-                      decoration: const InputDecoration(
-                        labelText: "Workout Name",
-                        hintText: "Enter name of your workout",
-                      ),
-                    keyboardType: TextInputType.name,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a workout name';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _distanceController,
-                    decoration: const InputDecoration(
-                      labelText: "Distance",
-                      hintText: "Enter your desired distance",
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a distance';
-                      }
-                      return null;
-                    },
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        // Submit to database here for the user
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
-                        );
-                         // Create new object and send to database
-                        RunningWorkout workout = new RunningWorkout(
-                            workoutName: _runningNameController.text,
-                            distance: double.parse(_distanceController.text)
-                        );
-                        await controller.addRunningWorkout(workout);
-                        await widget.updateList();
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: const Text("Create Workout"),
-                  )
-                ],
-              ),
-            ),
-          ),
-        );
-      case 'weight_train':
         return Scaffold(
           appBar: AppBar(
             title: const Text("BetaFitness"),
@@ -217,13 +144,8 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
             ),
           ),
         );
-      default:
-        return Scaffold(
-            // We should never get here
-            );
     }
   }
-}
 
 class Exercise {
   TextEditingController exerciseNameController = new TextEditingController();
