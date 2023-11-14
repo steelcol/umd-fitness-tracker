@@ -29,6 +29,7 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
   late List<Exercise> stretchExercises;
   late List<Exercise> coreExercises;
 
+
   final TextEditingController _workoutNameField =
       TextEditingController(text: 'New Workout Name');
 

@@ -11,3 +11,4 @@ const String activeWorkoutPageRoute = '/a_workout';
 const String listedEventsMapWorkoutsPageRoute = '/listedEventsMapWorkouts';
 const String logRunPageRoute = '/log';
 const String runWorkoutPageRoute = '/run';
+const String workoutSearchPageRoute = '/search';
