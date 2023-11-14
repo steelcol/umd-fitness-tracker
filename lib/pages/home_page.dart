@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:BetaFitness/arguments/storage_arguments.dart';
 import 'package:BetaFitness/arguments/info_arguments.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
@@ -29,6 +31,14 @@ class _HomePageState extends State<HomePage> {
 
     if (!mounted) return;
     setState(() {});
+  }
+
+  String getRandomFitnessTip() {
+    final randGen = Random();
+    String randTip = "";
+    if (storage.fitnessTips.length > 0)
+      randTip = storage.fitnessTips[randGen.nextInt(storage.fitnessTips.length - 1)].tip;
+    return randTip;
   }
 
   @override
@@ -85,6 +95,28 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(10),
+              child:
+                Card (
+                  elevation: 5,
+                  shape: BeveledRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)
+                  ),
+                  child:
+                    Padding(
+                      padding: EdgeInsets.all(15),
+                      child:
+                        Text(
+                            getRandomFitnessTip(),
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                    )
+                ),
             ),
             SizedBox(height: 24),
             Row(

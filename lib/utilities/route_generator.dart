@@ -1,10 +1,10 @@
 import 'package:BetaFitness/arguments/info_arguments.dart';
 import 'package:BetaFitness/arguments/storage_arguments.dart';
-import 'package:BetaFitness/models/Save_Data_model.dart';
+import 'package:BetaFitness/models/save_data_model.dart';
 import 'package:BetaFitness/arguments/event_arguments.dart';
 import 'package:BetaFitness/pages/active_workout_page.dart';
 import 'package:BetaFitness/pages/run_workout_page.dart';
-import 'package:BetaFitness/pages/listed_Events_Map_Workouts_page.dart';
+import 'package:BetaFitness/pages/listed_events_map_workouts_page.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;

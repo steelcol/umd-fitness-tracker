@@ -6,7 +6,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:BetaFitness/utilities/utils_for_schedule_page.dart';
 import 'package:BetaFitness/utilities/utils_for_schedule_page.dart' hide Event;
 import '../utilities/routes.dart';
-import 'package:BetaFitness/models/Save_Data_model.dart';
+import 'package:BetaFitness/models/save_data_model.dart';
 
 
 class SchedulePage extends StatefulWidget {
@@ -26,10 +26,15 @@ class _SchedulePageState extends State<SchedulePage> {
   DateTime? _selectedDay;
   EventStorage eventStorage = new EventStorage();
 
+
   get args => null;
 
   @override
   Widget build(BuildContext context) {
+    StoreDateTime test = new StoreDateTime(
+        storage: widget.storage,
+        eventStorage: eventStorage
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text('Your Calendar'),
@@ -47,36 +52,18 @@ class _SchedulePageState extends State<SchedulePage> {
           setState(() {
             _selectedDay = selectedDay;
             _focusedDay = focusedDay; // update `_focusedDay` here as well
-            print("test, next line should print list of events");
-            StoreDateTime test = new StoreDateTime(
-              storage: widget.storage,
-              eventStorage: eventStorage
-            );
-            /*for(int i = 0; i < widget.storage.events.length; i++) { //loop thru list of events
-              if (_selectedDay!.day ==
-                  widget.storage.events[i].date.day && _selectedDay!.month == widget.storage.events[i].date.month && _selectedDay!.year == widget.storage.events[i].date.year) { //compare selectedDay to list
-                print(widget.storage.events[i].eventName);
-                test.storeEventName = widget.storage.events[i].eventName;
-                print(widget.storage.events[i].description);
-                test.storeDescription = widget.storage.events[i].description;
-                print(widget.storage.events[i].date);
-                test.storeDate = widget.storage.events[i].date;
-                print("test, next three line should be printed from the storeDateTime method");
-                print(test.getStoreEventName);
-                print(test.getStoreDescription);
-                print(test.getStoreDate);
-                print("test, next print should be from storedEvent in singleton");
-                widget.storage.storedEventName = test.getStoreEventName as String;
-                print(widget.storage.storedEventName);
-              }
-            } */
-            print("start test");
+            //StoreDateTime test = new StoreDateTime(
+            //  storage: widget.storage,
+            //  eventStorage: eventStorage
+            //);
             test.iterateEventItems(selectedDay);
-            print("Test over");
+            print("iteration done");
             widget.storage.updateEventData();
-
-
-
+            if(test.checkSelectedDayIsNotNull() == true) {
+              final args = EventArguments(eventStorage: eventStorage);
+              Navigator.pushNamed(
+                  context, listedEventsMapWorkoutsPageRoute, arguments: args);
+            }
           });
         },
         onFormatChanged: (format) {
@@ -94,11 +81,10 @@ class _SchedulePageState extends State<SchedulePage> {
         },
 
         ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final args = EventArguments(eventStorage: eventStorage);
-          Navigator.pushNamed(context, listedEventsMapWorkoutsPageRoute, arguments: args);
+            final arguments = EventArguments(eventStorage: eventStorage);
+            Navigator.pushNamed(context, eventsPageRoute, arguments: arguments);
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.blueGrey,
@@ -106,6 +92,3 @@ class _SchedulePageState extends State<SchedulePage> {
     );
   }
 }
-
-
-
