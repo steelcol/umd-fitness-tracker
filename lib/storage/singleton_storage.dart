@@ -3,6 +3,7 @@ import 'package:BetaFitness/models/weight_workout_model.dart';
 import 'package:BetaFitness/models/event_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:BetaFitness/models/fitness_tip_model.dart';
 
 // This class holds our data as lists to be accessed later.
 class SingletonStorage {
@@ -10,6 +11,7 @@ class SingletonStorage {
   late List<RunningWorkout> runningWorkouts;
   late List<WeightWorkout> weightWorkouts;
   late List<Event> events;
+  late List<FitnessTip> fitnessTips;
 
   // Database shorthand
   final dbRef = FirebaseFirestore.instance.collection('Users');
@@ -25,6 +27,7 @@ class SingletonStorage {
     await storage._getRunningWorkouts();
     await storage._getWeightWorkouts();
     await storage._getEvents();
+    await storage._getFitnessTips();
 
     return storage;
   }
@@ -40,6 +43,10 @@ class SingletonStorage {
 
   Future<void> updateEventData() async {
     await _getEvents();
+  }
+
+  Future<void> updateFitnessData() async {
+    await _getFitnessTips();
   }
 
   // Private functions
@@ -144,6 +151,37 @@ class SingletonStorage {
     }
   }
 
+  Future<void> _getFitnessTips() async {
+    //check if FitnessTips exists
+    DocumentSnapshot<Map<String, dynamic>> document =
+      await FirebaseFirestore
+          .instance.collection('FitnessTips')
+          .doc('Tips')
+          .get();
+    bool fitnessExists = document.exists;
+
+    if (fitnessExists) {
+      try {
+        fitnessTips = [];
+
+        await FirebaseFirestore
+            .instance.collection('FitnessTips')
+            .doc('Tips')
+            .get().then((value) {
+              List.from(value.data()!['FitnessTips']).forEach((element) {
+                print(element);
+                FitnessTip tip = new FitnessTip(tip: element.toString());
+                fitnessTips.add(tip);
+              });
+            });
+      } catch (e) {
+        throw new Future.error("ERROR $e");
+      }
+    } else {
+      fitnessTips = [];
+    }
+  }
+
   Future<bool> _checkExist(String collectionId) async {
     DocumentSnapshot<Map<String, dynamic>> document = await dbRef
         .doc(userId)
@@ -157,4 +195,6 @@ class SingletonStorage {
       return false;
     }
   }
+
+
 }
