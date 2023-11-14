@@ -1,29 +1,42 @@
 import 'package:BetaFitness/controllers/workout_controller.dart';
+import 'package:BetaFitness/storage/workout_exercise_storage.dart';
+import 'package:BetaFitness/models/exercise_model.dart';
+import 'package:BetaFitness/models/saved_exercise_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // This page more than likely will need to be split up
 class CreateWorkoutPage extends StatefulWidget {
   CreateWorkoutPage({Key? key,
-    required this.updateList})
+    required this.updateList,
+    required this.info})
       : super(key: key);
 
   final Function updateList;
+  final WorkoutInformation info;
 
   @override
   State<CreateWorkoutPage> createState() => _CreateWorkoutPageState();
 }
 
 class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
-  // Key for our form
-  final _formKey = GlobalKey<FormState>();
   WorkoutController controller = new WorkoutController();
 
-  // Holds our text fields for our weight training form
-  List<Exercise> exercises = [];
+  // List to submit to controller our exercise
+  // Needs to be null here for controller
+  List<SavedExercise> createdWorkout = [];
+
+  // Holds our different exercises in enumerable lists
+  late List<Exercise> upperBodyExercises;
+  late List<Exercise> lowerBodyExercises;
+  late List<Exercise> stretchExercises;
+  late List<Exercise> coreExercises;
 
   @override
   void initState() {
+    upperBodyExercises = widget.info.upperBodyExercises;
+    lowerBodyExercises = widget.info.lowerBodyExercises;
+    stretchExercises = widget.info.stretchExercises;
+    coreExercises = widget.info.coreExercises;
     // TODO: implement initState
     super.initState();
   }
@@ -34,127 +47,31 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
           appBar: AppBar(
             title: const Text("BetaFitness"),
           ),
-          body: Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: SingleChildScrollView(
-              physics: ScrollPhysics(),
-              child: Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: exercises.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                              padding: EdgeInsets.symmetric(vertical: 5),
-                              child: Row(
-                                    children: [
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width/2,
-                                        child: TextFormField(
-                                          controller: exercises[index].exerciseNameController,
-                                          decoration: InputDecoration(
-                                            hintText: 'Exercise',
-                                          ),
-                                          validator: (value) {
-                                            if (value == null || value.isEmpty) {
-                                              return 'Please enter exercise name';
-                                            }
-                                            return null;
-                                          },
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: TextFormField(
-                                          controller: exercises[index].setAmountController,
-                                          decoration: InputDecoration(
-                                            hintText: 'Sets',
-                                          ),
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: [
-                                            FilteringTextInputFormatter.digitsOnly
-                                          ],
-                                          validator: (value) {
-                                            if (value == null || value.isEmpty) {
-                                              return 'Please enter set count';
-                                            }
-                                            return null;
-                                          },
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: TextFormField(
-                                          controller: exercises[index].repAmountController,
-                                          decoration: InputDecoration(
-                                            hintText: 'Reps',
-                                          ),
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: [
-                                            FilteringTextInputFormatter.digitsOnly
-                                          ],
-                                          validator: (value) {
-                                            if (value == null || value.isEmpty) {
-                                              return 'Please enter rep count';
-                                            }
-                                            return null;
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                              )
-                          );
-                        }),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                    ),
-                    onPressed: () {
-                      // Add another entry to the list
-                      setState(() {
-                        exercises.add(Exercise(
-                            exerciseNameController: new TextEditingController(),
-                            setAmountController: new TextEditingController(),
-                            repAmountController: new TextEditingController()
-                        )
-                        );
-                      });
-                    },
-                    child: const Text("Add Exercise"),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate() && exercises.length != 0) {
-                        // Submit to database here for the user
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
-                        );
-                      }
-                    },
-                    child: const Text("Create Workout"),
+          body: DefaultTabController(
+            length: 4, 
+            child: Center(
+             child: ElevatedButton(
+              onPressed: () {
+                createdWorkout.add(
+                  SavedExercise(
+                   name: 'Squat',
+                   repCount: 10,
+                   setCount: 3
                   )
-                ],
-              ),
-            ),
+                );
+                createdWorkout.add(
+                  SavedExercise(
+                    name: 'Leg Press',
+                    repCount: 15,
+                    setCount: 5
+                  )
+                );
+                controller.addWeightWorkout(createdWorkout, 'Leg Day');
+              },
+              child: const Text('Add demo exercise'),
+             )     
+            )
           ),
         );
     }
   }
-
-class Exercise {
-  TextEditingController exerciseNameController = new TextEditingController();
-  TextEditingController setAmountController = new TextEditingController();
-  TextEditingController repAmountController = new TextEditingController();
-
-  Exercise({
-    required this.exerciseNameController,
-    required this.setAmountController,
-    required this.repAmountController
-  });
-}

@@ -7,9 +7,6 @@ class WorkoutInformation {
   late List<Exercise> coreExercises;
   late List<Exercise> stretchExercises;
 
-  // Private instance variable to hold the singleton instance
-  static WorkoutInformation? _instance;
-
   // Database shorthand
   final dbRef = FirebaseFirestore.instance.collection('WorkoutExercises');
 
@@ -18,19 +15,15 @@ class WorkoutInformation {
 
   // Async constructor initialization
   static Future<WorkoutInformation> create() async {
-    // Call private constructor
-    if (_instance == null) {
-      // Create instance
-      _instance = WorkoutInformation._create();
-
+      // Call private constructor
+      var info = WorkoutInformation._create();
       // Perform initialization
-      await _instance!._getUpperBodyExercises();
-      await _instance!._getLowerBodyExercises();
-      await _instance!._getCoreExercises();
-      await _instance!._getStretchExercises();
-    }
+      await info._getUpperBodyExercises();
+      await info._getLowerBodyExercises();
+      await info._getCoreExercises();
+      await info._getStretchExercises();
 
-    return _instance!;
+      return info;
   }
 
   // Private functions

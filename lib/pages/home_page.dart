@@ -1,5 +1,7 @@
 import 'package:BetaFitness/arguments/storage_arguments.dart';
+import 'package:BetaFitness/arguments/info_arguments.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
+import 'package:BetaFitness/storage/workout_exercise_storage.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
@@ -13,12 +15,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late SingletonStorage storage;
+  late WorkoutInformation info;
   bool _loading = true;
   late StorageArguments args;
+  late InfoArguments infoArgs;
 
   void initializeSingletonStorage() async {
     storage = await SingletonStorage.create();
+    info = await WorkoutInformation.create();
     args = StorageArguments(storage: storage);
+    infoArgs = InfoArguments(storage: storage, info: info);
     _loading = false;
 
     if (!mounted) return;
@@ -98,6 +104,7 @@ class _HomePageState extends State<HomePage> {
                   icon: Icons.fitness_center_sharp,
                   label: "Workout",
                   route: workoutPageRoute,
+                  infoArgs: infoArgs
                 ),
                 _buildActionButton(
                   icon: Icons.event,
@@ -125,9 +132,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildActionButton({required IconData icon, required String label, required String route}) {
+  Widget _buildActionButton({required IconData icon, required String label, required String route, InfoArguments? infoArgs}) {
     return ElevatedButton(
-      onPressed: () => Navigator.pushNamed(context, route, arguments: args),
+      onPressed: () => Navigator.pushNamed(context, route, arguments: infoArgs == null ? args : infoArgs),
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(

@@ -1,7 +1,7 @@
 import 'package:BetaFitness/controllers/workout_controller.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:BetaFitness/utilities/routes.dart';
-import 'package:BetaFitness/arguments/workout_arguments.dart';
+import 'package:BetaFitness/arguments/run_workout_arguments.dart';
 import 'package:flutter/material.dart';
 
 class RunWorkoutPage extends StatefulWidget {
@@ -119,7 +119,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
             Navigator.pushNamed(
                 context,
                 logRunPageRoute,
-                arguments: WorkoutArguments(updateList: updateList)
+                arguments: RunWorkoutArguments(updateList: updateList)
             );
           },
           backgroundColor: Theme.of(context).primaryColor,
