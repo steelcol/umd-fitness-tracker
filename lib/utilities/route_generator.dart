@@ -1,7 +1,10 @@
 import 'package:BetaFitness/arguments/info_arguments.dart';
 import 'package:BetaFitness/arguments/storage_arguments.dart';
+import 'package:BetaFitness/models/Save_Data_model.dart';
+import 'package:BetaFitness/arguments/event_arguments.dart';
 import 'package:BetaFitness/pages/active_workout_page.dart';
 import 'package:BetaFitness/pages/run_workout_page.dart';
+import 'package:BetaFitness/pages/listed_Events_Map_Workouts_page.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
@@ -57,6 +60,7 @@ class RouteNavigator {
         ));
       case schedulePageRoute:
         final storageArgs = settings.arguments as StorageArguments;
+        final storageDateTimeArgs = settings.arguments as StorageArguments;
         return MaterialPageRoute<SchedulePage>(builder: (context) => SchedulePage(
           storage: storageArgs.storage
         ));
@@ -69,6 +73,11 @@ class RouteNavigator {
         final storageArgs = settings.arguments as StorageArguments;
         return MaterialPageRoute<RunWorkoutPage>(builder: (context) => RunWorkoutPage(
             storage: storageArgs.storage
+        ));
+      case listedEventsMapWorkoutsPageRoute:
+        final eventArgs = settings.arguments as EventArguments;
+        return MaterialPageRoute<ListedEventsMapWorkoutsPage>(builder: (context) => ListedEventsMapWorkoutsPage(
+            eventStorage: eventArgs.eventStorage
         ));
 
         // User sign in and registration
