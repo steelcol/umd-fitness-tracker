@@ -169,7 +169,6 @@ class SingletonStorage {
             .doc('Tips')
             .get().then((value) {
               List.from(value.data()!['FitnessTips']).forEach((element) {
-                print(element);
                 FitnessTip tip = new FitnessTip(tip: element.toString());
                 fitnessTips.add(tip);
               });
