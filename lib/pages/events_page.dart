@@ -1,9 +1,13 @@
+
+import 'dart:ffi';
+
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../controllers/event_controller.dart';
 import '../models/event_model.dart';
+import 'map_page.dart';
 
 
 class EventsPage extends StatefulWidget {
@@ -101,10 +105,26 @@ class _EventsPageState extends State<EventsPage>{
             child: const Text('Select date'),
           ),
           //enter button
+          ListTile(
+            title: const Text('Interactive'),
+            subtitle: const Text('Say where on the earth user has clicked.'),
+            trailing: const Icon(Icons.chevron_right_sharp),
+            onTap: () => _push(const InteractiveMapPage()),
+          ),
+
           ElevatedButton(onPressed: createEvent, child: Text(createText), ),
         ]
         ),
       ),
     );
   }
+
+  void _push(Widget page) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => page,
+      ),
+    );
+  }
+
 }
