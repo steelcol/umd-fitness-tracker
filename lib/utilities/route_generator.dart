@@ -1,6 +1,10 @@
+import 'package:BetaFitness/arguments/info_arguments.dart';
 import 'package:BetaFitness/arguments/storage_arguments.dart';
+import 'package:BetaFitness/models/save_data_model.dart';
+import 'package:BetaFitness/arguments/event_arguments.dart';
 import 'package:BetaFitness/pages/active_workout_page.dart';
 import 'package:BetaFitness/pages/run_workout_page.dart';
+import 'package:BetaFitness/pages/listed_events_map_workouts_page.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
@@ -27,15 +31,17 @@ class RouteNavigator {
     switch (settings.name) {
       case homePageRoute:
         return MaterialPageRoute<HomePage>(builder: (context) => HomePage());
-      case workoutPageRoute:
-        final storageArgs = settings.arguments as StorageArguments;
+      case workoutPageRoute: 
+      final infoArgs = settings.arguments as InfoArguments;
         return MaterialPageRoute<WorkoutPage>(builder: (context) => WorkoutPage(
-          storage: storageArgs.storage
+          storage: infoArgs.storage,
+          info: infoArgs.info
         ));
       case createWorkoutRoute:
         final args = settings.arguments as WorkoutArguments;
         return MaterialPageRoute<CreateWorkoutPage>(builder: (context) => CreateWorkoutPage(
-            updateList: args.updateList
+            updateList: args.updateList,
+            info: args.info
         ));
       case statsPageRoute:
         final storageArgs = settings.arguments as StorageArguments;
@@ -54,6 +60,7 @@ class RouteNavigator {
         ));
       case schedulePageRoute:
         final storageArgs = settings.arguments as StorageArguments;
+        final storageDateTimeArgs = settings.arguments as StorageArguments;
         return MaterialPageRoute<SchedulePage>(builder: (context) => SchedulePage(
           storage: storageArgs.storage
         ));
@@ -66,6 +73,11 @@ class RouteNavigator {
         final storageArgs = settings.arguments as StorageArguments;
         return MaterialPageRoute<RunWorkoutPage>(builder: (context) => RunWorkoutPage(
             storage: storageArgs.storage
+        ));
+      case listedEventsMapWorkoutsPageRoute:
+        final eventArgs = settings.arguments as EventArguments;
+        return MaterialPageRoute<ListedEventsMapWorkoutsPage>(builder: (context) => ListedEventsMapWorkoutsPage(
+            eventStorage: eventArgs.eventStorage
         ));
 
         // User sign in and registration

@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:BetaFitness/arguments/storage_arguments.dart';
+import 'package:BetaFitness/arguments/info_arguments.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
+import 'package:BetaFitness/storage/workout_exercise_storage.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
@@ -13,16 +17,28 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late SingletonStorage storage;
+  late WorkoutInformation info;
   bool _loading = true;
   late StorageArguments args;
+  late InfoArguments infoArgs;
 
   void initializeSingletonStorage() async {
     storage = await SingletonStorage.create();
+    info = await WorkoutInformation.create();
     args = StorageArguments(storage: storage);
+    infoArgs = InfoArguments(storage: storage, info: info);
     _loading = false;
 
     if (!mounted) return;
     setState(() {});
+  }
+
+  String getRandomFitnessTip() {
+    final randGen = Random();
+    String randTip = "";
+    if (storage.fitnessTips.length > 0)
+      randTip = storage.fitnessTips[randGen.nextInt(storage.fitnessTips.length - 1)].tip;
+    return randTip;
   }
 
   @override
@@ -80,6 +96,28 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            Padding(
+              padding: EdgeInsets.all(10),
+              child:
+                Card (
+                  elevation: 5,
+                  shape: BeveledRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)
+                  ),
+                  child:
+                    Padding(
+                      padding: EdgeInsets.all(15),
+                      child:
+                        Text(
+                            getRandomFitnessTip(),
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                    )
+                ),
+            ),
             SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -98,6 +136,7 @@ class _HomePageState extends State<HomePage> {
                   icon: Icons.fitness_center_sharp,
                   label: "Workout",
                   route: workoutPageRoute,
+                  infoArgs: infoArgs
                 ),
                 _buildActionButton(
                   icon: Icons.event,
@@ -125,9 +164,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildActionButton({required IconData icon, required String label, required String route}) {
+  Widget _buildActionButton({required IconData icon, required String label, required String route, InfoArguments? infoArgs}) {
     return ElevatedButton(
-      onPressed: () => Navigator.pushNamed(context, route, arguments: args),
+      onPressed: () => Navigator.pushNamed(context, route, arguments: infoArgs == null ? args : infoArgs),
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
