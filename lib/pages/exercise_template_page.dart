@@ -22,7 +22,7 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
   void initState() {
     _controller = YoutubePlayerController(
       initialVideoId: YoutubePlayer.convertUrlToId(
-          'https://www.youtube.com/watch?v=xJFiArjyRak')!, // widget.videoURL
+          widget.videoURL)!, // widget.videoURL
       flags: YoutubePlayerFlags(autoPlay: false, mute: false),
     );
     super.initState();
