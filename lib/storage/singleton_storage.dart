@@ -135,7 +135,8 @@ class SingletonStorage {
            Event event = new Event(
              eventName: element['EventName'],
              description: element['Description'],
-             date: DateTime.fromMillisecondsSinceEpoch(element['Date'])
+             date: DateTime.fromMillisecondsSinceEpoch(element['Date']),
+             location: element['Location']
            );
 
            events.add(event);

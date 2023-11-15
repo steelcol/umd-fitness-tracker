@@ -38,6 +38,7 @@ dependencies:
   firebase_ui_auth: ^1.9.1
   fake_cloud_firestore: ^2.4.3
   loading_indicator: ^3.1.1
+  youtube_player_flutter: ^8.1.2
 
 dev_dependencies:
   flutter_test:
