@@ -71,6 +71,7 @@ class StoreDateTime {
         print(storeCheck);
         eventStorage.storeCheck =
         getStoreCheck as bool;
+        print("iteration Done"); //debugging purposes
         break;
       }
       storeCheck = false;
