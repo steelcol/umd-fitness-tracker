@@ -2,7 +2,11 @@ import 'package:BetaFitness/controllers/workout_controller.dart';
 import 'package:BetaFitness/storage/workout_exercise_storage.dart';
 import 'package:BetaFitness/models/exercise_model.dart';
 import 'package:BetaFitness/models/saved_exercise_model.dart';
+import 'package:BetaFitness/arguments/info_arguments.dart';
 import 'package:flutter/material.dart';
+
+import '../arguments/search_arguments.dart';
+import '../utilities/routes.dart';
 
 // This page more than likely will need to be split up
 class CreateWorkoutPage extends StatefulWidget {
@@ -32,6 +36,7 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
 
   final TextEditingController _workoutNameField =
       TextEditingController(text: 'New Workout Name');
+
 
   @override
   void initState() {
@@ -189,22 +194,14 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
                 itemCount: createdWorkout.length + 1,
                 itemBuilder: (context, index) {
                   if (index < createdWorkout.length) {
-                    return _buildExerciseCard(createdWorkout[index],
-                        index); // Pass the exercise and index
+                    return _buildExerciseCard(createdWorkout[index], index);
                   } else {
-                    /// ADD EXERCISE BUTTON (subset of list) ///
-                    return ElevatedButton.icon(
-                      onPressed: _addExercisePopup,
-                      icon: Icon(Icons.add),
-                      label: Text(
-                        'Add Exercise',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                      ),
+                    // Actually return the correct button
+                    return _buildActionButton(
+                      icon: Icons.add,
+                      label: 'Add Exercise',
+                      route: workoutSearchPageRoute,
+                      information: widget.info,
                     );
                   }
                 },
@@ -304,4 +301,38 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
       ),
     );
   }
+
+  Widget _buildActionButton({required IconData icon, required String label, required String route, required WorkoutInformation information}) {
+    return ElevatedButton(
+        onPressed: () {
+          SearchArguments searchArgs = new SearchArguments(info: information);
+          Navigator.pushNamed(context, route, arguments: searchArgs);
+        },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),  child: Column(
+        mainAxisSize: MainAxisSize.min, // Allow the column to shrink
+    children: [
+      Container(
+        width: 40, // Adjust the icon size
+        height: 40,
+        child: Icon(icon, size: 24),
+      ),
+      SizedBox(height: 4), // Adjust the spacing
+    Text(
+    label,
+    style: TextStyle(fontSize: 12), // Adjust the label font size
+    ),
+    ],
+    ));
+
+
+
+
+}
+
+
 }

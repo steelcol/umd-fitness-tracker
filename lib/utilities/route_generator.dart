@@ -24,6 +24,8 @@ import 'package:BetaFitness/pages/log_run_page.dart';
 // Arguments
 import 'package:BetaFitness/arguments/workout_arguments.dart';
 
+import '../arguments/search_arguments.dart';
+
 // Class to handle our navigation, if you need to add arguments to your page
 // add a arguments class (look at workout_arguments.dart) and look at the
 // (case createWorkoutRoute:) to see how to pass arguments.
@@ -76,10 +78,9 @@ class RouteNavigator {
             storage: storageArgs.storage
         ));
       case workoutSearchPageRoute:
-        final storageArgs = settings.arguments as StorageArguments;
-        return MaterialPageRoute<RunWorkoutPage>(builder: (context) => WorkoutSearchPage(
-          storage: storageArgs.storage
-      ));
+        final searchArgs = settings.arguments as SearchArguments;
+        return MaterialPageRoute<WorkoutSearchPage>(builder: (context) => WorkoutSearchPage(
+            info: searchArgs.info));
       case listedEventsMapWorkoutsPageRoute:
         final eventArgs = settings.arguments as EventArguments;
         return MaterialPageRoute<ListedEventsMapWorkoutsPage>(builder: (context) => ListedEventsMapWorkoutsPage(
