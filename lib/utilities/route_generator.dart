@@ -1,10 +1,10 @@
 import 'package:BetaFitness/arguments/info_arguments.dart';
 import 'package:BetaFitness/arguments/storage_arguments.dart';
-import 'package:BetaFitness/models/save_data_model.dart';
 import 'package:BetaFitness/arguments/event_arguments.dart';
 import 'package:BetaFitness/pages/active_workout_page.dart';
 import 'package:BetaFitness/pages/run_workout_page.dart';
 import 'package:BetaFitness/pages/listed_events_map_workouts_page.dart';
+import 'package:BetaFitness/pages/search_workout_page.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
@@ -22,6 +22,8 @@ import 'package:BetaFitness/pages/log_run_page.dart';
 
 // Arguments
 import 'package:BetaFitness/arguments/workout_arguments.dart';
+
+import '../arguments/search_arguments.dart';
 
 // Class to handle our navigation, if you need to add arguments to your page
 // add a arguments class (look at workout_arguments.dart) and look at the
@@ -74,6 +76,10 @@ class RouteNavigator {
         return MaterialPageRoute<RunWorkoutPage>(builder: (context) => RunWorkoutPage(
             storage: storageArgs.storage
         ));
+      case workoutSearchPageRoute:
+        final searchArgs = settings.arguments as SearchArguments;
+        return MaterialPageRoute<WorkoutSearchPage>(builder: (context) => WorkoutSearchPage(
+            info: searchArgs.info));
       case listedEventsMapWorkoutsPageRoute:
         final eventArgs = settings.arguments as EventArguments;
         return MaterialPageRoute<ListedEventsMapWorkoutsPage>(builder: (context) => ListedEventsMapWorkoutsPage(

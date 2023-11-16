@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class ExerciseTemplatePage extends StatefulWidget {
-  ExerciseTemplatePage(
-      {Key? key,
-      required this.exerciseName,
-      required this.description,
-      required this.videoURL})
-      : super(key: key);
+  ExerciseTemplatePage({
+    Key? key,
+    required this.exerciseName,
+    required this.description,
+    required this.videoURL,
+  }) : super(key: key);
 
   final String exerciseName, description, videoURL;
 
@@ -22,7 +22,8 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
   void initState() {
     _controller = YoutubePlayerController(
       initialVideoId: YoutubePlayer.convertUrlToId(
-          widget.videoURL)!, // widget.videoURL
+        widget.videoURL,
+      )!,
       flags: YoutubePlayerFlags(autoPlay: false, mute: false),
     );
     super.initState();
@@ -40,49 +41,53 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
       appBar: AppBar(
         title: const Text('BetaFitness'),
       ),
-      body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          YoutubePlayer(
-              controller: _controller, showVideoProgressIndicator: true),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: Text(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            YoutubePlayer(
+              controller: _controller,
+              showVideoProgressIndicator: true,
+            ),
+            SizedBox(height: 16),
+            Text(
               widget.exerciseName,
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).primaryColor,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-          Text(widget.description,
+            SizedBox(height: 8),
+            Text(
+              widget.description,
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black87,
                 fontWeight: FontWeight.normal,
-              )
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width / 2,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // add funnctionality here
-                },
-                icon: Icon(Icons.add),
-                label: Text(
-                  'Add Exercise to Workout',
-                  style: TextStyle(fontSize: 14),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 15),
+              ),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () {
+                // add functionality here
+              },
+              icon: Icon(Icons.add),
+              label: Text(
+                'Add Exercise to Workout',
+                style: TextStyle(fontSize: 16),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }
