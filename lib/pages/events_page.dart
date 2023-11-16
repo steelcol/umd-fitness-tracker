@@ -1,6 +1,4 @@
 
-import 'dart:ffi';
-
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,10 +21,19 @@ class _EventsPageState extends State<EventsPage>{
   final String createText = "Enter";
   final String showText = "Event";
   DateTime selectedDate = DateTime.now();
-    //controllers
+  late double x = 0, y = 0;
+
+  //controllers
   final nameController = TextEditingController();
   final descController = TextEditingController();
   final dateController = TextEditingController();
+
+  void updateLocation(double latitude, double longitute) {
+    setState(() {
+      this.x = latitude;
+      this.y = longitute;
+    });
+  }
 
   //method creates event, adding to database
   void createEvent(){
@@ -34,7 +41,7 @@ class _EventsPageState extends State<EventsPage>{
     String name = nameController.text;
     String desc = descController.text;
     DateTime date = selectedDate;
-    GeoPoint loc = GeoPoint(0, 0); // Change this
+    GeoPoint loc = GeoPoint(x, y);
 
     // If you add events or add running workouts please make a controller to add the data correctly
     EventController controller = new EventController();
@@ -105,12 +112,14 @@ class _EventsPageState extends State<EventsPage>{
             onPressed: () => _selectDate(context),
             child: const Text('Select date'),
           ),
-          //enter button
+
+          Text("$x, $y"),
+
           ListTile(
             title: const Text('Interactive'),
             subtitle: const Text('Say where on the earth user has clicked.'),
             trailing: const Icon(Icons.chevron_right_sharp),
-            onTap: () => _push(const InteractiveMapPage()),
+            onTap: () => _push(InteractiveMapPage(updateLocation: updateLocation,))
           ),
 
           ElevatedButton(onPressed: createEvent, child: Text(createText), ),

@@ -9,7 +9,9 @@ import 'package:latlng/latlng.dart';
 import 'package:map/map.dart';
 
 class InteractiveMapPage extends StatefulWidget {
-  const InteractiveMapPage({Key? key}) : super(key: key);
+  InteractiveMapPage({Key? key, required this.updateLocation}) : super(key: key);
+
+  Function updateLocation;
 
   @override
   InteractiveMapPageState createState() => InteractiveMapPageState();
@@ -102,8 +104,14 @@ class InteractiveMapPageState extends State<InteractiveMapPage> {
                   Column(
                     children: [
                       Text(
-                        'You have clicked on (${location.longitude}, ${location.latitude}).'),
-                      ElevatedButton(onPressed: () => _getCoords(location.longitude, location.latitude), child: Text('enter'))
+                        'You have clicked on (${location.latitude}, ${location.longitude}).'),
+                      ElevatedButton(
+                          onPressed: () {
+                            _getCoords(location.latitude, location.longitude);
+                            widget.updateLocation(latitude, longitude);
+                          },
+                          child: Text('enter')
+                      ),
                     ],
                   ),
                 ),
@@ -153,6 +161,8 @@ class InteractiveMapPageState extends State<InteractiveMapPage> {
         tooltip: 'My Location',
         child: const Icon(Icons.my_location),
       ),
+
     );
   }
+
 }
