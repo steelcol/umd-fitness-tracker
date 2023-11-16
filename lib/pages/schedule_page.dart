@@ -1,11 +1,12 @@
+import 'package:BetaFitness/arguments/event_arguments.dart';
+import 'package:BetaFitness/storage/event_storage.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:BetaFitness/utilities/utils_for_schedule_page.dart';
-import 'package:BetaFitness/models/event_model.dart';
-import 'package:BetaFitness/pages/events_page.dart';
-import '../controllers/event_controller.dart';
 import 'package:BetaFitness/utilities/utils_for_schedule_page.dart' hide Event;
+import '../utilities/routes.dart';
+import 'package:BetaFitness/models/save_data_model.dart';
 
 
 class SchedulePage extends StatefulWidget {
@@ -16,13 +17,24 @@ class SchedulePage extends StatefulWidget {
   State<SchedulePage> createState() => _SchedulePageState();
 }
 
+
+
+
 class _SchedulePageState extends State<SchedulePage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  EventStorage eventStorage = new EventStorage();
+
+
+  get args => null;
 
   @override
   Widget build(BuildContext context) {
+    StoreDateTime test = new StoreDateTime(
+        storage: widget.storage,
+        eventStorage: eventStorage
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text('Your Calendar'),
@@ -40,16 +52,17 @@ class _SchedulePageState extends State<SchedulePage> {
           setState(() {
             _selectedDay = selectedDay;
             _focusedDay = focusedDay; // update `_focusedDay` here as well
-            print("test, next line should print list of events");
-            for(int i = 0; i < widget.storage.events.length; i++) { //loop thru list of events
-              if (_selectedDay!.day ==
-                  widget.storage.events[i].date.day && _selectedDay!.month == widget.storage.events[i].date.month && _selectedDay!.year == widget.storage.events[i].date.year) { //compare selectedDay to list
-                print(widget.storage.events[i].eventName);
-                print(widget.storage.events[i].description);
-                print(widget.storage.events[i].date);
-              }
+            //StoreDateTime test = new StoreDateTime(
+            //  storage: widget.storage,
+            //  eventStorage: eventStorage
+            //);
+            test.iterateEventItems(selectedDay);
+            print("iteration done");
+            if(test.checkSelectedDayIsNotNull() == true) {
+              final args = EventArguments(eventStorage: eventStorage);
+              Navigator.pushNamed(
+                  context, listedEventsMapWorkoutsPageRoute, arguments: args);
             }
-            widget.storage.updateEventData();
           });
         },
         onFormatChanged: (format) {
@@ -61,45 +74,20 @@ class _SchedulePageState extends State<SchedulePage> {
           }
         },
 
-        /*
-          Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
-  }
-   ElevatedButton(
-            onPressed: () => _selectDate(context), // calls the selectedDate method
-            child: const Text('Select date'),
-          ),
-
-          //when i select a day use the widget.storage.events to return the list of events,
-          //then use for loop to search for event.date(returns datetime )
-
-        */
         onPageChanged: (focusedDay) {
           // No need to call `setState()` here
           _focusedDay = focusedDay;
         },
-      ),
+
+        ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-  //          printEventDates();
-            setState(() {
-              //?
-            });
-          },
-          child: Icon(Icons.add),
-      backgroundColor: Colors.blueGrey,
+        onPressed: () {
+            final arguments = EventArguments(eventStorage: eventStorage);
+            Navigator.pushNamed(context, eventsPageRoute, arguments: arguments);
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blueGrey,
       ),
     );
   }
 }
-
-

@@ -1,13 +1,18 @@
 import 'package:BetaFitness/arguments/workout_arguments.dart';
+import 'package:BetaFitness/storage/workout_exercise_storage.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 //import 'package:BetaFitness/controllers/workout_controller.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutPage extends StatefulWidget {
-  const WorkoutPage({Key? key, required this.storage}) : super(key: key);
+  const WorkoutPage({Key? key, 
+  required this.storage,
+  required this.info
+  }) : super(key: key);
 
   final SingletonStorage storage;
+  final WorkoutInformation info;
 
   @override
   State<WorkoutPage> createState() => _WorkoutPageState();
@@ -95,7 +100,10 @@ class _WorkoutPageState extends State<WorkoutPage> {
           Navigator.pushNamed(
           context,
             createWorkoutRoute,
-            arguments: WorkoutArguments(updateList: updateList)
+            arguments: WorkoutArguments(
+                updateList: updateList,
+                info: widget.info
+            )
           );
         },
         backgroundColor: Theme.of(context).primaryColor,
