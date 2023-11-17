@@ -312,8 +312,9 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(40),
+          borderRadius: BorderRadius.circular(10),
         ),
+        padding: EdgeInsets.symmetric(vertical: 14),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min, // Allow the row to shrink

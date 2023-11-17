@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../arguments/exercise_template_arguments.dart';
 import '../models/exercise_model.dart';
 import '../storage/workout_exercise_storage.dart';
+import '../utilities/routes.dart';
 
 class WorkoutSearchPage extends StatefulWidget {
   final WorkoutInformation info;
@@ -67,6 +69,7 @@ class _WorkoutSearchPageState extends State<WorkoutSearchPage> {
               ),
               onChanged: (value) => _performSearch(), // Search on text change
             ),
+            SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
                 itemCount: _searchResults.length,
@@ -88,9 +91,34 @@ class _WorkoutSearchPageState extends State<WorkoutSearchPage> {
         color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: ListTile(
-        title: Text(exercise.name),
-        subtitle: Text(exercise.description),
+      child: InkWell(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            exerciseTemplatePageRoute,
+            arguments: ExerciseTemplateArguments(
+              exerciseName: exercise.name,
+              description: exercise.description,
+              videoURL: exercise.videoURL,
+            ),
+          );
+        },
+        child: Row(
+          children: [
+            Expanded(
+              child: ListTile(
+                title: Text(exercise.name),
+                subtitle: Text(exercise.description),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.add, color: Colors.white),
+              onPressed: () { // TODO: Add workout to previous page
+                print("Add ${exercise.name} to workout");
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
