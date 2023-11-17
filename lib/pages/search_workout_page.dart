@@ -1,14 +1,11 @@
-import 'package:BetaFitness/controllers/active_workout_controller.dart';
-import 'package:BetaFitness/storage/singleton_storage.dart';
-import 'package:BetaFitness/controllers/workout_controller.dart';
 import 'package:flutter/material.dart';
-
+import '../models/exercise_model.dart';
 import '../storage/workout_exercise_storage.dart';
 
 class WorkoutSearchPage extends StatefulWidget {
-  const WorkoutSearchPage({Key? key, required this.info}) : super(key: key);
-
   final WorkoutInformation info;
+
+  WorkoutSearchPage({Key? key, required this.info}) : super(key: key);
 
   @override
   State<WorkoutSearchPage> createState() => _WorkoutSearchPageState();
@@ -16,18 +13,37 @@ class WorkoutSearchPage extends StatefulWidget {
 
 class _WorkoutSearchPageState extends State<WorkoutSearchPage> {
   final TextEditingController _searchController = TextEditingController();
-  List<WorkoutInformation> _searchResults = [];
+  late List<Exercise> allWorkoutList;
+  List<Exercise> _searchResults = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    appendWorkoutLists();
+    _searchResults = List.from(allWorkoutList);
   }
 
+  void appendWorkoutLists() {
+    allWorkoutList = []
+      ..addAll(widget.info.upperBodyExercises)
+      ..addAll(widget.info.lowerBodyExercises)
+      ..addAll(widget.info.coreExercises);
+    // print("LIST APPENDED: ${allWorkoutList.length}");
+  }
 
   void _performSearch() {
-    String query = _searchController.text;
+    String query = _searchController.text.toLowerCase();
+    if (query.isEmpty) {
+      _searchResults = List.from(allWorkoutList); // CASE: display workouts if search is empty
+    } else {
+      _searchResults = allWorkoutList
+          .where((exercise) => exercise.name.toLowerCase().contains(query))
+          .toList();
+    }
 
+    // check
+    print("Search results: ${_searchResults.length}");
+    setState(() {});
   }
 
   @override
@@ -49,20 +65,32 @@ class _WorkoutSearchPageState extends State<WorkoutSearchPage> {
                   onPressed: _performSearch,
                 ),
               ),
+              onChanged: (value) => _performSearch(), // Search on text change
             ),
             Expanded(
               child: ListView.builder(
                 itemCount: _searchResults.length,
                 itemBuilder: (context, index) {
-                  final workout = _searchResults[index];
-                  return ListTile(
-                    title: Text('test')
-                  );
+                  return _buildExerciseCard(_searchResults[index]);
                 },
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildExerciseCard(Exercise exercise) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        title: Text(exercise.name),
+        subtitle: Text(exercise.description),
       ),
     );
   }
