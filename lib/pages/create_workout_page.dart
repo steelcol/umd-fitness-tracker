@@ -37,6 +37,12 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
   final TextEditingController _workoutNameField =
       TextEditingController(text: 'New Workout Name');
 
+  void updateList(Exercise exercise) {
+    setState(() {
+            
+    });
+  }
+
 
   @override
   void initState() {
@@ -46,88 +52,6 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
     coreExercises = widget.info.coreExercises;
     // TODO: implement initState
     super.initState();
-  }
-
-  /// POP-UP ///
-  void _addExercisePopup() {
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    String exerciseName = '';
-    int setCount = 0;
-    int repCount = 0;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('New Exercise'),
-          content: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              // overflow
-              child: Column(
-                mainAxisSize: MainAxisSize.min, // overflow
-                children: <Widget>[
-                  /// POP-UP TEXT FIELDS (3) ///
-                  TextFormField(
-                    decoration: InputDecoration(hintText: "Exercise Name"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Exercise name required';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => exerciseName = value!,
-                  ),
-
-                  TextFormField(
-                    decoration: InputDecoration(hintText: "Set Count"),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Set count required';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => setCount = int.parse(value!),
-                  ),
-
-                  TextFormField(
-                    decoration: InputDecoration(hintText: "Rep Count"),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Rep count required';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => repCount = int.parse(value!),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            /// POP-UP ADD BUTTON ///
-            ElevatedButton(
-              child: Text('Add Exercise'),
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  setState(() {
-                    createdWorkout.add(SavedExercise(
-                      name: exerciseName,
-                      setCount: setCount,
-                      repCount: repCount,
-                    ));
-                  });
-                  Navigator.of(context).pop(); // Close pop-up
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   /// BUILD ///
