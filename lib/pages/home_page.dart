@@ -8,6 +8,9 @@ import 'package:BetaFitness/utilities/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
+import '../models/save_data_model.dart';
+import '../storage/event_storage.dart';
+
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
 
@@ -19,8 +22,12 @@ class _HomePageState extends State<HomePage> {
   late SingletonStorage storage;
   late WorkoutInformation info;
   bool _loading = true;
+  late bool _todayHasEvent;
   late StorageArguments args;
   late InfoArguments infoArgs;
+  //DateTime _focusedDay = DateTime.now();
+  //DateTime? _selectedDay;
+  EventStorage eventStorage = new EventStorage();
 
   void initializeSingletonStorage() async {
     storage = await SingletonStorage.create();
@@ -28,6 +35,7 @@ class _HomePageState extends State<HomePage> {
     args = StorageArguments(storage: storage);
     infoArgs = InfoArguments(storage: storage, info: info);
     _loading = false;
+    _todayHasEvent = checkForEventToday();
 
     if (!mounted) return;
     setState(() {});
@@ -41,14 +49,33 @@ class _HomePageState extends State<HomePage> {
     return randTip;
   }
 
+  bool checkForEventToday() {
+    StoreDateTime home = new StoreDateTime(
+        storage: storage,
+        eventStorage: eventStorage
+    );
+    home.iterateEventItems(DateTime.now());
+    if (home.getStoreCheck == true) {
+      print("returned true"); // debuggin
+      return true;
+    }
+    else  {
+      print("returned false"); // debuggin
+      return false;
+    }
+} //check if there is an event for today
+
+
   @override
   void initState() {
     initializeSingletonStorage();
+    //checkForEventToday(); //run func to check if theres an event on today
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("BetaFitness"),
@@ -81,7 +108,7 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
+                child: _todayHasEvent ? Column(
                   children: [
                     Text(
                       "Today's Activity",
@@ -92,6 +119,22 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: 16),
                     // Add content related to today's activity here
+                    Text("Events for today: " + eventStorage.storedEventName),
+                    Text('Event Description: ' + eventStorage.storedEventDescription),
+                  ],
+                )
+                : Column(
+                  children: [
+                    Text(
+                      "Today's Activity",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                        "You have no events for today"
+                    ),
                   ],
                 ),
               ),

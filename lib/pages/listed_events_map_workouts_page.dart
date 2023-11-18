@@ -98,21 +98,3 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
     );
   }
 }
-
-
-
-
-/*
-class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.eventStorage.storedEventName),
-      )
-    );
-    //
-    throw UnimplementedError();
-  }
-}
- */

@@ -1,4 +1,5 @@
 import 'package:BetaFitness/arguments/event_arguments.dart';
+import 'package:BetaFitness/arguments/storage_arguments.dart';
 import 'package:BetaFitness/storage/event_storage.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,7 @@ class _SchedulePageState extends State<SchedulePage> {
         eventStorage: eventStorage
     );
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: AppBar(
         title: Text('Your Calendar'),
       ),
@@ -58,7 +60,7 @@ class _SchedulePageState extends State<SchedulePage> {
             //);
             test.iterateEventItems(selectedDay);
             print("iteration done");
-            widget.storage.updateEventData();
+            //widget.storage.updateEventData();
             if(test.checkSelectedDayIsNotNull() == true) {
               final args = EventArguments(eventStorage: eventStorage);
               Navigator.pushNamed(
@@ -81,12 +83,14 @@ class _SchedulePageState extends State<SchedulePage> {
         },
 
         ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-            final arguments = EventArguments(eventStorage: eventStorage);
-            Navigator.pushNamed(context, eventsPageRoute, arguments: arguments);
+          final args = StorageArguments(storage: widget.storage);
+          Navigator.pushNamed(context, eventsPageRoute, arguments: StorageArguments(storage: widget.storage));
         },
-        child: Icon(Icons.add),
+        icon: Icon(Icons.add),
+
+        label: Text('Add Event'),
         backgroundColor: Colors.blueGrey,
       ),
     );
