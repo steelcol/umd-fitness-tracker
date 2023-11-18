@@ -54,7 +54,7 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
             Text(
               widget.exerciseName,
               style: TextStyle(
-                color: Theme.of(context).primaryColor,
+                color: Colors.white,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
@@ -63,7 +63,7 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
             Text(
               widget.description,
               style: TextStyle(
-                color: Colors.black87,
+                color: Colors.white,
                 fontWeight: FontWeight.normal,
               ),
             ),

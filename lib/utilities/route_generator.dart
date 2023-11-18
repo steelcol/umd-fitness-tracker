@@ -19,10 +19,12 @@ import 'package:BetaFitness/pages/create_workout_page.dart';
 import 'package:BetaFitness/pages/events_page.dart';
 import 'package:BetaFitness/pages/schedule_page.dart';
 import 'package:BetaFitness/pages/log_run_page.dart';
+import 'package:BetaFitness/pages/exercise_template_page.dart';
 
 // Arguments
 import 'package:BetaFitness/arguments/workout_arguments.dart';
 
+import '../arguments/exercise_template_arguments.dart';
 import '../arguments/search_arguments.dart';
 
 // Class to handle our navigation, if you need to add arguments to your page
@@ -84,6 +86,13 @@ class RouteNavigator {
         final eventArgs = settings.arguments as EventArguments;
         return MaterialPageRoute<ListedEventsMapWorkoutsPage>(builder: (context) => ListedEventsMapWorkoutsPage(
             eventStorage: eventArgs.eventStorage
+        ));
+      case exerciseTemplatePageRoute:
+        final args = settings.arguments as ExerciseTemplateArguments;
+        return MaterialPageRoute<ExerciseTemplatePage>(builder: (context) => ExerciseTemplatePage(
+          exerciseName: args.exerciseName,
+          description: args.description,
+          videoURL: args.videoURL,
         ));
 
         // User sign in and registration
