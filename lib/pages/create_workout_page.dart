@@ -302,37 +302,31 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
     );
   }
 
-  Widget _buildActionButton({required IconData icon, required String label, required String route, required WorkoutInformation information}) {
+  Widget _buildActionButton({required IconData icon, required String label, required String route, required WorkoutInformation information
+  }) {
     return ElevatedButton(
-        onPressed: () {
-          SearchArguments searchArgs = new SearchArguments(info: information);
-          Navigator.pushNamed(context, route, arguments: searchArgs);
-        },
+      onPressed: () {
+        SearchArguments searchArgs = new SearchArguments(info: information);
+        Navigator.pushNamed(context, route, arguments: searchArgs);
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-      ),  child: Column(
-        mainAxisSize: MainAxisSize.min, // Allow the column to shrink
-    children: [
-      Container(
-        width: 40, // Adjust the icon size
-        height: 40,
-        child: Icon(icon, size: 24),
+        padding: EdgeInsets.symmetric(vertical: 14),
       ),
-      SizedBox(height: 4), // Adjust the spacing
-    Text(
-    label,
-    style: TextStyle(fontSize: 12), // Adjust the label font size
-    ),
-    ],
-    ));
-
-
-
-
+      child: Row(
+        mainAxisSize: MainAxisSize.min, // Allow the row to shrink
+        children: [
+          Icon(icon, size: 24),
+          SizedBox(width: 8),
+          Text(label, style: TextStyle(fontSize: 16)),
+        ],
+      ),
+    );
+  }
 }
 
 
-}
+
