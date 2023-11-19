@@ -90,7 +90,7 @@ class RouteNavigator {
       case listedEventsMapWorkoutsPageRoute:
         final eventArgs = settings.arguments as EventArguments;
         return MaterialPageRoute<ListedEventsMapWorkoutsPage>(builder: (context) => ListedEventsMapWorkoutsPage(
-            eventStorage: eventArgs.eventStorage
+            storeDateTime: eventArgs.storeDateTime
         ));
       case exerciseTemplatePageRoute:
         final args = settings.arguments as ExerciseTemplateArguments;

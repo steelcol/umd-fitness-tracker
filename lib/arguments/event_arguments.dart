@@ -1,7 +1,7 @@
-import 'package:BetaFitness/storage/event_storage.dart';
+import 'package:BetaFitness/models/save_data_model.dart';
 
 class EventArguments {
-  EventStorage eventStorage;
+  final StoreDateTime storeDateTime;
 
-  EventArguments({required this.eventStorage});
+  EventArguments({required this.storeDateTime});
 }

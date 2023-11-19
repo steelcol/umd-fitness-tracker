@@ -4,5 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ActiveWorkoutController {
+ final dbRef = FirebaseFirestore.instance.collection('Users');
+ final userId = FirebaseAuth.instance.currentUser!.uid;
+
+ // Public functions
 
 }
