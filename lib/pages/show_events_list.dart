@@ -28,8 +28,10 @@ class _ShowEventsListState extends State<ShowEventsList> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: [
+          children: <Widget>[
+            Text('test'),
             ListView.builder(
+
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: widget.events.length,
