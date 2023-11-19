@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:BetaFitness/storage/event_storage.dart';
-
+import 'package:BetaFitness/storage/singleton_storage.dart';
 
 class ListedEventsMapWorkoutsPage extends StatefulWidget {
-  const ListedEventsMapWorkoutsPage({Key? key, required this.eventStorage}) : super(key: key);
+  const ListedEventsMapWorkoutsPage({Key? key, required this.eventStorage, required this.storage}) : super(key: key);
 
   final EventStorage eventStorage;
+  final SingletonStorage storage;
 
   State<ListedEventsMapWorkoutsPage> createState() => _ListedEventsMapWorkoutsPageState();
 }
@@ -40,7 +41,7 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
               Text('Event: ' + widget.eventStorage.storedEventName),
               Text('Description: ' + widget.eventStorage.storedEventDescription),
               Text('Date: ${widget.eventStorage.storedDate.toString()}'),
-              Text('Location: ${widget.eventStorage.}'),
+              Text('Location: ${widget.storage.events[1].location}'),
               // Add more text boxes as needed
             ],
           ),
