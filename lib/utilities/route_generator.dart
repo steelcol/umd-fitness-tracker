@@ -25,6 +25,7 @@ import 'package:BetaFitness/pages/workout_view_page.dart';
 // Arguments
 import 'package:BetaFitness/arguments/workout_arguments.dart';
 import 'package:BetaFitness/arguments/workout_view_arguments.dart';
+import 'package:BetaFitness/arguments/run_workout_arguments.dart';
 
 import '../arguments/exercise_template_arguments.dart';
 import '../arguments/search_arguments.dart';
@@ -71,7 +72,7 @@ class RouteNavigator {
           storage: storageArgs.storage
         ));
       case logRunPageRoute:
-        final args = settings.arguments as WorkoutArguments;
+        final args = settings.arguments as RunWorkoutArguments;
         return MaterialPageRoute<LogRunPage>(builder: (context) => LogRunPage(
           updateList: args.updateList
         ));
