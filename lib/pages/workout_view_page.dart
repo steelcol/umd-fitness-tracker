@@ -37,8 +37,10 @@ class _WorkoutViewPageState extends State<WorkoutViewPage> {
               ), 
             ), 
             Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Expanded(
+              padding: EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 10,
+              ),
                 child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: widget.workout.exercises.length,
@@ -50,7 +52,6 @@ class _WorkoutViewPageState extends State<WorkoutViewPage> {
                 },
               ),
             ),
-          )
           ]
         )
       ),
