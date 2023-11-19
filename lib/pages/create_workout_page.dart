@@ -2,7 +2,6 @@ import 'package:BetaFitness/controllers/workout_controller.dart';
 import 'package:BetaFitness/storage/workout_exercise_storage.dart';
 import 'package:BetaFitness/models/exercise_model.dart';
 import 'package:BetaFitness/models/saved_exercise_model.dart';
-import 'package:BetaFitness/arguments/info_arguments.dart';
 import 'package:flutter/material.dart';
 
 import '../arguments/search_arguments.dart';
@@ -10,10 +9,15 @@ import '../utilities/routes.dart';
 
 // This page more than likely will need to be split up
 class CreateWorkoutPage extends StatefulWidget {
-  CreateWorkoutPage({Key? key, required this.updateList, required this.info})
+  CreateWorkoutPage({Key? key, 
+    required this.updateList, 
+    required this.info,
+    required this.addWorkout
+    })
       : super(key: key);
 
   final Function updateList;
+  final Function addWorkout;
   final WorkoutInformation info;
 
   @override
@@ -37,6 +41,14 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
   final TextEditingController _workoutNameField =
       TextEditingController(text: 'New Workout Name');
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void updateList(SavedExercise exercise) {
+    setState(() {
+      createdWorkout.add(exercise);   
+    });
+  }
+
 
   @override
   void initState() {
@@ -48,88 +60,6 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
     super.initState();
   }
 
-  /// POP-UP ///
-  void _addExercisePopup() {
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    String exerciseName = '';
-    int setCount = 0;
-    int repCount = 0;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('New Exercise'),
-          content: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              // overflow
-              child: Column(
-                mainAxisSize: MainAxisSize.min, // overflow
-                children: <Widget>[
-                  /// POP-UP TEXT FIELDS (3) ///
-                  TextFormField(
-                    decoration: InputDecoration(hintText: "Exercise Name"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Exercise name required';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => exerciseName = value!,
-                  ),
-
-                  TextFormField(
-                    decoration: InputDecoration(hintText: "Set Count"),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Set count required';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => setCount = int.parse(value!),
-                  ),
-
-                  TextFormField(
-                    decoration: InputDecoration(hintText: "Rep Count"),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Rep count required';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => repCount = int.parse(value!),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            /// POP-UP ADD BUTTON ///
-            ElevatedButton(
-              child: Text('Add Exercise'),
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  setState(() {
-                    createdWorkout.add(SavedExercise(
-                      name: exerciseName,
-                      setCount: setCount,
-                      repCount: repCount,
-                    ));
-                  });
-                  Navigator.of(context).pop(); // Close pop-up
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   /// BUILD ///
   @override
   Widget build(BuildContext context) {
@@ -137,84 +67,86 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
       appBar: AppBar(
         title: const Text("BetaFitness"),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Column(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Theme.of(context).primaryColor,
-                    Theme.of(context).primaryColor,
-                    Theme.of(context).primaryColor,
-                  ],
-                  stops: [0.0, 0.5, .8],
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: TextField(
-                controller: _workoutNameField,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
-                decoration: InputDecoration(
-                  labelText: null,
-                  labelStyle: TextStyle(
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            children: <Widget>[
+              Container(
+                child: TextFormField(
+                  controller: _workoutNameField,
+                  keyboardType: TextInputType.name,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Workout name required';
+                    }
+                    return null;
+                  },
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
                     color: Colors.white,
+                    fontSize: 26,
                     fontWeight: FontWeight.bold,
                   ),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  hintText: 'Enter Workout Name',
-                  hintStyle: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16,
+                  decoration: InputDecoration(
+                    labelText: null,
+                    labelStyle: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    hintText: 'Enter Workout Name',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            /// TITLE FIELD & EXERCISE CARD SPACING ///
-            SizedBox(height: 14),
+              /// TITLE FIELD & EXERCISE CARD SPACING ///
+              SizedBox(height: 14),
 
-            /// DYNAMIC EXERCISE LIST ///
-            Expanded(
-              child: ListView.builder(
-                itemCount: createdWorkout.length + 1,
-                itemBuilder: (context, index) {
-                  if (index < createdWorkout.length) {
-                    return _buildExerciseCard(createdWorkout[index], index);
-                  } else {
-                    // Actually return the correct button
-                    return _buildActionButton(
-                      icon: Icons.add,
-                      label: 'Add Exercise',
-                      route: workoutSearchPageRoute,
-                      information: widget.info,
-                    );
-                  }
-                },
+              /// DYNAMIC EXERCISE LIST ///
+              Expanded(
+                child: ListView.builder(
+                  itemCount: createdWorkout.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index < createdWorkout.length) {
+                      return _buildExerciseCard(createdWorkout[index], index);
+                    } else {
+                      // Actually return the correct button
+                      return _buildActionButton(
+                        icon: Icons.add,
+                        label: 'Add Exercise',
+                        route: workoutSearchPageRoute,
+                        information: widget.info,
+                      );
+                    }
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(8.0),
         child: ElevatedButton(
           onPressed: () {
-            // TODO: Add & sync workout with database
+            if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+              widget.addWorkout(createdWorkout, _workoutNameField.text);
+              widget.updateList();
+              Navigator.pop(context);
+            }
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.teal,
@@ -306,7 +238,10 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
   }) {
     return ElevatedButton(
       onPressed: () {
-        SearchArguments searchArgs = new SearchArguments(info: information);
+        SearchArguments searchArgs = new SearchArguments(
+          info: information,
+          updateList: updateList,
+        );
         Navigator.pushNamed(context, route, arguments: searchArgs);
       },
       style: ElevatedButton.styleFrom(

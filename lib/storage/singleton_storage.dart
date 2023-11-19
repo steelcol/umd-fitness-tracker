@@ -1,6 +1,7 @@
 import 'package:BetaFitness/models/running_workout_model.dart';
 import 'package:BetaFitness/models/weight_workout_model.dart';
 import 'package:BetaFitness/models/event_model.dart';
+import 'package:BetaFitness/models/saved_exercise_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:BetaFitness/models/fitness_tip_model.dart';
@@ -100,9 +101,21 @@ class SingletonStorage {
         .get().then((value) {
           List.from(value.data()!['SavedWorkouts']).forEach((element) {
             if (element['Type'] == 'Weight') {
+              // Make list to add to exercises
+              List<SavedExercise> exercises = [];
+              // Need to declare here can't name in loop
+              List<dynamic> elementExercises = element['Exercises'];
+              elementExercises.forEach( (element) {
+                SavedExercise exercise = new SavedExercise(
+                  name: element['ExerciseName'],
+                  setCount: element['SetCount'],
+                  repCount: element['RepCount']
+                );
+                exercises.add(exercise);
+              });
               WeightWorkout workout = new WeightWorkout(
                 workoutName: element['WorkoutName'],
-                exercises: element['Exercises']
+                exercises: exercises
               );
               weightWorkouts.add(workout);
             }

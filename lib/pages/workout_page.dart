@@ -1,8 +1,10 @@
 import 'package:BetaFitness/arguments/workout_arguments.dart';
+import 'package:BetaFitness/arguments/workout_view_arguments.dart';
 import 'package:BetaFitness/storage/workout_exercise_storage.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
-//import 'package:BetaFitness/controllers/workout_controller.dart';
+import 'package:BetaFitness/controllers/workout_controller.dart';
 import 'package:BetaFitness/utilities/routes.dart';
+import 'package:BetaFitness/models/saved_exercise_model.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutPage extends StatefulWidget {
@@ -20,7 +22,10 @@ class WorkoutPage extends StatefulWidget {
 
 class _WorkoutPageState extends State<WorkoutPage> {
 
-  //final WorkoutController _workoutController = new WorkoutController();
+  final WorkoutController _workoutController = new WorkoutController();
+  void addWorkout(List<SavedExercise> createdWorkout, String workoutName) async { 
+    await _workoutController.addWeightWorkout(createdWorkout, workoutName);   
+  }
 
   void updateList() async {
     // Updates the page when the list of workouts is changed
@@ -61,31 +66,42 @@ class _WorkoutPageState extends State<WorkoutPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(widget.storage.weightWorkouts[index].workoutName)
-                                  ],
-                                ),
-                              ],
-                             )
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                //_workoutController.deleteRunningWorkout();
-                                updateList();
-                              },
-                              icon: Icon(Icons.delete)
-                            ),
-                          ]
-                        ),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              savedWorkoutViewPageRoute,
+                              arguments: WorkoutViewArguments(
+                                workout: widget.storage.weightWorkouts[index]        
+                              ),
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(widget.storage.weightWorkouts[index].workoutName)
+                                    ],
+                                  ),
+                                ],
+                               )
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  _workoutController.deleteWeightWorkout(widget.storage.weightWorkouts[index]);
+                                  updateList();
+                                },
+                                icon: Icon(Icons.delete)
+                              ),
+                            ]
+                          ),
+                        )
                       ),
                     ),
                   );
@@ -102,6 +118,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
             createWorkoutRoute,
             arguments: WorkoutArguments(
                 updateList: updateList,
+                addWorkout: addWorkout,
                 info: widget.info
             )
           );

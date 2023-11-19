@@ -1,5 +1,6 @@
 import 'package:BetaFitness/models/saved_exercise_model.dart';
 import 'package:BetaFitness/models/running_workout_model.dart';
+import 'package:BetaFitness/models/weight_workout_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -67,4 +68,19 @@ class WorkoutController {
       print('List is empty');
     }
   }
+
+  Future<void> deleteWeightWorkout(WeightWorkout workout) async {
+    final docRef = dbRef
+        .doc(userId)
+        .collection('Workouts')
+        .doc(userId);
+
+    docRef.update({
+      'SavedWorkouts': FieldValue.arrayRemove([{
+        'Exercises': workout.exercises,
+        'WorkoutName': workout.workoutName,
+        'Type': 'Weight'
+      }])});
+  }
+
 }
