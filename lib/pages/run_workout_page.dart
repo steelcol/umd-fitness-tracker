@@ -35,6 +35,7 @@ class _RunWorkoutPageState extends State<RunWorkoutPage> {
         title: const Text('BetaFitness'),
       ),
       body: SingleChildScrollView(
+        physics: ScrollPhysics(),
         child: Column(
           children: [
             Padding(

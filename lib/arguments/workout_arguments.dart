@@ -5,10 +5,12 @@ import 'package:BetaFitness/storage/workout_exercise_storage.dart';
 
 class WorkoutArguments {
   final Function updateList;
+  final Function addWorkout;
   final WorkoutInformation info;
 
   const WorkoutArguments({
     required this.updateList,
+    required this.addWorkout,
     required this.info
   });
 }

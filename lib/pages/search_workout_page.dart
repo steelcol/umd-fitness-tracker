@@ -5,9 +5,13 @@ import '../storage/workout_exercise_storage.dart';
 import '../utilities/routes.dart';
 
 class WorkoutSearchPage extends StatefulWidget {
-  final WorkoutInformation info;
+  WorkoutSearchPage({Key? key, 
+  required this.info,
+  required this.updateList
+  }) : super(key: key);
 
-  WorkoutSearchPage({Key? key, required this.info}) : super(key: key);
+  final WorkoutInformation info;
+  final Function updateList;
 
   @override
   State<WorkoutSearchPage> createState() => _WorkoutSearchPageState();
@@ -100,6 +104,7 @@ class _WorkoutSearchPageState extends State<WorkoutSearchPage> {
               exerciseName: exercise.name,
               description: exercise.description,
               videoURL: exercise.videoURL,
+              updateList: widget.updateList
             ),
           );
         },
@@ -113,7 +118,7 @@ class _WorkoutSearchPageState extends State<WorkoutSearchPage> {
             ),
             IconButton(
               icon: Icon(Icons.add, color: Colors.white),
-              onPressed: () { // TODO: Add workout to previous page
+              onPressed: () { // TODO: Add workout to previous page 
                 print("Add ${exercise.name} to workout");
               },
             ),
