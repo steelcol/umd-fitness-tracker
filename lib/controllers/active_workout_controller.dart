@@ -8,5 +8,5 @@ class ActiveWorkoutController {
  final userId = FirebaseAuth.instance.currentUser!.uid;
 
  // Public functions
-    
+
 }
