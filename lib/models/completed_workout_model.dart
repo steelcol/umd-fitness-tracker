@@ -1,8 +1,8 @@
-class ActiveWorkoutModel {
+class CompletedWorkout {
   final String uuid;
   Map<String, dynamic> workouts;
 
-  ActiveWorkoutModel({
+  CompletedWorkout({
     required this.uuid,
     required this.workouts
   });

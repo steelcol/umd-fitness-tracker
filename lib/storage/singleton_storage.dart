@@ -2,6 +2,7 @@ import 'package:BetaFitness/models/running_workout_model.dart';
 import 'package:BetaFitness/models/weight_workout_model.dart';
 import 'package:BetaFitness/models/event_model.dart';
 import 'package:BetaFitness/models/saved_exercise_model.dart';
+import 'package:BetaFitness/models/completed_workout_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:BetaFitness/models/fitness_tip_model.dart';
@@ -11,6 +12,7 @@ class SingletonStorage {
   // Getters do not have to be made they exists by default
   late List<RunningWorkout> runningWorkouts;
   late List<WeightWorkout> weightWorkouts;
+  late List<CompletedWorkout> completedWorkout; 
   late List<Event> events;
   late List<FitnessTip> fitnessTips;
 
