@@ -1,9 +1,11 @@
 class CompletedWorkout {
   final String uuid;
-  Map<String, dynamic> workouts;
+  final DateTime date;
+  final Map<String, List<int>> exerciseWeights;
 
   CompletedWorkout({
     required this.uuid,
-    required this.workouts
+    required this.date,
+    required this.exerciseWeights
   });
 }
