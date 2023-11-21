@@ -19,10 +19,15 @@ import 'package:BetaFitness/pages/create_workout_page.dart';
 import 'package:BetaFitness/pages/events_page.dart';
 import 'package:BetaFitness/pages/schedule_page.dart';
 import 'package:BetaFitness/pages/log_run_page.dart';
+import 'package:BetaFitness/pages/exercise_template_page.dart';
+import 'package:BetaFitness/pages/workout_view_page.dart';
 
 // Arguments
 import 'package:BetaFitness/arguments/workout_arguments.dart';
+import 'package:BetaFitness/arguments/workout_view_arguments.dart';
+import 'package:BetaFitness/arguments/run_workout_arguments.dart';
 
+import '../arguments/exercise_template_arguments.dart';
 import '../arguments/search_arguments.dart';
 
 // Class to handle our navigation, if you need to add arguments to your page
@@ -43,6 +48,7 @@ class RouteNavigator {
         final args = settings.arguments as WorkoutArguments;
         return MaterialPageRoute<CreateWorkoutPage>(builder: (context) => CreateWorkoutPage(
             updateList: args.updateList,
+            addWorkout: args.addWorkout,
             info: args.info
         ));
       case statsPageRoute:
@@ -62,12 +68,11 @@ class RouteNavigator {
         ));
       case schedulePageRoute:
         final storageArgs = settings.arguments as StorageArguments;
-        final storageDateTimeArgs = settings.arguments as StorageArguments;
         return MaterialPageRoute<SchedulePage>(builder: (context) => SchedulePage(
           storage: storageArgs.storage
         ));
       case logRunPageRoute:
-        final args = settings.arguments as WorkoutArguments;
+        final args = settings.arguments as RunWorkoutArguments;
         return MaterialPageRoute<LogRunPage>(builder: (context) => LogRunPage(
           updateList: args.updateList
         ));
@@ -79,11 +84,27 @@ class RouteNavigator {
       case workoutSearchPageRoute:
         final searchArgs = settings.arguments as SearchArguments;
         return MaterialPageRoute<WorkoutSearchPage>(builder: (context) => WorkoutSearchPage(
-            info: searchArgs.info));
+            info: searchArgs.info,
+            updateList: searchArgs.updateList,
+        ));
       case listedEventsMapWorkoutsPageRoute:
         final eventArgs = settings.arguments as EventArguments;
         return MaterialPageRoute<ListedEventsMapWorkoutsPage>(builder: (context) => ListedEventsMapWorkoutsPage(
-            eventStorage: eventArgs.eventStorage
+            storeDateTime: eventArgs.storeDateTime
+        ));
+      case exerciseTemplatePageRoute:
+        final args = settings.arguments as ExerciseTemplateArguments;
+        return MaterialPageRoute<ExerciseTemplatePage>(builder: (context) => ExerciseTemplatePage(
+          exerciseName: args.exerciseName,
+          description: args.description,
+          videoURL: args.videoURL,
+          updateList: args.updateList
+        ));
+      case savedWorkoutViewPageRoute: 
+        final args = settings.arguments as WorkoutViewArguments;
+        return MaterialPageRoute<WorkoutViewPage>(builder: (context) =>
+          WorkoutViewPage(
+           workout: args.workout, 
         ));
 
         // User sign in and registration
