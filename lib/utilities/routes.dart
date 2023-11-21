@@ -14,3 +14,4 @@ const String runWorkoutPageRoute = '/run';
 const String exerciseTemplatePageRoute = '/exerciseTemplate';
 const String workoutSearchPageRoute = '/search';
 const String savedWorkoutViewPageRoute = '/saved-workout-view';
+const String directionsTemplatePageRoute = '/directionsTemplate';

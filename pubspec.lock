@@ -33,6 +33,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  baseflow_plugin_template:
+    dependency: "direct main"
+    description:
+      name: baseflow_plugin_template
+      sha256: f3483837bf8737db013e94af2277ffb9b26020c54e1dd2303c0925e1eceb9694
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.2"
   boolean_selector:
     dependency: transitive
     description:
