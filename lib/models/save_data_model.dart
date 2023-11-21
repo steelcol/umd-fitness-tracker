@@ -1,6 +1,6 @@
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:BetaFitness/storage/event_storage.dart';
-import 'package:flutter/widgets.dart';
+import 'package:BetaFitness/storage/event_list_storage.dart';
 
 
 
@@ -12,7 +12,6 @@ class StoreDateTime {
 
   final SingletonStorage storage;
   final EventStorage eventStorage;
-
   StoreDateTime({required this.storage, required this.eventStorage});
 
   set setStoreCheckBool(bool check) {
@@ -47,7 +46,8 @@ class StoreDateTime {
     return storeDate;
   }
 
-  void iterateEventItems(selectedDay) {
+  void iterateEventItems(selectedDay, EventStorage eventListStorageInstance) {
+    storeCheck = false;
     for (int i = 0; i < storage.events
         .length; i++) { //loop thru list of events, check if there are events on selected day
       if (selectedDay!.day ==
@@ -56,9 +56,16 @@ class StoreDateTime {
           selectedDay!.year ==
               storage.events[i].date.year) { //compare selectedDay to list
 
+        EventListStorage newEventListStorageInstance = new EventListStorage();
+
         storeEventName = storage.events[i].eventName;
         storeDescription = storage.events[i].description;
         storeDate = storage.events[i].date;
+
+        newEventListStorageInstance.storedEventListName = storage.events[i].eventName;
+        newEventListStorageInstance.storedEventListDate = storage.events[i].date;
+        newEventListStorageInstance.storedEventListDescription = storage.events[i].description;
+
 
         eventStorage.storedEventName =
         getStoreEventName as String; // put events name into storage to be displayed in the ListedEventsMapWorkoutsPage
@@ -67,15 +74,19 @@ class StoreDateTime {
         eventStorage.storedDate =
         getStoreDate as DateTime; // put events DateTime into storage to be displayed in the ListedEventsMapWorkoutsPage
 
+        eventStorage.listOfEvents.insert(0, newEventListStorageInstance); //put instance of EventListStorage class into listOfEvents for listview builder
+
+
         storeCheck = true;
         print(storeCheck);
         eventStorage.storeCheck =
         getStoreCheck as bool;
         print("iteration Done"); //debugging purposes
-        break;
       }
-      storeCheck = false;
-      print(storeCheck);
+    }
+    print("events in listOfEvents"); //debugging purpose
+    for(int i = 0; i < eventStorage.listOfEvents.length; i++) {
+      print(eventStorage.listOfEvents);
     }
   }
 
