@@ -1,8 +1,10 @@
 
 import 'package:BetaFitness/storage/singleton_storage.dart';
+import 'package:BetaFitness/utilities/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../arguments/storage_arguments.dart';
 import '../controllers/event_controller.dart';
 import '../models/event_model.dart';
 import 'map_page.dart';
@@ -123,6 +125,12 @@ class _EventsPageState extends State<EventsPage>{
           ),
 
           ElevatedButton(onPressed: createEvent, child: Text(createText), ),
+          ElevatedButton(
+            child: const Text('Open route'),
+            onPressed: () {
+              Navigator.pushNamed(context, directionsTemplatePageRoute, arguments: StorageArguments(storage: widget.storage));
+            }
+          ),
         ]
         ),
       ),

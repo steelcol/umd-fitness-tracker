@@ -1,5 +1,6 @@
 import 'package:BetaFitness/arguments/event_arguments.dart';
 import 'package:BetaFitness/arguments/storage_arguments.dart';
+import 'package:BetaFitness/storage/event_list_storage.dart';
 import 'package:BetaFitness/storage/event_storage.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,7 @@ class _SchedulePageState extends State<SchedulePage> {
         storage: widget.storage,
         eventStorage: eventStorage
     );
+    EventStorage schedulePageEventListStorage = new EventStorage();
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: AppBar(
@@ -58,7 +60,7 @@ class _SchedulePageState extends State<SchedulePage> {
             //  storage: widget.storage,
             //  eventStorage: eventStorage
             //);
-            test.iterateEventItems(selectedDay);
+            test.iterateEventItems(selectedDay, schedulePageEventListStorage);
             print("iteration done");
             //widget.storage.updateEventData();
             if(test.checkSelectedDayIsNotNull() == true) {

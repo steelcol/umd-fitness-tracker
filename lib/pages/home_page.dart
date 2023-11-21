@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:BetaFitness/arguments/storage_arguments.dart';
 import 'package:BetaFitness/arguments/info_arguments.dart';
+import 'package:BetaFitness/storage/event_list_storage.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:BetaFitness/storage/workout_exercise_storage.dart';
 import 'package:BetaFitness/utilities/routes.dart';
@@ -54,7 +55,8 @@ class _HomePageState extends State<HomePage> {
         storage: storage,
         eventStorage: eventStorage
     );
-    home.iterateEventItems(DateTime.now());
+    EventStorage homeEventListStorage = new EventStorage();
+    home.iterateEventItems(DateTime.now(), homeEventListStorage);
     if (home.getStoreCheck == true) {
       print("returned true"); // debuggin
       return true;

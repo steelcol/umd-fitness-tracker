@@ -29,6 +29,7 @@ import 'package:BetaFitness/arguments/run_workout_arguments.dart';
 
 import '../arguments/exercise_template_arguments.dart';
 import '../arguments/search_arguments.dart';
+import '../pages/directions_template_page.dart';
 
 // Class to handle our navigation, if you need to add arguments to your page
 // add a arguments class (look at workout_arguments.dart) and look at the
@@ -105,6 +106,11 @@ class RouteNavigator {
         return MaterialPageRoute<WorkoutViewPage>(builder: (context) =>
           WorkoutViewPage(
            workout: args.workout, 
+        ));
+      case directionsTemplatePageRoute:
+        final storageArgs = settings.arguments as StorageArguments;
+        return MaterialPageRoute<DirectionsTemplatePage>(builder: (context) => DirectionsTemplatePage(
+            storage: storageArgs.storage
         ));
 
         // User sign in and registration
