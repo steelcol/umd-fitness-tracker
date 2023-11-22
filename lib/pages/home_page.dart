@@ -184,9 +184,9 @@ class _HomePageState extends State<HomePage> {
                   infoArgs: infoArgs
                 ),
                 _buildActionButton(
-                  icon: Icons.event,
-                  label: "Events",
-                  route: eventsPageRoute,
+                  icon: Icons.camera,
+                  label: "Achievements",
+                  route: achievementsPageRoute,
                 ),
               ],
             ),

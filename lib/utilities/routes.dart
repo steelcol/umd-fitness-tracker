@@ -15,3 +15,6 @@ const String exerciseTemplatePageRoute = '/exerciseTemplate';
 const String workoutSearchPageRoute = '/search';
 const String savedWorkoutViewPageRoute = '/saved-workout-view';
 const String directionsTemplatePageRoute = '/directionsTemplate';
+const String achievementsPageRoute = '/achievements';
+const String achievementCapturePageRoute = '/achievementCapture';
+const String displayCapturedAchievementPageRoute = '/displayCapturedAchievement';

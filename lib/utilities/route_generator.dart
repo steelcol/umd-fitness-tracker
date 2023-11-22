@@ -21,11 +21,16 @@ import 'package:BetaFitness/pages/schedule_page.dart';
 import 'package:BetaFitness/pages/log_run_page.dart';
 import 'package:BetaFitness/pages/exercise_template_page.dart';
 import 'package:BetaFitness/pages/workout_view_page.dart';
+import 'package:BetaFitness/pages/achievement_page.dart';
+import 'package:BetaFitness/pages/achievement_capture_page.dart';
+import 'package:BetaFitness/pages/display_captured_achievement_page.dart';
 
 // Arguments
 import 'package:BetaFitness/arguments/workout_arguments.dart';
 import 'package:BetaFitness/arguments/workout_view_arguments.dart';
 import 'package:BetaFitness/arguments/run_workout_arguments.dart';
+import 'package:BetaFitness/arguments/camera_arguments.dart';
+import 'package:BetaFitness/arguments/captured_achievement_arguments.dart';
 
 import '../arguments/exercise_template_arguments.dart';
 import '../arguments/search_arguments.dart';
@@ -112,6 +117,27 @@ class RouteNavigator {
         return MaterialPageRoute<DirectionsTemplatePage>(builder: (context) => DirectionsTemplatePage(
             storage: storageArgs.storage
         ));
+      case achievementsPageRoute:
+        final storageArgs = settings.arguments as StorageArguments;
+        return MaterialPageRoute<AchievementPage>(builder: (context) =>
+          AchievementPage(
+            storage: storageArgs.storage,
+        ));
+      case achievementCapturePageRoute:
+        final cameraArgs = settings.arguments as CameraArguments;
+        return MaterialPageRoute<AchievementCapturePage>(builder: (context) =>
+          AchievementCapturePage(
+            camera: cameraArgs.camera,
+            updateList: cameraArgs.updateList,
+        ));
+      case displayCapturedAchievementPageRoute:
+        final capturedAchievementArgs
+              = settings.arguments as CapturedAchievementArguments;
+        return MaterialPageRoute<DisplayCapturedAchievementPage>(builder: (context) =>
+          DisplayCapturedAchievementPage(
+            image: capturedAchievementArgs.image,
+            updateList: capturedAchievementArgs.updateList,
+          ));
 
         // User sign in and registration
       case signInRoute:
