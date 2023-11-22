@@ -6,6 +6,7 @@ import 'package:BetaFitness/models/completed_workout_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:BetaFitness/models/fitness_tip_model.dart';
+import 'package:BetaFitness/models/achievement_model.dart';
 
 // This class holds our data as lists to be accessed later.
 class SingletonStorage {
@@ -15,6 +16,7 @@ class SingletonStorage {
   late List<CompletedWorkout> completedWorkouts; 
   late List<Event> events;
   late List<FitnessTip> fitnessTips;
+  late List<Achievement> achievements;
 
   // Database shorthand
   final dbRef = FirebaseFirestore.instance.collection('Users');
@@ -32,6 +34,7 @@ class SingletonStorage {
     await storage._getEvents();
     await storage._getFitnessTips();
     await storage._getCompletedWorkouts();
+    await storage._getAchievements();
 
     return storage;
   }
@@ -55,6 +58,10 @@ class SingletonStorage {
 
   Future<void> updateCompletedData() async {
     await _getCompletedWorkouts();
+  }
+
+  Future<void> updateAchievementData() async {
+    await _getAchievements();
   }
 
   // Private functions
@@ -243,6 +250,38 @@ class SingletonStorage {
     }
     else {
       completedWorkouts = [];
+    }
+  }
+
+  Future<void> _getAchievements() async {
+    // Check if exists then grab achievements
+    bool achievementExists = await _checkExist('Achievements');
+
+    if (achievementExists) {
+      try {
+        achievements = [];
+
+        await dbRef
+            .doc(userId)
+            .collection('Achievements')
+            .doc(userId)
+            .get().then((value) {
+           List.from(value.data()!['AchievementList']).forEach((element) {
+             Achievement achievement = new Achievement(
+                 dateCaptured: element['Data'],
+                 description: element['Description'],
+                 image: element['Image']
+             );
+             achievements.add(achievement);
+           });
+        });
+      }
+      catch (e) {
+        throw new Future.error("ERROR $e");
+      }
+    }
+    else {
+      achievements = [];
     }
   }
 
