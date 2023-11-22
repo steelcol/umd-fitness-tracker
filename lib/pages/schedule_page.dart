@@ -62,7 +62,6 @@ class _SchedulePageState extends State<SchedulePage> {
             //);
             test.iterateEventItems(selectedDay, schedulePageEventListStorage);
             print("iteration done");
-            //widget.storage.updateEventData();
             if(test.checkSelectedDayIsNotNull() == true) {
               final args = EventArguments(
                 storeDateTime: test

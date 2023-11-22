@@ -47,6 +47,7 @@ class StoreDateTime {
   }
 
   void iterateEventItems(selectedDay, EventStorage eventListStorageInstance) {
+    eventStorage.listOfEvents.clear();//at start of iterate function clear the list
     storeCheck = false;
     for (int i = 0; i < storage.events
         .length; i++) { //loop thru list of events, check if there are events on selected day
