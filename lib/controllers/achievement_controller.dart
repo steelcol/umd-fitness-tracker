@@ -12,9 +12,9 @@ class AchievementController {
         .collection('Achievements')
         .doc(userId)
         .update({"AchievementList": FieldValue.arrayUnion([{
-      "Date": achievement.dateCaptured.millisecondsSinceEpoch,
-      "Description": achievement.description,
-      "Image": achievement.image,
-    }])});
+          'Date': achievement.dateCaptured.millisecondsSinceEpoch,
+          'Description': achievement.description,
+          'Image': achievement.image,
+        }])});
   }
 }

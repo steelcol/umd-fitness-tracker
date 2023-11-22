@@ -121,14 +121,16 @@ class RouteNavigator {
         final cameraArgs = settings.arguments as CameraArguments;
         return MaterialPageRoute<AchievementCapturePage>(builder: (context) =>
           AchievementCapturePage(
-              camera: cameraArgs.camera,
+            camera: cameraArgs.camera,
+            updateList: cameraArgs.updateList,
         ));
       case displayCapturedAchievementPageRoute:
         final capturedAchievementArgs
               = settings.arguments as CapturedAchievementArguments;
         return MaterialPageRoute<DisplayCapturedAchievementPage>(builder: (context) =>
           DisplayCapturedAchievementPage(
-              image: capturedAchievementArgs.image
+            image: capturedAchievementArgs.image,
+            updateList: capturedAchievementArgs.updateList,
           ));
 
         // User sign in and registration

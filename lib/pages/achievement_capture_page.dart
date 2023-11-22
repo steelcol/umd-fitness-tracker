@@ -1,16 +1,16 @@
 import 'package:BetaFitness/utilities/routes.dart';
-//import 'package:firebase_core/firebase_core.dart';
-//import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:BetaFitness/controllers/achievement_controller.dart';
 import 'package:BetaFitness/arguments/captured_achievement_arguments.dart';
-//import 'dart:typed_data';
 
 class AchievementCapturePage extends StatefulWidget {
-  AchievementCapturePage({Key? key, required this.camera}) : super(key: key);
+  AchievementCapturePage({Key? key,
+    required this.camera,
+    required this.updateList
+  }) : super(key: key);
 
   final CameraDescription camera;
+  final Function updateList;
 
   @override
   State<AchievementCapturePage> createState() => _AchievementCapturePageState();
@@ -20,8 +20,6 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
   late CameraController _cameraController;
   late Future<void> _initializeControllerFeature;
 
-  final AchievementController _achievementController = AchievementController();
-
   @override
   void initState() {
     super.initState();
@@ -29,7 +27,7 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
     // create cameraController
     _cameraController = CameraController(
         widget.camera,
-        ResolutionPreset.medium
+        ResolutionPreset.low,
     );
 
     _initializeControllerFeature = _cameraController.initialize();
@@ -63,6 +61,7 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
           try {
             await _initializeControllerFeature;
 
+            _cameraController.setFlashMode(FlashMode.off);
             final image = await _cameraController.takePicture();
 
             if (!mounted) return;
@@ -70,7 +69,10 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
             await Navigator.pushNamed(
                 context,
                 displayCapturedAchievementPageRoute,
-                arguments: CapturedAchievementArguments(image: image)
+                arguments: CapturedAchievementArguments(
+                  image: image,
+                  updateList: widget.updateList,
+                )
             );
           } catch (e) {
             print("ERROR $e");
@@ -78,6 +80,7 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
         },
         child: const Icon(Icons.camera_alt),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

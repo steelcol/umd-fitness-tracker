@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:BetaFitness/arguments/camera_arguments.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 //import 'package:BetaFitness/controllers/achievement_controller.dart';
@@ -66,11 +68,17 @@ class _AchievementPageState extends State<AchievementPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        print("opens image later");
-                                      },
-                                      child: Text("[unimplemented]"),
+                                    Padding (
+                                      padding: EdgeInsets.all(10),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Theme.of(context).primaryColor,
+                                        ),
+                                        onPressed: () {
+                                          print("opens image later");
+                                        },
+                                        child: Image.memory(base64Decode(widget.storage.achievements[index].image)),
+                                      ),
                                     ),
                                     Padding(
                                         padding:
@@ -88,14 +96,14 @@ class _AchievementPageState extends State<AchievementPage> {
                                   ],
                                 ),
                               ),
-                              IconButton(
-                                  onPressed: () {
-                                    // _workoutController.deleteRunningWorkout(
-                                    //     widget.storage.runningWorkouts[index]
-                                    // );
-                                    // updateList();
-                                  },
-                                  icon: Icon(Icons.delete))
+                              // IconButton(
+                              //     onPressed: () {
+                              //       _workoutController.deleteRunningWorkout(
+                              //           widget.storage.runningWorkouts[index]
+                              //       );
+                              //       updateList();
+                              //     },
+                              //     icon: Icon(Icons.delete))
                             ],
                           ),
                         ),
@@ -113,7 +121,10 @@ class _AchievementPageState extends State<AchievementPage> {
           Navigator.pushNamed(
             context,
             achievementCapturePageRoute,
-            arguments: CameraArguments(camera: usableCamera),
+            arguments: CameraArguments(
+              camera: usableCamera,
+              updateList: widget.storage.updateAchievementData,
+            ),
           );
         },
         backgroundColor: Theme.of(context).primaryColor,

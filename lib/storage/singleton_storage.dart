@@ -268,7 +268,7 @@ class SingletonStorage {
             .get().then((value) {
            List.from(value.data()!['AchievementList']).forEach((element) {
              Achievement achievement = new Achievement(
-                 dateCaptured: element['Data'],
+                 dateCaptured: DateTime.fromMillisecondsSinceEpoch(element['Date']),
                  description: element['Description'],
                  image: element['Image']
              );
@@ -279,9 +279,6 @@ class SingletonStorage {
       catch (e) {
         throw new Future.error("ERROR $e");
       }
-    }
-    else {
-      achievements = [];
     }
   }
 

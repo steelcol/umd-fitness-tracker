@@ -1,9 +1,7 @@
-import 'dart:typed_data';
-
 class Achievement {
   DateTime dateCaptured;
   String description;
-  Uint8List image;
+  String image;
 
   Achievement({
     required this.dateCaptured,
