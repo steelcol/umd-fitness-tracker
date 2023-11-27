@@ -2,8 +2,6 @@ import 'package:BetaFitness/models/save_data_model.dart';
 import 'package:BetaFitness/storage/event_list_storage.dart';
 import 'package:flutter/material.dart';
 
-import '../storage/event_storage.dart';
-
 class ListedEventsMapWorkoutsPage extends StatefulWidget {
   const ListedEventsMapWorkoutsPage({Key? key, required this.storeDateTime}) : super(key: key);
 
@@ -55,7 +53,13 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
   }
 
   Widget _buildEventCard(EventListStorage eventStorage, int index) {
-    return Container(
+    return InkWell(
+        onTap: () {
+          //thome!!! on pressed right here, go to google maps
+
+
+        },
+     child: Container(
       margin: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.grey,
@@ -114,6 +118,22 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      Text(
+                        "Longitude: ${widget.storeDateTime.eventStorage.listOfEvents[index].storedGeoPointList.longitude}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "Latitude: ${widget.storeDateTime.eventStorage.listOfEvents[index].storedGeoPointList.latitude}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -122,6 +142,7 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
           ),
         ],
       ),
+    )
     );
   }
 }

@@ -75,11 +75,23 @@ class WorkoutController {
         .collection('Workouts')
         .doc(userId);
 
+    List<Map<String, dynamic>> removeList = [];
+
+    workout.exercises.forEach((element) {
+      removeList.add(
+        {
+          'ExerciseName': element.name, 
+          'SetCount': element.setCount,
+          'RepCount': element.repCount
+        }
+      );
+    });
+ 
     docRef.update({
       'SavedWorkouts': FieldValue.arrayRemove([{
-        'Exercises': workout.exercises,
         'WorkoutName': workout.workoutName,
-        'Type': 'Weight'
+        'Type': 'Weight',
+        'Exercises': removeList
       }])});
   }
 

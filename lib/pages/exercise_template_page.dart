@@ -1,6 +1,6 @@
 import 'package:BetaFitness/models/saved_exercise_model.dart';
-import 'package:BetaFitness/utilities/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class ExerciseTemplatePage extends StatefulWidget {
@@ -28,7 +28,11 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
       initialVideoId: YoutubePlayer.convertUrlToId(
         widget.videoURL,
       )!,
-      flags: YoutubePlayerFlags(autoPlay: false, mute: false),
+      flags: YoutubePlayerFlags(
+        autoPlay: false, 
+        mute: false, 
+        showLiveFullscreenButton: false,
+      ),
     );
     super.initState();
   }
@@ -72,6 +76,9 @@ class _ExerciseTemplatePageState extends State<ExerciseTemplatePage> {
                   TextFormField(
                     decoration: InputDecoration(hintText: "Rep Count"),
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Rep count required';
