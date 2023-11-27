@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:BetaFitness/controllers/Achievement_controller.dart';
+import 'package:BetaFitness/controllers/achievement_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:BetaFitness/models/achievement_model.dart';

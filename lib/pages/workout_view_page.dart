@@ -28,14 +28,17 @@ class _WorkoutViewPageState extends State<WorkoutViewPage> {
         physics: ScrollPhysics(),
         child: Column(
           children: [
-            Text(
-              widget.workout.workoutName,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ), 
-            ), 
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Text(
+                widget.workout.workoutName,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                ), 
+              ),
+            ),
             Container(
               padding: EdgeInsets.symmetric(
                   vertical: 10,

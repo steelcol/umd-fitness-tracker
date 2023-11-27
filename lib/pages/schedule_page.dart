@@ -1,6 +1,5 @@
 import 'package:BetaFitness/arguments/event_arguments.dart';
 import 'package:BetaFitness/arguments/storage_arguments.dart';
-import 'package:BetaFitness/storage/event_list_storage.dart';
 import 'package:BetaFitness/storage/event_storage.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
@@ -56,10 +55,6 @@ class _SchedulePageState extends State<SchedulePage> {
           setState(() {
             _selectedDay = selectedDay;
             _focusedDay = focusedDay; // update `_focusedDay` here as well
-            //StoreDateTime test = new StoreDateTime(
-            //  storage: widget.storage,
-            //  eventStorage: eventStorage
-            //);
             test.iterateEventItems(selectedDay, schedulePageEventListStorage);
             print("iteration done");
             if(test.checkSelectedDayIsNotNull() == true) {
@@ -81,7 +76,6 @@ class _SchedulePageState extends State<SchedulePage> {
         },
 
         onPageChanged: (focusedDay) {
-          // No need to call `setState()` here
           _focusedDay = focusedDay;
         },
 
