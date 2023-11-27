@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:BetaFitness/arguments/storage_arguments.dart';
 import 'package:BetaFitness/arguments/info_arguments.dart';
-import 'package:BetaFitness/storage/event_list_storage.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:BetaFitness/storage/workout_exercise_storage.dart';
 import 'package:BetaFitness/utilities/routes.dart';
@@ -195,7 +194,7 @@ class _HomePageState extends State<HomePage> {
               child: _buildLongActionButton(
                 icon: Icons.add,
                 label: 'Start Workout',
-                route: activeWorkoutPageRoute,
+                route: selectWorkoutPageRoute,
               ),
               ),
             _buildLongActionButton(
@@ -242,7 +241,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 11.4),
       child: ElevatedButton.icon(
-        onPressed: () => Navigator.pushNamed(context, route, arguments: args), // TODO: workoutPageRoute => activeWorkoutPageRoute when dev start
+        onPressed: () => Navigator.pushNamed(context, route, arguments: args), 
         icon: Icon(icon),
         label: Text(label),
         style: ElevatedButton.styleFrom(

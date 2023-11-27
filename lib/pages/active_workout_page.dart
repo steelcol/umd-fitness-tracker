@@ -1,11 +1,13 @@
 import 'package:BetaFitness/controllers/active_workout_controller.dart';
-import 'package:BetaFitness/storage/singleton_storage.dart';
+import 'package:BetaFitness/models/saved_exercise_model.dart';
+import 'package:BetaFitness/models/weight_workout_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ActiveWorkoutPage extends StatefulWidget {
-  ActiveWorkoutPage({Key? key, required this.storage}) : super(key: key);
+  ActiveWorkoutPage({Key? key, required this.workout}) : super(key: key);
 
-  final SingletonStorage storage;
+  final WeightWorkout workout;
   final ActiveWorkoutController controller = ActiveWorkoutController();
 
   @override
@@ -13,74 +15,68 @@ class ActiveWorkoutPage extends StatefulWidget {
 }
 
 class _ActiveWorkoutPageState extends State<ActiveWorkoutPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  Map<String, List<int>> _weightValues = {};
+
+  ActiveWorkoutController controller = ActiveWorkoutController();
+
   @override
   void initState() {
-    // TODO: initialize your data or perform any necessary actions
     super.initState();
+    //Initialize _weightValues to be the proper size with keys
+    widget.workout.exercises.forEach((exercise) {
+      _weightValues[exercise.name] = List<int>.filled(exercise.setCount, 0);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Active Workout"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () {
-              // TODO: Implement user profile action
-            },
-          ),
-        ],
+        title: const Text("BetaFitness"),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // TODO: Implement the components for the active workout page
-            // For example, you can have a timer, progress tracker, etc.
-
-            // Placeholder for Active Workout Components
-            Text(
-              'Active Workout Components',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
+        padding: const EdgeInsets.only(left: 10.0),
+        child: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.always,
+          child: SingleChildScrollView(
+            physics: ScrollPhysics(),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: widget.workout.exercises.length,
+                    itemBuilder: (context, index) {
+                      return _buildExerciseCard(
+                        widget.workout.exercises[index],
+                        index
+                      );
+                    }
+                  ),
+                ),
+              ],
             ),
-            // TODO: Add components like timer, progress tracker, etc.
-
-            SizedBox(height: 20.0),
-
-            // Placeholder for Exercise List
-            Text(
-              'Exercise List',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 5, // Replace with the actual number of exercises
-                itemBuilder: (context, index) {
-                  // TODO: Create a widget to display each exercise in the list
-                  return ListTile(
-                    title: Text('Exercise $index'),
-                    // Add more details as needed
-                  );
-                },
-              ),
-            ),
-          ],
+          ),
         ),
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ElevatedButton(
           onPressed: () {
-            // TODO: Implement actions when the user completes the workout
+            if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Processing Data')),
+              );
+              Navigator.pop(context);
+              Navigator.pop(context);
+              // Add workout here
+              controller.addCompletedWorkout(_weightValues); 
+            }
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.teal,
@@ -94,6 +90,60 @@ class _ActiveWorkoutPageState extends State<ActiveWorkoutPage> {
           child: Text('Finish Workout'),
         ),
       ),
+    );
+  }
+
+  Widget _buildExerciseCard(SavedExercise exercise, int index) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text(
+            "${index + 1}. ${exercise.name}",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        ListView.builder(            
+          shrinkWrap: true,
+          itemCount: exercise.setCount,
+          itemBuilder: (context, index) {
+            return Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  child: Text('Set ${index+1}'),
+                ),
+                SizedBox(
+                  width: 80,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: TextFormField(
+                      decoration: InputDecoration(hintText: 'Weight'),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      validator: (value) {
+                        if (value == null || value.isEmpty || int.parse(value) < 0) {
+                          return 'Not a valid weight';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) =>
+                        _weightValues[exercise.name]![index] = int.parse(value!),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
     );
   }
 }

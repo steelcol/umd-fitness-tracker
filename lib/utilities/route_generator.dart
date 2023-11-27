@@ -5,6 +5,7 @@ import 'package:BetaFitness/pages/active_workout_page.dart';
 import 'package:BetaFitness/pages/run_workout_page.dart';
 import 'package:BetaFitness/pages/listed_events_map_workouts_page.dart';
 import 'package:BetaFitness/pages/search_workout_page.dart';
+import 'package:BetaFitness/pages/select_workout_page.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
@@ -45,10 +46,10 @@ class RouteNavigator {
       case homePageRoute:
         return MaterialPageRoute<HomePage>(builder: (context) => HomePage());
       case workoutPageRoute: 
-      final infoArgs = settings.arguments as InfoArguments;
+      final args = settings.arguments as InfoArguments;
         return MaterialPageRoute<WorkoutPage>(builder: (context) => WorkoutPage(
-          storage: infoArgs.storage,
-          info: infoArgs.info
+          storage: args.storage,
+          info: args.info
         ));
       case createWorkoutRoute:
         final args = settings.arguments as WorkoutArguments;
@@ -58,24 +59,24 @@ class RouteNavigator {
             info: args.info
         ));
       case statsPageRoute:
-        final storageArgs = settings.arguments as StorageArguments;
+        final args = settings.arguments as StorageArguments;
         return MaterialPageRoute<StatsPage>(builder: (context) => StatsPage(
-          storage: storageArgs.storage
+          storage: args.storage
         ));
       case eventsPageRoute:
-        final storageArgs = settings.arguments as StorageArguments;
+        final args = settings.arguments as StorageArguments;
         return MaterialPageRoute<EventsPage>(builder: (context) => EventsPage(
-          storage: storageArgs.storage
+          storage: args.storage
         ));
       case activeWorkoutPageRoute:
-        final storageArgs = settings.arguments as StorageArguments;
+        final args  = settings.arguments as WorkoutViewArguments;
         return MaterialPageRoute<ActiveWorkoutPage>(builder: (context) => ActiveWorkoutPage(
-        storage: storageArgs.storage
+          workout: args.workout
         ));
       case schedulePageRoute:
-        final storageArgs = settings.arguments as StorageArguments;
+        final args = settings.arguments as StorageArguments;
         return MaterialPageRoute<SchedulePage>(builder: (context) => SchedulePage(
-          storage: storageArgs.storage
+          storage: args.storage
         ));
       case logRunPageRoute:
         final args = settings.arguments as RunWorkoutArguments;
@@ -83,20 +84,20 @@ class RouteNavigator {
           updateList: args.updateList
         ));
       case runWorkoutPageRoute:
-        final storageArgs = settings.arguments as StorageArguments;
+        final args = settings.arguments as StorageArguments;
         return MaterialPageRoute<RunWorkoutPage>(builder: (context) => RunWorkoutPage(
-            storage: storageArgs.storage
+            storage: args.storage
         ));
       case workoutSearchPageRoute:
-        final searchArgs = settings.arguments as SearchArguments;
+        final args = settings.arguments as SearchArguments;
         return MaterialPageRoute<WorkoutSearchPage>(builder: (context) => WorkoutSearchPage(
-            info: searchArgs.info,
-            updateList: searchArgs.updateList,
+            info: args.info,
+            updateList: args.updateList,
         ));
       case listedEventsMapWorkoutsPageRoute:
-        final eventArgs = settings.arguments as EventArguments;
+        final args = settings.arguments as EventArguments;
         return MaterialPageRoute<ListedEventsMapWorkoutsPage>(builder: (context) => ListedEventsMapWorkoutsPage(
-            storeDateTime: eventArgs.storeDateTime
+            storeDateTime: args.storeDateTime
         ));
       case exerciseTemplatePageRoute:
         final args = settings.arguments as ExerciseTemplateArguments;
@@ -113,31 +114,36 @@ class RouteNavigator {
            workout: args.workout, 
         ));
       case directionsTemplatePageRoute:
-        final storageArgs = settings.arguments as StorageArguments;
+        final args = settings.arguments as StorageArguments;
         return MaterialPageRoute<DirectionsTemplatePage>(builder: (context) => DirectionsTemplatePage(
-            storage: storageArgs.storage
+            storage: args.storage
         ));
       case achievementsPageRoute:
-        final storageArgs = settings.arguments as StorageArguments;
+        final args = settings.arguments as StorageArguments;
         return MaterialPageRoute<AchievementPage>(builder: (context) =>
           AchievementPage(
-            storage: storageArgs.storage,
+            storage: args.storage,
         ));
       case achievementCapturePageRoute:
-        final cameraArgs = settings.arguments as CameraArguments;
+        final args = settings.arguments as CameraArguments;
         return MaterialPageRoute<AchievementCapturePage>(builder: (context) =>
           AchievementCapturePage(
-            camera: cameraArgs.camera,
-            updateList: cameraArgs.updateList,
+            camera: args.camera,
+            updateList: args.updateList,
         ));
       case displayCapturedAchievementPageRoute:
-        final capturedAchievementArgs
-              = settings.arguments as CapturedAchievementArguments;
+        final args = settings.arguments as CapturedAchievementArguments;
         return MaterialPageRoute<DisplayCapturedAchievementPage>(builder: (context) =>
           DisplayCapturedAchievementPage(
-            image: capturedAchievementArgs.image,
-            updateList: capturedAchievementArgs.updateList,
+            image: args.image,
+            updateList: args.updateList,
           ));
+      case selectWorkoutPageRoute:
+        final args = settings.arguments as StorageArguments;
+        return MaterialPageRoute<SelectWorkoutPage>(builder: (context) =>
+          SelectWorkoutPage(
+          storage: args.storage,
+        ));
 
         // User sign in and registration
       case signInRoute:
