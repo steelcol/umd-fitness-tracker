@@ -33,20 +33,20 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
                 horizontal: 10,
               ),
               child: SingleChildScrollView(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: widget.storeDateTime.eventStorage.listOfEvents
-                    .length,
-                itemBuilder: (context, index) {
-                  print(widget.storeDateTime.eventStorage.listOfEvents.length);
-                  return _buildEventCard(
-                      widget.storeDateTime.eventStorage
-                          .listOfEvents[index],
-                      index
-                  );
-                },
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: widget.storeDateTime.eventStorage.listOfEvents
+                      .length,
+                  itemBuilder: (context, index) {
+                    print(widget.storeDateTime.eventStorage.listOfEvents.length);
+                    return _buildEventCard(
+                        widget.storeDateTime.eventStorage
+                            .listOfEvents[index],
+                        index
+                    );
+                  },
+                ),
               ),
-      ),
             ),
           ],
         ),
