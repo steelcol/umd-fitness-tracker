@@ -26,33 +26,13 @@ class _DirectionsTemplatePageState extends State<DirectionsTemplatePage>{
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
         return Future.error('Location permissions are denied');
+
       }
     }
   }
 
-
-  void _launchURL(String url) async {
-
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    String long = position.longitude.toString();
-    String lat = position.latitude.toString();
-
-    String url = 'https://www.google.com/maps/dir/?api=1&origin=' +
-        long + //current longitude
-        ',' +
-        lat + //current latitude
-        ' &destination=' +
-        widget.storage.events[0].location.toString() +
-        '&travelmode=driving&dir_action=navigate';
-
-    if (await canLaunchUrl(url as Uri)) {
-      await launchUrl(url as Uri);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
   Widget build(BuildContext context) {
+    print('button?');
     return Scaffold(
         appBar: AppBar(
           title: const Text('BetaFitness'),
@@ -60,16 +40,38 @@ class _DirectionsTemplatePageState extends State<DirectionsTemplatePage>{
         body: Center(
           child: Column(
 
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-            ElevatedButton(onPressed: () => _launchURL, child: Text("enter"), ),
-            ]
+              children: <Widget>[
+          ListTile(
+          title: Text("Launch Maps"),
+          onTap: () async {
+
+            Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+            String currentLng = position.longitude.toString();
+            String currentLat = position.latitude.toString();
+            String destinationLng = widget.storage.events[1].location.longitude.toString();
+            String destinationLat = widget.storage.events[1].location.latitude.toString();
+
+            final Uri googleMapsUrl = Uri.parse('https://www.google.com/maps/dir/?api=1&origin=' +
+                currentLat + //current longitude
+                ',' +
+                currentLng + //current latitude
+                ' &destination=' +
+                destinationLat + //event longitude
+                ',' +
+                destinationLng + //event latitude
+                '&travelmode=driving&dir_action=navigate');
+
+            if (await canLaunchUrl(googleMapsUrl)) {
+              await launchUrl(googleMapsUrl);
+            } else {
+              throw "Couldn't launch URL";
+            }
+          },
+        ),
+      ],
           ),
         ),
     );
   }
 
-
-
-
-}
+  }
