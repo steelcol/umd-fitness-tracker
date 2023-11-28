@@ -14,22 +14,6 @@ class StoreDateTime {
   final EventStorage eventStorage;
   StoreDateTime({required this.storage, required this.eventStorage});
 
-  set setStoreCheckBool(bool check) {
-    storeCheck = check;
-  }
-
-  set setStoreEventName(String eventName) {
-    storeEventName = eventName;
-  }
-
-  set setStoreDescription(String description) {
-    storeDescription = description;
-  }
-
-  set setStoreDate(DateTime date) {
-    storeDate = date;
-  }
-
   bool? get getStoreCheck {
     return storeCheck;
   }
@@ -79,20 +63,13 @@ class StoreDateTime {
 
 
         storeCheck = true;
-        print(storeCheck);
         eventStorage.storeCheck =
         getStoreCheck as bool;
-        print("iteration Done"); //debugging purposes
       }
-    }
-    print("events in listOfEvents"); //debugging purpose
-    for(int i = 0; i < eventStorage.listOfEvents.length; i++) {
-      print(eventStorage.listOfEvents);
     }
   }
 
   bool checkSelectedDayIsNotNull() {
-    print("check storeCheck");
     print(storeCheck);
     if (storeCheck == true) {
       return true;

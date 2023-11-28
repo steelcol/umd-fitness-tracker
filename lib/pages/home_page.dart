@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
 import '../models/save_data_model.dart';
+import '../storage/event_list_storage.dart';
 import '../storage/event_storage.dart';
 
 class HomePage extends StatefulWidget {
@@ -58,11 +59,9 @@ class _HomePageState extends State<HomePage> {
     EventStorage homeEventListStorage = new EventStorage();
     home.iterateEventItems(DateTime.now(), homeEventListStorage);
     if (home.getStoreCheck == true) {
-      print("returned true"); // debuggin
       return true;
     }
     else  {
-      print("returned false"); // debuggin
       return false;
     }
 } //check if there is an event for today
@@ -122,10 +121,20 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 16),
-                    // Add content related to today's activity here
-                    Text("Events for today: " + eventStorage.storedEventName),
-                    Text('Event Description: ' + eventStorage.storedEventDescription),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: eventStorage.listOfEvents
+                          .length,
+                      itemBuilder: (context, index) {
+                        print(eventStorage
+                            .listOfEvents[index]);
+                        return _buildEventCard(
+                            eventStorage
+                                .listOfEvents[index],
+                            index
+                        );
+                      },
+                    ),
                   ],
                 )
                 : Column(
@@ -245,7 +254,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 11.4),
       child: ElevatedButton.icon(
-        onPressed: () => Navigator.pushNamed(context, route, arguments: args), 
+        onPressed: () => Navigator.pushNamed(context, route, arguments: args),
         icon: Icon(icon),
         label: Text(label),
         style: ElevatedButton.styleFrom(
@@ -256,6 +265,75 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildEventCard(EventListStorage eventListStorage, int index) {
+    return InkWell(
+        onTap: () {
+          //thome!!! on pressed right here, go to google maps
+
+        },
+        child: Container(
+          margin: EdgeInsets.only(bottom: 5),
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                left: 0,
+                top: 0,
+                bottom: 0,
+                child: Container(
+                  width: 1, // Width/color highlight
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(6),
+                child: Row(
+                  children: [
+                    Text(
+                      "${index + 1}.",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(width: 4), // Space from highlight to index
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Event Name: " + eventStorage.listOfEvents[index].storedEventListName,//widget.storeDateTime.eventStorage.listOfEvents[index].storedEventListName,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            "Description: " + eventStorage.listOfEvents[index].storedEventListDescription,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
     );
   }
 
