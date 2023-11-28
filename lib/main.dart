@@ -9,6 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Message: ${message.notification!.body}');
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +53,7 @@ class BetaFitness extends StatelessWidget {
           // Completion here
           if(snapshot.connectionState == ConnectionState.done) {
             // Do our storage setup here once we connect to the database
+            FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
             return MaterialApp(
               title: "BetaFitness",

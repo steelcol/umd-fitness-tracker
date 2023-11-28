@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:BetaFitness/arguments/storage_arguments.dart';
 import 'package:BetaFitness/arguments/info_arguments.dart';
+import 'package:BetaFitness/controllers/message_controller.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:BetaFitness/storage/workout_exercise_storage.dart';
 import 'package:BetaFitness/utilities/routes.dart';
@@ -19,15 +20,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final MessageController _messageController = MessageController();
   late SingletonStorage storage;
   late WorkoutInformation info;
   bool _loading = true;
   late bool _todayHasEvent;
   late StorageArguments args;
   late InfoArguments infoArgs;
-  //DateTime _focusedDay = DateTime.now();
-  //DateTime? _selectedDay;
   EventStorage eventStorage = new EventStorage();
+
 
   void initializeSingletonStorage() async {
     storage = await SingletonStorage.create();
@@ -70,8 +71,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     initializeSingletonStorage();
-    //checkForEventToday(); //run func to check if theres an event on today
+
+    // Access to token now exists
     super.initState();
+    _messageController.initiateSettings();
+    _messageController.getToken();
   }
 
   @override
