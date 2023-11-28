@@ -1,4 +1,3 @@
-
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:flutter/material.dart';
@@ -9,58 +8,51 @@ import '../controllers/event_controller.dart';
 import '../models/event_model.dart';
 import 'map_page.dart';
 
-
 class EventsPage extends StatefulWidget {
   const EventsPage({Key? key, required this.storage}) : super(key: key);
 
   final SingletonStorage storage;
 
+  @override
   State<EventsPage> createState() => _EventsPageState();
 }
 
-class _EventsPageState extends State<EventsPage>{
+class _EventsPageState extends State<EventsPage> {
   final databaseReference = FirebaseFirestore.instance.collection('Events');
-  final String createText = "Enter";
-  final String showText = "Event";
+  final String createText = "Create Event";
   DateTime selectedDate = DateTime.now();
   late double x = 0, y = 0;
 
-  //controllers
   final nameController = TextEditingController();
   final descController = TextEditingController();
-  final dateController = TextEditingController();
 
-  void updateLocation(double latitude, double longitute) {
+  void updateLocation(double latitude, double longitude) {
     setState(() {
       this.x = latitude;
-      this.y = longitute;
+      this.y = longitude;
     });
   }
 
-  //method creates event, adding to database
-  void createEvent(){
-
+  void createEvent() {
     String name = nameController.text;
     String desc = descController.text;
     DateTime date = selectedDate;
     GeoPoint loc = GeoPoint(x, y);
 
-    // If you add events or add running workouts please make a controller to add the data correctly
-    EventController controller = new EventController();
-    Event event = new Event(eventName: name, description: desc, date: date, location: loc);
+    EventController controller = EventController();
+    Event event = Event(eventName: name, description: desc, date: date, location: loc);
 
     controller.addEvent(event);
-    // Then update the storage list
-    print(event.date);
     widget.storage.updateEventData();
   }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2015, 8),
+      lastDate: DateTime(2101),
+    );
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
@@ -69,71 +61,115 @@ class _EventsPageState extends State<EventsPage>{
   }
 
   @override
-  void dispose() {
-    nameController.dispose();
-    descController.dispose();
-    dateController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("BetaFitness"),
+        title: Text("Create Event"),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Center(
-        child: Column(
-        // Build events page here
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          //event name text-field
-          TextField(
-            controller: nameController,
-            decoration: InputDecoration(border: OutlineInputBorder(),
-              hintText: 'Enter event',
-            ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _buildTextField(nameController, 'Event Name'),
+              const SizedBox(height: 16.0),
+              _buildTextField(descController, 'Event Description'),
+              const SizedBox(height: 16.0),
+              _buildDateSelector(context),
+              const SizedBox(height: 16.0),
+              _buildLocationInfo(),
+              const SizedBox(height: 16.0),
+              _buildMapButton(),
+              const SizedBox(height: 16.0),
+              _buildActionButton(createEvent, createText),
+              const SizedBox(height: 16.0),
+              _buildActionButton(
+                    () {
+                  Navigator.pushNamed(
+                    context,
+                    directionsTemplatePageRoute,
+                    arguments: StorageArguments(storage: widget.storage),
+                  );
+                },
+                'Open Route',
+              ),
+            ],
           ),
-          //event description text-field
-          TextField(
-            controller: descController,
-            decoration: InputDecoration(border: OutlineInputBorder(),
-              hintText: 'Enter event description',
-            ),
-          ),
-          //datetime selector
-          Text("${selectedDate.toLocal()}".split(' ')[0]),
-          const SizedBox(height: 20.0,),
-          ElevatedButton(
-            onPressed: () => _selectDate(context),
-            child: const Text('Select date'),
-          ),
-
-          Text("$x, $y"),
-
-          ListTile(
-            title: const Text('Interactive'),
-            subtitle: const Text('Say where on the earth user has clicked.'),
-            trailing: const Icon(Icons.chevron_right_sharp),
-            onTap: () => _push(InteractiveMapPage(updateLocation: updateLocation,))
-          ),
-
-          ElevatedButton(onPressed: createEvent, child: Text(createText), ),
-          ElevatedButton(
-            child: const Text('Open route'),
-            onPressed: () {
-              Navigator.pushNamed(context, directionsTemplatePageRoute, arguments: StorageArguments(storage: widget.storage));
-            }
-          ),
-        ]
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String labelText) {
+    return TextField(
+      controller: controller,
+      style: TextStyle(fontSize: 18),
+      decoration: InputDecoration(
+        hintText: labelText,
+        hintStyle: TextStyle(color: Colors.grey),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateSelector(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => _selectDate(context),
+      style: ElevatedButton.styleFrom(
+        primary: Theme.of(context).primaryColor,
+        textStyle: TextStyle(fontSize: 18),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.calendar_today),
+          SizedBox(width: 8.0),
+          Text('Select date'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocationInfo() {
+    return Text(
+      "Location: $x, $y",
+      style: TextStyle(fontSize: 18, color: Colors.grey),
+    );
+  }
+
+  Widget _buildMapButton() {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: Theme.of(context).primaryColor,
+        textStyle: TextStyle(fontSize: 18),
+      ),
+      onPressed: () => _push(InteractiveMapPage(updateLocation: updateLocation)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.map),
+          SizedBox(width: 8.0),
+          Text('Select location on the map'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(Function onPressed, String label) {
+    return ElevatedButton(
+      onPressed: () => onPressed(),
+      style: ElevatedButton.styleFrom(
+        primary: Theme.of(context).primaryColor,
+        textStyle: TextStyle(fontSize: 18),
+      ),
+      child: Text(label),
     );
   }
 
@@ -144,5 +180,4 @@ class _EventsPageState extends State<EventsPage>{
       ),
     );
   }
-
 }
