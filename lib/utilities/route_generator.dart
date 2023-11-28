@@ -1,3 +1,5 @@
+import 'package:BetaFitness/arguments/events_page_arguments.dart';
+import 'package:BetaFitness/arguments/home_page_arguments.dart';
 import 'package:BetaFitness/arguments/info_arguments.dart';
 import 'package:BetaFitness/arguments/storage_arguments.dart';
 import 'package:BetaFitness/arguments/event_arguments.dart';
@@ -64,9 +66,10 @@ class RouteNavigator {
           storage: args.storage
         ));
       case eventsPageRoute:
-        final args = settings.arguments as StorageArguments;
+        final args = settings.arguments as EventPageArguments;
         return MaterialPageRoute<EventsPage>(builder: (context) => EventsPage(
-          storage: args.storage
+            updatePage: args.updatePage,
+            storage: args.storage
         ));
       case activeWorkoutPageRoute:
         final args  = settings.arguments as WorkoutViewArguments;
@@ -74,8 +77,9 @@ class RouteNavigator {
           workout: args.workout
         ));
       case schedulePageRoute:
-        final args = settings.arguments as StorageArguments;
+        final args = settings.arguments as EventPageArguments;
         return MaterialPageRoute<SchedulePage>(builder: (context) => SchedulePage(
+          updatePage: args.updatePage,
           storage: args.storage
         ));
       case logRunPageRoute:

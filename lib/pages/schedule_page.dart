@@ -6,14 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:BetaFitness/utilities/utils_for_schedule_page.dart';
 import 'package:BetaFitness/utilities/utils_for_schedule_page.dart' hide Event;
+import '../arguments/events_page_arguments.dart';
 import '../utilities/routes.dart';
 import 'package:BetaFitness/models/save_data_model.dart';
 
 
 class SchedulePage extends StatefulWidget {
-  const SchedulePage({Key? key, required this.storage}) : super(key: key);
+  const SchedulePage({Key? key,
+    required this.storage,
+    required this.updatePage
+  }) : super(key: key);
 
   final SingletonStorage storage;
+  final Function updatePage;
 
   State<SchedulePage> createState() => _SchedulePageState();
 }
@@ -82,8 +87,11 @@ class _SchedulePageState extends State<SchedulePage> {
         ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          final args = StorageArguments(storage: widget.storage);
-          Navigator.pushNamed(context, eventsPageRoute, arguments: StorageArguments(storage: widget.storage));
+          final args = EventPageArguments(
+              storage: widget.storage,
+              updatePage: widget.updatePage
+          );
+          Navigator.pushNamed(context, eventsPageRoute, arguments: args);
         },
         icon: Icon(Icons.add),
 
