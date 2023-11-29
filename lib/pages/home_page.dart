@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:BetaFitness/arguments/events_page_arguments.dart';
 import 'package:BetaFitness/arguments/storage_arguments.dart';
 import 'package:BetaFitness/arguments/info_arguments.dart';
 import 'package:BetaFitness/controllers/message_controller.dart';
@@ -28,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   late bool _todayHasEvent;
   late StorageArguments args;
   late InfoArguments infoArgs;
+  late EventPageArguments eventArgs;
   EventStorage eventStorage = new EventStorage();
 
 
@@ -36,11 +38,19 @@ class _HomePageState extends State<HomePage> {
     info = await WorkoutInformation.create();
     args = StorageArguments(storage: storage);
     infoArgs = InfoArguments(storage: storage, info: info);
+    eventArgs = EventPageArguments(storage: storage, updatePage: updatePage);
     _loading = false;
     _todayHasEvent = checkForEventToday();
 
     if (!mounted) return;
     setState(() {});
+  }
+
+  void updatePage() async {
+    // Updates the page when the list of workouts is changed
+    setState(() {
+      checkForEventToday();
+    });
   }
 
   String getRandomFitnessTip() {
@@ -179,10 +189,11 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildActionButton(
+                _buildActionButtonEvent(
                   icon: Icons.access_alarm_outlined,
                   label: "Schedule",
                   route: schedulePageRoute,
+                  eventArgs: eventArgs
                 ),
                 _buildActionButton(
                   icon: Icons.data_usage,
@@ -221,9 +232,54 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildActionButton({required IconData icon, required String label, required String route, InfoArguments? infoArgs}) {
+  Widget _buildActionButton({required IconData icon,
+    required String label,
+    required String route,
+    InfoArguments? infoArgs
+  }) {
     return ElevatedButton(
-      onPressed: () => Navigator.pushNamed(context, route, arguments: infoArgs == null ? args : infoArgs),
+      onPressed: () => Navigator.pushNamed(
+          context,
+          route,
+          arguments: infoArgs == null ? args : infoArgs
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: EdgeInsets.all(0), // Remove padding
+        fixedSize: Size(80, 80), // Set a smaller fixed size for all buttons
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Allow the column to shrink
+        children: [
+          Container(
+            width: 40, // Adjust the icon size
+            height: 40,
+            child: Icon(icon, size: 24),
+          ),
+          SizedBox(height: 4), // Adjust the spacing
+          Text(
+            label,
+            style: TextStyle(fontSize: 12), // Adjust the label font size
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButtonEvent({required IconData icon,
+    required String label,
+    required String route,
+    required EventPageArguments eventArgs
+  }) {
+    return ElevatedButton(
+      onPressed: () => Navigator.pushNamed(
+          context,
+          route,
+          arguments: eventArgs
+      ),
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(

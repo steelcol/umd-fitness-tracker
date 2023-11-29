@@ -9,9 +9,13 @@ import '../models/event_model.dart';
 import 'map_page.dart';
 
 class EventsPage extends StatefulWidget {
-  const EventsPage({Key? key, required this.storage}) : super(key: key);
+  const EventsPage({Key? key,
+    required this.storage,
+    required this.updatePage
+  }) : super(key: key);
 
   final SingletonStorage storage;
+  final Function updatePage;
 
   @override
   State<EventsPage> createState() => _EventsPageState();
@@ -44,6 +48,7 @@ class _EventsPageState extends State<EventsPage> {
 
     controller.addEvent(event);
     widget.storage.updateEventData();
+    widget.updatePage();
   }
 
   Future<void> _selectDate(BuildContext context) async {

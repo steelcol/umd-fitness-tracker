@@ -1,6 +1,7 @@
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:BetaFitness/storage/event_storage.dart';
 import 'package:BetaFitness/storage/event_list_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 
@@ -9,6 +10,7 @@ class StoreDateTime {
   String? storeDescription;
   DateTime? storeDate;
   bool? storeCheck;
+  GeoPoint? storeGeoPoint;
 
   final SingletonStorage storage;
   final EventStorage eventStorage;
@@ -29,6 +31,9 @@ class StoreDateTime {
   DateTime? get getStoreDate {
     return storeDate;
   }
+  GeoPoint? get getStoreGeoPoint {
+    return storeGeoPoint;
+  }
 
   void iterateEventItems(selectedDay, EventStorage eventListStorageInstance) {
     eventStorage.listOfEvents.clear();//at start of iterate function clear the list
@@ -46,10 +51,12 @@ class StoreDateTime {
         storeEventName = storage.events[i].eventName;
         storeDescription = storage.events[i].description;
         storeDate = storage.events[i].date;
+        storeGeoPoint = storage.events[i].location;
 
         newEventListStorageInstance.storedEventListName = storage.events[i].eventName;
         newEventListStorageInstance.storedEventListDate = storage.events[i].date;
         newEventListStorageInstance.storedEventListDescription = storage.events[i].description;
+        newEventListStorageInstance.storedGeoPointList = storage.events[i].location;
 
 
         eventStorage.storedEventName =
@@ -58,6 +65,8 @@ class StoreDateTime {
         getStoreDescription as String; // put events description into storage to be displayed in the ListedEventsMapWorkoutsPage
         eventStorage.storedDate =
         getStoreDate as DateTime; // put events DateTime into storage to be displayed in the ListedEventsMapWorkoutsPage
+        eventStorage.storedGeoPoint =
+        getStoreGeoPoint as GeoPoint;
 
         eventStorage.listOfEvents.insert(0, newEventListStorageInstance); //put instance of EventListStorage class into listOfEvents for listview builder
 

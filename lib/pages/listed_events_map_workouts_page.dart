@@ -118,6 +118,22 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      Text(
+                        "Longitude: ${widget.storeDateTime.eventStorage.listOfEvents[index].storedGeoPointList.longitude}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "Latitude: ${widget.storeDateTime.eventStorage.listOfEvents[index].storedGeoPointList.latitude}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
