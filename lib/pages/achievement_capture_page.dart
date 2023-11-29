@@ -50,37 +50,50 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
         future: _initializeControllerFeature,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return CameraPreview(_cameraController);
+            return Column(
+                children: [
+                  CameraPreview(_cameraController),
+                  Expanded(
+                    flex: 3,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(CircleBorder()),
+                        minimumSize: MaterialStateProperty.all(
+                            Size.square(MediaQuery.sizeOf(context).width/5)
+                        ),
+                        backgroundColor: MaterialStateProperty.all(Colors.white70),
+                      ),
+                      onPressed: () async {
+                        try {
+                          await _initializeControllerFeature;
+
+                          _cameraController.setFlashMode(FlashMode.off);
+                          final image = await _cameraController.takePicture();
+
+                          if (!mounted) return;
+
+                          await Navigator.pushNamed(
+                            context,
+                            displayCapturedAchievementPageRoute,
+                            arguments: CapturedAchievementArguments(
+                              image: image,
+                              updateList: widget.updateList,
+                            )
+                          );
+                        } catch (e) {
+                          print("ERROR $e");
+                        }
+                      },
+                      child: const Icon(Icons.camera_alt),
+                    ),
+                  ),
+                ]
+            );
           } else {
             return const Center(child: CircularProgressIndicator());
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          try {
-            await _initializeControllerFeature;
-
-            _cameraController.setFlashMode(FlashMode.off);
-            final image = await _cameraController.takePicture();
-
-            if (!mounted) return;
-
-            await Navigator.pushNamed(
-                context,
-                displayCapturedAchievementPageRoute,
-                arguments: CapturedAchievementArguments(
-                  image: image,
-                  updateList: widget.updateList,
-                )
-            );
-          } catch (e) {
-            print("ERROR $e");
-          }
-        },
-        child: const Icon(Icons.camera_alt),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

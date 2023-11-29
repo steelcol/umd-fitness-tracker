@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:BetaFitness/arguments/camera_arguments.dart';
 import 'package:BetaFitness/utilities/routes.dart';
-//import 'package:BetaFitness/controllers/achievement_controller.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -21,6 +20,7 @@ class _AchievementPageState extends State<AchievementPage> {
   void initState() {
     // TODO: initialize your data or perform any necessary actions
     super.initState();
+    setState(() {});
   }
 
   @override
