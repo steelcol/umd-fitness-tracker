@@ -19,3 +19,4 @@ const String achievementsPageRoute = '/achievements';
 const String achievementCapturePageRoute = '/achievementCapture';
 const String displayCapturedAchievementPageRoute = '/displayCapturedAchievement';
 const String selectWorkoutPageRoute = '/select';
+

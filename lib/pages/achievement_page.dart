@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:BetaFitness/arguments/camera_arguments.dart';
+import 'package:BetaFitness/controllers/achievement_controller.dart';
+// import 'package:BetaFitness/models/achievement_model.dart';
 import 'package:BetaFitness/utilities/routes.dart';
-//import 'package:BetaFitness/controllers/achievement_controller.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -17,11 +17,7 @@ class AchievementPage extends StatefulWidget {
 }
 
 class _AchievementPageState extends State<AchievementPage> {
-  @override
-  void initState() {
-    // TODO: initialize your data or perform any necessary actions
-    super.initState();
-  }
+  final AchievementController _achievementController = AchievementController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,70 +42,81 @@ class _AchievementPageState extends State<AchievementPage> {
             Container(
               padding: EdgeInsets.symmetric(vertical: 10),
               child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: widget.storage.achievements.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding:
-                      EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      child: SizedBox(
-                        height: 120,
-                        child: Card(
-                          color: Theme.of(context).primaryColor,
-                          elevation: 10,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Padding (
-                                      padding: EdgeInsets.all(10),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Theme.of(context).primaryColor,
-                                        ),
-                                        onPressed: () {
-                                          print("opens image later");
-                                        },
-                                        child: Image.memory(base64Decode(widget.storage.achievements[index].image)),
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: widget.storage.achievements.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    child: SizedBox(
+                      height: 120,
+                      child: Card(
+                        color: Theme.of(context).primaryColor,
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                        Theme.of(context).primaryColor,
+                                      ),
+                                      onPressed: () {
+                                        print("opens image later");
+                                      },
+                                      child: Image.memory(
+                                        base64Decode(widget
+                                            .storage
+                                            .achievements[index]
+                                            .image),
                                       ),
                                     ),
-                                    Padding(
-                                        padding:
-                                        EdgeInsets.symmetric(horizontal: 5)),
-                                    Column(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      children: [
-                                        Text(widget.storage
-                                            .achievements[index].description),
-                                        Text(widget.storage
-                                            .achievements[index].dateCaptured.toString())
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    EdgeInsets.symmetric(horizontal: 5),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(widget
+                                          .storage
+                                          .achievements[index]
+                                          .description),
+                                      Text(widget
+                                          .storage
+                                          .achievements[index]
+                                          .dateCaptured
+                                          .toString())
+                                    ],
+                                  ),
+                                ],
                               ),
-                              // IconButton(
-                              //     onPressed: () {
-                              //       _workoutController.deleteRunningWorkout(
-                              //           widget.storage.runningWorkouts[index]
-                              //       );
-                              //       updateList();
-                              //     },
-                              //     icon: Icon(Icons.delete))
-                            ],
-                          ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                _achievementController.deleteAchievement(
+                                    widget.storage.achievements[index]);
+                                widget.storage.updateAchievementData();
+                              },
+                              icon: Icon(Icons.delete, color: Colors.white),
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  }),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -132,7 +139,8 @@ class _AchievementPageState extends State<AchievementPage> {
           Icons.camera,
           color: Colors.white,
         ),
-        label: const Text('log achievement',
+        label: const Text(
+          'Log Achievement',
           style: TextStyle(
             color: Colors.white,
           ),

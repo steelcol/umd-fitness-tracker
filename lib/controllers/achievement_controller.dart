@@ -11,10 +11,30 @@ class AchievementController {
         .doc(userId)
         .collection('Achievements')
         .doc(userId)
-        .update({"AchievementList": FieldValue.arrayUnion([{
+        .update({
+      "AchievementList": FieldValue.arrayUnion([
+        {
           'Date': achievement.dateCaptured.millisecondsSinceEpoch,
           'Description': achievement.description,
           'Image': achievement.image,
-        }])});
+        }
+      ])
+    });
+  }
+
+  Future<void> deleteAchievement(Achievement achievement) async {
+    await dbRef
+        .doc(userId)
+        .collection('Achievements')
+        .doc(userId)
+        .update({
+      "AchievementList": FieldValue.arrayRemove([
+        {
+          'Date': achievement.dateCaptured.millisecondsSinceEpoch,
+          'Description': achievement.description,
+          'Image': achievement.image,
+        }
+      ])
+    });
   }
 }
