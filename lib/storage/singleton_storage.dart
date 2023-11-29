@@ -279,6 +279,8 @@ class SingletonStorage {
       catch (e) {
         throw new Future.error("ERROR $e");
       }
+    } else {
+      achievements = [];
     }
   }
 

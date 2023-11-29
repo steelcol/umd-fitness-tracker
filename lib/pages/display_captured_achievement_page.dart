@@ -42,22 +42,20 @@ class _DisplayCapturedAchievementPageState extends
       appBar: AppBar(
           title: const Text('BetaFitness')
       ),
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            Image.file(File(widget.image.path)),
-            Spacer(),
-            Row(
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints viewportConstraints) {
+          return ListView(
               children: [
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Retake'),
-                ),
                 Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  padding: EdgeInsets.all(15),
+                  child: Image.file(
+                    File(widget.image.path),
+                    width: viewportConstraints.maxWidth,
+                    scale: 0.55,
+                  ),
+                ),
+                Spacer(),
+                Column(
                     children: [
                       TextFormField(
                         controller: _descriptionField,
@@ -74,7 +72,10 @@ class _DisplayCapturedAchievementPageState extends
                         ),
                         decoration: InputDecoration(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width / 2,
+                            maxWidth: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 2 / 3,
                           ),
                           labelText: null,
                           labelStyle: TextStyle(
@@ -82,12 +83,13 @@ class _DisplayCapturedAchievementPageState extends
                             fontWeight: FontWeight.normal,
                           ),
                           border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.all(Radius.circular(2.0))
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.all(Radius.circular(2.0)),
                           ),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          floatingLabelBehavior: FloatingLabelBehavior
+                              .always,
                           hintText: 'Enter Description',
                           hintStyle: TextStyle(
                             color: Colors.grey,
@@ -95,28 +97,54 @@ class _DisplayCapturedAchievementPageState extends
                           ),
                         ),
                       ),
-                      ElevatedButton(
-                        child: Text('Submit'),
-                        onPressed: () async {
-                          _achievementController.addAchievement(
-                            new Achievement(
-                              dateCaptured: DateTime.now(),
-                              description: _descriptionField.text,
-                              image: base64Encode(await widget.image.readAsBytes()),
-                            )
-                          );
-                          widget.updateList();
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                        }
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment
+                                .spaceAround,
+                            children: [
+                              Spacer(),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(context).primaryColor,
+                                ),
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text(
+                                  'Retake',
+                                ),
+                              ),
+                              Spacer(),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(context).primaryColor,
+                                ),
+                                onPressed: () async {
+                                  _achievementController.addAchievement(
+                                      new Achievement(
+                                        dateCaptured: DateTime.now(),
+                                        description: _descriptionField
+                                            .text,
+                                        image: base64Encode(
+                                            await widget.image
+                                                .readAsBytes()),
+                                      )
+                                  );
+                                  widget.updateList();
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Submit'),
+                              ),
+                              Spacer(),
+                            ]
+                        ),
                       ),
                     ]
-                  ),
                 ),
               ]
-            ),
-          ]
-      ),
+          );
+        }
       ),
     );
   }
