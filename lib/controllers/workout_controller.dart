@@ -25,6 +25,7 @@ class WorkoutController {
           .set({'SavedWorkouts': FieldValue.arrayUnion([{
             'Distance': workout.distance,
             'WorkoutName': workout.workoutName,
+            'Date': workout.date.millisecondsSinceEpoch,
             'Type': 'Cardio'
           }])});
     }
@@ -36,6 +37,7 @@ class WorkoutController {
           .update({'SavedWorkouts': FieldValue.arrayUnion([{
             'Distance': workout.distance,
             'WorkoutName': workout.workoutName,
+            'Date': workout.date.millisecondsSinceEpoch,
             'Type': 'Cardio'
           }])});
     }
@@ -51,6 +53,7 @@ class WorkoutController {
       'SavedWorkouts': FieldValue.arrayRemove([{
         'Distance': workout.distance,
         'WorkoutName': workout.workoutName,
+        'Date': workout.date.millisecondsSinceEpoch,
         'Type': 'Cardio'
       }])});
   }
