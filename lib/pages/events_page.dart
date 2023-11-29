@@ -42,7 +42,7 @@ class _EventsPageState extends State<EventsPage>{
   }
 
   //method creates event, adding to database
-  void createEvent(){
+  void createEvent() async {
 
     String name = nameController.text;
     String desc = descController.text;
@@ -56,7 +56,7 @@ class _EventsPageState extends State<EventsPage>{
     controller.addEvent(event);
     // Then update the storage list
     print(event.date);
-    widget.storage.updateEventData();
+    await widget.storage.updateEventData();
     widget.updatePage();
   }
 

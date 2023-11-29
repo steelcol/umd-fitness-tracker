@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     infoArgs = InfoArguments(storage: storage, info: info);
     eventArgs = EventPageArguments(storage: storage, updatePage: updatePage);
     _loading = false;
-    _todayHasEvent = checkForEventToday();
+    _todayHasEvent = await checkForEventToday();
 
     if (!mounted) return;
     setState(() {});
@@ -45,8 +45,9 @@ class _HomePageState extends State<HomePage> {
 
   void updatePage() async {
     // Updates the page when the list of workouts is changed
+    await checkForEventToday();
+
     setState(() {
-      checkForEventToday();
     });
   }
 
@@ -58,7 +59,7 @@ class _HomePageState extends State<HomePage> {
     return randTip;
   }
 
-  bool checkForEventToday() {
+  Future<bool> checkForEventToday() {
     StoreDateTime home = new StoreDateTime(
         storage: storage,
         eventStorage: eventStorage
@@ -66,10 +67,10 @@ class _HomePageState extends State<HomePage> {
     EventStorage homeEventListStorage = new EventStorage();
     home.iterateEventItems(DateTime.now(), homeEventListStorage);
     if (home.getStoreCheck == true) {
-      return true;
+      return Future.value(true);
     }
     else  {
-      return false;
+      return Future.value(false);
     }
 } //check if there is an event for today
 
