@@ -115,9 +115,15 @@ class _HomePageState extends State<HomePage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Padding(
+              child: SingleChildScrollView(
+                physics: ScrollPhysics(),
+                child: Container(
+                  height: 200,
+
+                child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: _todayHasEvent ? Column(
+
                   children: [
                     Text(
                       "Today's Activity",
@@ -126,7 +132,11 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    ListView.builder(
+                  SizedBox(height: 10),
+                  SizedBox(
+                    height: 125,
+                    child: ListView.builder(
+                      //physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: eventStorage.listOfEvents
                           .length,
@@ -140,6 +150,7 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                     ),
+                  ),
                   ],
                 )
                 : Column(
@@ -155,6 +166,8 @@ class _HomePageState extends State<HomePage> {
                         "You have no events for today"
                     ),
                   ],
+                ),
+                ),
                 ),
               ),
             ),
