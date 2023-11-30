@@ -1,7 +1,8 @@
 import 'dart:convert';
+
 import 'package:BetaFitness/arguments/camera_arguments.dart';
 import 'package:BetaFitness/controllers/achievement_controller.dart';
-// import 'package:BetaFitness/models/achievement_model.dart';
+import 'package:BetaFitness/models/achievement_model.dart';
 import 'package:BetaFitness/utilities/routes.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,38 @@ class AchievementPage extends StatefulWidget {
 
 class _AchievementPageState extends State<AchievementPage> {
   final AchievementController _achievementController = AchievementController();
+
+  Future<bool?> _confirmDeleteAchievement(Achievement achievement) async {
+    return showDialog<bool?>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: Text('Are you sure you want to delete this achievement?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _deleteAchievement(achievement);
+                Navigator.of(context).pop(true);
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteAchievement(Achievement achievement) async {
+    await _achievementController.deleteAchievement(achievement);
+    widget.storage.updateAchievementData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,28 +107,20 @@ class _AchievementPageState extends State<AchievementPage> {
                                         print("opens image later");
                                       },
                                       child: Image.memory(
-                                        base64Decode(widget
-                                            .storage
-                                            .achievements[index]
-                                            .image),
-                                      ),
+                                          base64Decode(widget.storage
+                                              .achievements[index].image)),
                                     ),
                                   ),
                                   Padding(
-                                    padding:
-                                    EdgeInsets.symmetric(horizontal: 5),
-                                  ),
+                                      padding:
+                                      EdgeInsets.symmetric(horizontal: 5)),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(widget
-                                          .storage
-                                          .achievements[index]
-                                          .description),
-                                      Text(widget
-                                          .storage
-                                          .achievements[index]
-                                          .dateCaptured
+                                      Text(widget.storage
+                                          .achievements[index].description),
+                                      Text(widget.storage
+                                          .achievements[index].dateCaptured
                                           .toString())
                                     ],
                                   ),
@@ -103,10 +128,13 @@ class _AchievementPageState extends State<AchievementPage> {
                               ),
                             ),
                             IconButton(
-                              onPressed: () {
-                                _achievementController.deleteAchievement(
-                                    widget.storage.achievements[index]);
-                                widget.storage.updateAchievementData();
+                              onPressed: () async {
+                                bool? confirmed = await _confirmDeleteAchievement(
+                                  widget.storage.achievements[index],
+                                );
+                                if (confirmed ?? false) {
+                                  widget.storage.updateAchievementData();
+                                }
                               },
                               icon: Icon(Icons.delete, color: Colors.white),
                             ),
