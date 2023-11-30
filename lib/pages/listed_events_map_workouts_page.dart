@@ -1,12 +1,15 @@
 import 'package:BetaFitness/models/save_data_model.dart';
 import 'package:BetaFitness/storage/event_list_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:BetaFitness/storage/singleton_storage.dart';
 
 class ListedEventsMapWorkoutsPage extends StatefulWidget {
-  const ListedEventsMapWorkoutsPage({Key? key, required this.storeDateTime}) : super(key: key);
+  const ListedEventsMapWorkoutsPage({Key? key, required this.storeDateTime, required this.storage}) : super(key: key);
 
   final StoreDateTime storeDateTime;
-
+  final SingletonStorage storage;
 
   @override
   _ListedEventsMapWorkoutsPageState createState() => _ListedEventsMapWorkoutsPageState();
@@ -56,9 +59,29 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
 
   Widget _buildEventCard(EventListStorage eventStorage, int index) {
     return InkWell(
-        onTap: () {
+        onTap: () async {
           //thome!!! on pressed right here, go to google maps
+          Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+          String currentLng = position.longitude.toString();
+          String currentLat = position.latitude.toString();
+          String destinationLng = widget.storage.events[widget.storage.events.length-index-1].location.longitude.toString();
+          String destinationLat = widget.storage.events[widget.storage.events.length-index-1].location.latitude.toString();
 
+          final Uri googleMapsUrl = Uri.parse('https://www.google.com/maps/dir/?api=1&origin=' +
+              currentLat + //current latitude
+              ',' +
+              currentLng + //current longitude
+              ' &destination=' +
+              destinationLat + //event latitude
+              ',' +
+              destinationLng + //event longitude
+              '&travelmode=driving&dir_action=navigate');
+
+          if (await canLaunchUrl(googleMapsUrl)) {
+          await launchUrl(googleMapsUrl);
+          } else {
+          throw "Couldn't launch URL";
+          }
 
         },
      child: Container(
