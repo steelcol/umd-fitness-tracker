@@ -1,15 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:BetaFitness/controllers/achievement_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:BetaFitness/models/achievement_model.dart';
-import 'dart:io';
 
 class DisplayCapturedAchievementPage extends StatefulWidget {
-  DisplayCapturedAchievementPage({Key? key,
+  DisplayCapturedAchievementPage({
+    Key? key,
     required this.image,
-    required this.updateList
+    required this.updateList,
   })
       : super(key: key);
 
@@ -40,7 +41,7 @@ class _DisplayCapturedAchievementPageState extends
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('BetaFitness')
+        title: const Text('BetaFitness'),
       ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
@@ -54,7 +55,6 @@ class _DisplayCapturedAchievementPageState extends
                     scale: 0.55,
                   ),
                 ),
-                Spacer(),
                 Column(
                     children: [
                       TextFormField(
@@ -93,7 +93,7 @@ class _DisplayCapturedAchievementPageState extends
                           hintText: 'Enter Description',
                           hintStyle: TextStyle(
                             color: Colors.grey,
-                            fontSize: 10,
+                            fontSize: 12,
                           ),
                         ),
                       ),
@@ -109,7 +109,9 @@ class _DisplayCapturedAchievementPageState extends
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () => Navigator.of(context).pop(),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
                                 child: Text(
                                   'Retake',
                                 ),
@@ -120,15 +122,16 @@ class _DisplayCapturedAchievementPageState extends
                                   backgroundColor: Theme.of(context).primaryColor,
                                 ),
                                 onPressed: () async {
+                                  Achievement newAchievement = new Achievement(
+                                    dateCaptured: DateTime.now(),
+                                    description: _descriptionField
+                                        .text,
+                                    image: base64Encode(
+                                        await widget.image
+                                            .readAsBytes()),
+                                  );
                                   _achievementController.addAchievement(
-                                      new Achievement(
-                                        dateCaptured: DateTime.now(),
-                                        description: _descriptionField
-                                            .text,
-                                        image: base64Encode(
-                                            await widget.image
-                                                .readAsBytes()),
-                                      )
+                                    newAchievement
                                   );
                                   widget.updateList();
                                   Navigator.of(context).pop();
