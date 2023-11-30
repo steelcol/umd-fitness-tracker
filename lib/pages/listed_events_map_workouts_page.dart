@@ -1,14 +1,15 @@
 import 'package:BetaFitness/models/save_data_model.dart';
 import 'package:BetaFitness/storage/event_list_storage.dart';
 import 'package:flutter/material.dart';
-
-import '../storage/event_storage.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:BetaFitness/storage/singleton_storage.dart';
 
 class ListedEventsMapWorkoutsPage extends StatefulWidget {
-  const ListedEventsMapWorkoutsPage({Key? key, required this.storeDateTime}) : super(key: key);
+  const ListedEventsMapWorkoutsPage({Key? key, required this.storeDateTime, required this.storage}) : super(key: key);
 
   final StoreDateTime storeDateTime;
-
+  final SingletonStorage storage;
 
   @override
   _ListedEventsMapWorkoutsPageState createState() => _ListedEventsMapWorkoutsPageState();
@@ -21,41 +22,69 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
       appBar: AppBar(
         title: Text('Your Events'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Add more widgets as needed
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 10,
-              ),
-              child: SingleChildScrollView(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: widget.storeDateTime.eventStorage.listOfEvents
-                    .length,
-                itemBuilder: (context, index) {
-                  print(widget.storeDateTime.eventStorage.listOfEvents.length);
-                  return _buildEventCard(
-                      widget.storeDateTime.eventStorage
-                          .listOfEvents[index],
-                      index
-                  );
-                },
-              ),
-      ),
-            ),
-          ],
+      body: SingleChildScrollView(
+        physics: ScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Add more widgets as needed
+              Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 10,
+                ),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: widget.storeDateTime.eventStorage.listOfEvents
+                      .length,
+                  itemBuilder: (context, index) {
+                    print(widget.storeDateTime.eventStorage.listOfEvents.length);
+                    return _buildEventCard(
+                        widget.storeDateTime.eventStorage
+                            .listOfEvents[index],
+                        index
+                    );
+                  },
+                ),
+        ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildEventCard(EventListStorage eventStorage, int index) {
-    return Container(
+    return InkWell(
+        onTap: () async {
+          //thome!!! on pressed right here, go to google maps
+          Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+          String currentLng = position.longitude.toString();
+          String currentLat = position.latitude.toString();
+          String destinationLng = widget.storage.events[widget.storage.events.length-index-1].location.longitude.toString();
+          String destinationLat = widget.storage.events[widget.storage.events.length-index-1].location.latitude.toString();
+
+          final Uri googleMapsUrl = Uri.parse('https://www.google.com/maps/dir/?api=1&origin=' +
+              currentLat + //current latitude
+              ',' +
+              currentLng + //current longitude
+              ' &destination=' +
+              destinationLat + //event latitude
+              ',' +
+              destinationLng + //event longitude
+              '&travelmode=driving&dir_action=navigate');
+
+          if (await canLaunchUrl(googleMapsUrl)) {
+          await launchUrl(googleMapsUrl);
+          } else {
+          throw "Couldn't launch URL";
+          }
+
+        },
+     child: Container(
       margin: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.grey,
@@ -114,6 +143,22 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      Text(
+                        "Longitude: ${widget.storeDateTime.eventStorage.listOfEvents[index].storedGeoPointList.longitude}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "Latitude: ${widget.storeDateTime.eventStorage.listOfEvents[index].storedGeoPointList.latitude}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -122,6 +167,7 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
           ),
         ],
       ),
+    )
     );
   }
 }
