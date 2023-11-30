@@ -12,16 +12,35 @@ class WorkoutController {
 
   // TODO: Need to not use array union if we want duplicate values
   // Adds a workout to the database
+
   Future<void> addRunningWorkout(RunningWorkout workout) async {
-    await dbRef
-        .doc(userId)
-        .collection('Workouts')
-        .doc(userId)
-        .update({'SavedWorkouts': FieldValue.arrayUnion([{
-          'Distance': workout.distance,
-          'WorkoutName': workout.workoutName,
-          'Type': 'Cardio'
-        }])});
+     //every user must have an email
+    final snapshot = await dbRef.doc(userId).collection('Workouts').get();
+    if (snapshot.size == 0) {
+      // Doesn't exists
+      await dbRef
+          .doc(userId)
+          .collection('Workouts')
+          .doc(userId)
+          .set({'SavedWorkouts': FieldValue.arrayUnion([{
+            'Distance': workout.distance,
+            'WorkoutName': workout.workoutName,
+            'Date': workout.date.millisecondsSinceEpoch,
+            'Type': 'Cardio'
+          }])});
+    }
+    else {
+      await dbRef
+          .doc(userId)
+          .collection('Workouts')
+          .doc(userId)
+          .update({'SavedWorkouts': FieldValue.arrayUnion([{
+            'Distance': workout.distance,
+            'WorkoutName': workout.workoutName,
+            'Date': workout.date.millisecondsSinceEpoch,
+            'Type': 'Cardio'
+          }])});
+    }
   }
 
   Future<void> deleteRunningWorkout(RunningWorkout workout) async {
@@ -34,38 +53,73 @@ class WorkoutController {
       'SavedWorkouts': FieldValue.arrayRemove([{
         'Distance': workout.distance,
         'WorkoutName': workout.workoutName,
+        'Date': workout.date.millisecondsSinceEpoch,
         'Type': 'Cardio'
       }])});
   }
 
   Future<void> addWeightWorkout(List<SavedExercise> workoutToCreate, String workoutName) async {
-    if(workoutToCreate.length != 0) {
-      try {
-        List<Map<String, dynamic>> exercises = [];
+    final snapshot = await dbRef.doc(userId).collection('Workouts').get();
+    if (snapshot.size == 0) {
+      if(workoutToCreate.length != 0) {
+        try {
+          List<Map<String, dynamic>> exercises = [];
 
-        for (var exercise in workoutToCreate) {
-          exercises.add({
-           'ExerciseName': exercise.name,
-           'RepCount': exercise.repCount,
-           'SetCount': exercise.setCount
-          });
+          for (var exercise in workoutToCreate) {
+            exercises.add({
+             'ExerciseName': exercise.name,
+             'RepCount': exercise.repCount,
+             'SetCount': exercise.setCount
+            });
+          }
+          await dbRef
+              .doc(userId)
+              .collection('Workouts')
+              .doc(userId)
+              .set({'SavedWorkouts': FieldValue.arrayUnion([{
+                'WorkoutName': workoutName,
+                'Type': 'Weight',
+                'Exercises': exercises
+              }])});
         }
-        await dbRef
-            .doc(userId)
-            .collection('Workouts')
-            .doc(userId)
-            .update({'SavedWorkouts': FieldValue.arrayUnion([{
-              'WorkoutName': workoutName,
-              'Type': 'Weight',
-              'Exercises': exercises
-            }])});
+        catch (e) {
+          throw new Future.error("ERROR: $e");
+        }
       }
-      catch (e) {
-        throw new Future.error("ERROR: $e");
+      else {
+        print('List is empty');
       }
+
     }
     else {
-      print('List is empty');
+      if(workoutToCreate.length != 0) {
+        try {
+          List<Map<String, dynamic>> exercises = [];
+
+          for (var exercise in workoutToCreate) {
+            exercises.add({
+             'ExerciseName': exercise.name,
+             'RepCount': exercise.repCount,
+             'SetCount': exercise.setCount
+            });
+          }
+          await dbRef
+              .doc(userId)
+              .collection('Workouts')
+              .doc(userId)
+              .update({'SavedWorkouts': FieldValue.arrayUnion([{
+                'WorkoutName': workoutName,
+                'Type': 'Weight',
+                'Exercises': exercises
+              }])});
+        }
+        catch (e) {
+          throw new Future.error("ERROR: $e");
+        }
+      }
+      else {
+        print('List is empty');
+      }
     }
   }
 

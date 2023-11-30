@@ -84,7 +84,8 @@ class SingletonStorage {
             if (element['Type'] == 'Cardio') {
               RunningWorkout workout = new RunningWorkout(
                   workoutName: element['WorkoutName'],
-                  distance: element['Distance'].toDouble()
+                  distance: element['Distance'].toDouble(),
+                  date: DateTime.fromMillisecondsSinceEpoch(element['Date']),
               );
               runningWorkouts.add(workout);
             }
@@ -279,6 +280,8 @@ class SingletonStorage {
       catch (e) {
         throw new Future.error("ERROR $e");
       }
+    } else {
+      achievements = [];
     }
   }
 

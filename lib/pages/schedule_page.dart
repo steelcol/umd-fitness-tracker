@@ -1,20 +1,24 @@
 import 'package:BetaFitness/arguments/event_arguments.dart';
 import 'package:BetaFitness/arguments/storage_arguments.dart';
-import 'package:BetaFitness/storage/event_list_storage.dart';
 import 'package:BetaFitness/storage/event_storage.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:BetaFitness/utilities/utils_for_schedule_page.dart';
 import 'package:BetaFitness/utilities/utils_for_schedule_page.dart' hide Event;
+import '../arguments/events_page_arguments.dart';
 import '../utilities/routes.dart';
 import 'package:BetaFitness/models/save_data_model.dart';
 
 
 class SchedulePage extends StatefulWidget {
-  const SchedulePage({Key? key, required this.storage}) : super(key: key);
+  const SchedulePage({Key? key,
+    required this.storage,
+    required this.updatePage
+  }) : super(key: key);
 
   final SingletonStorage storage;
+  final Function updatePage;
 
   State<SchedulePage> createState() => _SchedulePageState();
 }
@@ -56,10 +60,6 @@ class _SchedulePageState extends State<SchedulePage> {
           setState(() {
             _selectedDay = selectedDay;
             _focusedDay = focusedDay; // update `_focusedDay` here as well
-            //StoreDateTime test = new StoreDateTime(
-            //  storage: widget.storage,
-            //  eventStorage: eventStorage
-            //);
             test.iterateEventItems(selectedDay, schedulePageEventListStorage);
             print("iteration done");
             if(test.checkSelectedDayIsNotNull() == true) {
@@ -81,15 +81,17 @@ class _SchedulePageState extends State<SchedulePage> {
         },
 
         onPageChanged: (focusedDay) {
-          // No need to call `setState()` here
           _focusedDay = focusedDay;
         },
 
         ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          final args = StorageArguments(storage: widget.storage);
-          Navigator.pushNamed(context, eventsPageRoute, arguments: StorageArguments(storage: widget.storage));
+          final args = EventPageArguments(
+              storage: widget.storage,
+              updatePage: widget.updatePage
+          );
+          Navigator.pushNamed(context, eventsPageRoute, arguments: args);
         },
         icon: Icon(Icons.add),
 

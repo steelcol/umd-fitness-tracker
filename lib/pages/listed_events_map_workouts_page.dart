@@ -2,8 +2,6 @@ import 'package:BetaFitness/models/save_data_model.dart';
 import 'package:BetaFitness/storage/event_list_storage.dart';
 import 'package:flutter/material.dart';
 
-import '../storage/event_storage.dart';
-
 class ListedEventsMapWorkoutsPage extends StatefulWidget {
   const ListedEventsMapWorkoutsPage({Key? key, required this.storeDateTime}) : super(key: key);
 
@@ -21,41 +19,49 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
       appBar: AppBar(
         title: Text('Your Events'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Add more widgets as needed
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 10,
-              ),
-              child: SingleChildScrollView(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: widget.storeDateTime.eventStorage.listOfEvents
-                    .length,
-                itemBuilder: (context, index) {
-                  print(widget.storeDateTime.eventStorage.listOfEvents.length);
-                  return _buildEventCard(
-                      widget.storeDateTime.eventStorage
-                          .listOfEvents[index],
-                      index
-                  );
-                },
-              ),
-      ),
-            ),
-          ],
+      body: SingleChildScrollView(
+        physics: ScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Add more widgets as needed
+              Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 10,
+                ),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: widget.storeDateTime.eventStorage.listOfEvents
+                      .length,
+                  itemBuilder: (context, index) {
+                    print(widget.storeDateTime.eventStorage.listOfEvents.length);
+                    return _buildEventCard(
+                        widget.storeDateTime.eventStorage
+                            .listOfEvents[index],
+                        index
+                    );
+                  },
+                ),
+        ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildEventCard(EventListStorage eventStorage, int index) {
-    return Container(
+    return InkWell(
+        onTap: () {
+          //thome!!! on pressed right here, go to google maps
+
+
+        },
+     child: Container(
       margin: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.grey,
@@ -114,6 +120,22 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      Text(
+                        "Longitude: ${widget.storeDateTime.eventStorage.listOfEvents[index].storedGeoPointList.longitude}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "Latitude: ${widget.storeDateTime.eventStorage.listOfEvents[index].storedGeoPointList.latitude}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -122,6 +144,7 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
           ),
         ],
       ),
+    )
     );
   }
 }

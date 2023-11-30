@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:BetaFitness/arguments/events_page_arguments.dart';
 import 'package:BetaFitness/arguments/storage_arguments.dart';
 import 'package:BetaFitness/arguments/info_arguments.dart';
 import 'package:BetaFitness/controllers/message_controller.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
 import '../models/save_data_model.dart';
+import '../storage/event_list_storage.dart';
 import '../storage/event_storage.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   late bool _todayHasEvent;
   late StorageArguments args;
   late InfoArguments infoArgs;
+  late EventPageArguments eventArgs;
   EventStorage eventStorage = new EventStorage();
 
 
@@ -35,11 +38,20 @@ class _HomePageState extends State<HomePage> {
     info = await WorkoutInformation.create();
     args = StorageArguments(storage: storage);
     infoArgs = InfoArguments(storage: storage, info: info);
+    eventArgs = EventPageArguments(storage: storage, updatePage: updatePage);
     _loading = false;
-    _todayHasEvent = checkForEventToday();
+    _todayHasEvent = await checkForEventToday();
 
     if (!mounted) return;
     setState(() {});
+  }
+
+  void updatePage() async {
+    // Updates the page when the list of workouts is changed
+    await checkForEventToday();
+
+    setState(() {
+    });
   }
 
   String getRandomFitnessTip() {
@@ -50,7 +62,7 @@ class _HomePageState extends State<HomePage> {
     return randTip;
   }
 
-  bool checkForEventToday() {
+  Future<bool> checkForEventToday() {
     StoreDateTime home = new StoreDateTime(
         storage: storage,
         eventStorage: eventStorage
@@ -58,12 +70,10 @@ class _HomePageState extends State<HomePage> {
     EventStorage homeEventListStorage = new EventStorage();
     home.iterateEventItems(DateTime.now(), homeEventListStorage);
     if (home.getStoreCheck == true) {
-      print("returned true"); // debuggin
-      return true;
+      return Future.value(true);
     }
     else  {
-      print("returned false"); // debuggin
-      return false;
+      return Future.value(false);
     }
 } //check if there is an event for today
 
@@ -111,9 +121,15 @@ class _HomePageState extends State<HomePage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Padding(
+              child: SingleChildScrollView(
+                physics: ScrollPhysics(),
+                child: Container(
+                  height: 200,
+
+                child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: _todayHasEvent ? Column(
+
                   children: [
                     Text(
                       "Today's Activity",
@@ -122,10 +138,25 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 16),
-                    // Add content related to today's activity here
-                    Text("Events for today: " + eventStorage.storedEventName),
-                    Text('Event Description: ' + eventStorage.storedEventDescription),
+                  SizedBox(height: 10),
+                  SizedBox(
+                    height: 125,
+                    child: ListView.builder(
+                      //physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: eventStorage.listOfEvents
+                          .length,
+                      itemBuilder: (context, index) {
+                        print(eventStorage
+                            .listOfEvents[index]);
+                        return _buildEventCard(
+                            eventStorage
+                                .listOfEvents[index],
+                            index
+                        );
+                      },
+                    ),
+                  ),
                   ],
                 )
                 : Column(
@@ -141,6 +172,8 @@ class _HomePageState extends State<HomePage> {
                         "You have no events for today"
                     ),
                   ],
+                ),
+                ),
                 ),
               ),
             ),
@@ -170,10 +203,11 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildActionButton(
+                _buildActionButtonEvent(
                   icon: Icons.access_alarm_outlined,
                   label: "Schedule",
                   route: schedulePageRoute,
+                  eventArgs: eventArgs
                 ),
                 _buildActionButton(
                   icon: Icons.data_usage,
@@ -212,9 +246,54 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildActionButton({required IconData icon, required String label, required String route, InfoArguments? infoArgs}) {
+  Widget _buildActionButton({required IconData icon,
+    required String label,
+    required String route,
+    InfoArguments? infoArgs
+  }) {
     return ElevatedButton(
-      onPressed: () => Navigator.pushNamed(context, route, arguments: infoArgs == null ? args : infoArgs),
+      onPressed: () => Navigator.pushNamed(
+          context,
+          route,
+          arguments: infoArgs == null ? args : infoArgs
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: EdgeInsets.all(0), // Remove padding
+        fixedSize: Size(80, 80), // Set a smaller fixed size for all buttons
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Allow the column to shrink
+        children: [
+          Container(
+            width: 40, // Adjust the icon size
+            height: 40,
+            child: Icon(icon, size: 24),
+          ),
+          SizedBox(height: 4), // Adjust the spacing
+          Text(
+            label,
+            style: TextStyle(fontSize: 12), // Adjust the label font size
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButtonEvent({required IconData icon,
+    required String label,
+    required String route,
+    required EventPageArguments eventArgs
+  }) {
+    return ElevatedButton(
+      onPressed: () => Navigator.pushNamed(
+          context,
+          route,
+          arguments: eventArgs
+      ),
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
@@ -245,7 +324,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 11.4),
       child: ElevatedButton.icon(
-        onPressed: () => Navigator.pushNamed(context, route, arguments: args), 
+        onPressed: () => Navigator.pushNamed(context, route, arguments: args),
         icon: Icon(icon),
         label: Text(label),
         style: ElevatedButton.styleFrom(
@@ -256,6 +335,75 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildEventCard(EventListStorage eventListStorage, int index) {
+    return InkWell(
+        onTap: () {
+          //thome!!! on pressed right here, go to google maps
+
+        },
+        child: Container(
+          margin: EdgeInsets.only(bottom: 5),
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                left: 0,
+                top: 0,
+                bottom: 0,
+                child: Container(
+                  width: 1, // Width/color highlight
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(6),
+                child: Row(
+                  children: [
+                    Text(
+                      "${index + 1}.",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(width: 4), // Space from highlight to index
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Event Name: " + eventStorage.listOfEvents[index].storedEventListName,//widget.storeDateTime.eventStorage.listOfEvents[index].storedEventListName,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            "Description: " + eventStorage.listOfEvents[index].storedEventListDescription,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
     );
   }
 
