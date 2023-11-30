@@ -64,7 +64,7 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
      child: Container(
       margin: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: Colors.grey,
+        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Stack(
@@ -75,7 +75,7 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
             bottom: 0,
             child: Container(
               width: 2, // Width/color highlight
-              color: Colors.white,
+              color: Theme.of(context).primaryColor,
             ),
           ),
           Padding(
