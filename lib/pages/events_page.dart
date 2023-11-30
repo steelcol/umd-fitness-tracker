@@ -95,16 +95,6 @@ class _EventsPageState extends State<EventsPage> {
               const SizedBox(height: 16.0),
               _buildActionButton(createEvent, createText),
               const SizedBox(height: 16.0),
-              _buildActionButton(
-                    () {
-                  Navigator.pushNamed(
-                    context,
-                    directionsTemplatePageRoute,
-                    arguments: StorageArguments(storage: widget.storage),
-                  );
-                },
-                'Open Route',
-              ),
             ],
           ),
         ),
