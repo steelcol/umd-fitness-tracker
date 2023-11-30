@@ -19,34 +19,36 @@ class _ListedEventsMapWorkoutsPageState extends State<ListedEventsMapWorkoutsPag
       appBar: AppBar(
         title: Text('Your Events'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Add more widgets as needed
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 10,
-              ),
-              child: SingleChildScrollView(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: widget.storeDateTime.eventStorage.listOfEvents
-                    .length,
-                itemBuilder: (context, index) {
-                  print(widget.storeDateTime.eventStorage.listOfEvents.length);
-                  return _buildEventCard(
-                      widget.storeDateTime.eventStorage
-                          .listOfEvents[index],
-                      index
-                  );
-                },
-              ),
-      ),
-            ),
-          ],
+      body: SingleChildScrollView(
+        physics: ScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Add more widgets as needed
+              Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 10,
+                ),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: widget.storeDateTime.eventStorage.listOfEvents
+                      .length,
+                  itemBuilder: (context, index) {
+                    print(widget.storeDateTime.eventStorage.listOfEvents.length);
+                    return _buildEventCard(
+                        widget.storeDateTime.eventStorage
+                            .listOfEvents[index],
+                        index
+                    );
+                  },
+                ),
+        ),
+            ],
+          ),
         ),
       ),
     );
