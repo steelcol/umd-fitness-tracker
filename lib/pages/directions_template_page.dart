@@ -13,12 +13,17 @@ class DirectionsTemplatePage extends StatefulWidget {
   State<DirectionsTemplatePage> createState() => _DirectionsTemplatePageState();
 }
 
+
+
 class _DirectionsTemplatePageState extends State<DirectionsTemplatePage>{
 
-  Future<void> checkPermission() async {
-    var permission = await Geolocator.checkPermission();
+
+
+  Future<void> permissions() async {
+
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
+      LocationPermission permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         // Permissions are denied, next time you could try
         // requesting permissions again (this is also where
@@ -29,10 +34,10 @@ class _DirectionsTemplatePageState extends State<DirectionsTemplatePage>{
 
       }
     }
+
   }
 
   Widget build(BuildContext context) {
-    print('button?');
     return Scaffold(
         appBar: AppBar(
           title: const Text('BetaFitness'),
@@ -52,13 +57,13 @@ class _DirectionsTemplatePageState extends State<DirectionsTemplatePage>{
             String destinationLat = widget.storage.events[1].location.latitude.toString();
 
             final Uri googleMapsUrl = Uri.parse('https://www.google.com/maps/dir/?api=1&origin=' +
-                currentLat + //current longitude
+                currentLat + //current latitude
                 ',' +
-                currentLng + //current latitude
+                currentLng + //current longitude
                 ' &destination=' +
-                destinationLat + //event longitude
+                destinationLat + //event latitude
                 ',' +
-                destinationLng + //event latitude
+                destinationLng + //event longitude
                 '&travelmode=driving&dir_action=navigate');
 
             if (await canLaunchUrl(googleMapsUrl)) {
