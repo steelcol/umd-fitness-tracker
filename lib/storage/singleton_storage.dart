@@ -13,7 +13,7 @@ class SingletonStorage {
   // Getters do not have to be made they exists by default
   late List<RunningWorkout> runningWorkouts;
   late List<WeightWorkout> weightWorkouts;
-  late List<CompletedWorkout> completedWorkouts; 
+  late List<CompletedWorkout> completedWorkouts;
   late List<Event> events;
   late List<FitnessTip> fitnessTips;
   late List<Achievement> achievements;
@@ -76,10 +76,10 @@ class SingletonStorage {
         runningWorkouts = [];
 
         await dbRef
-        .doc(userId)
-        .collection('Workouts')
-        .doc(userId)
-        .get().then((value) {
+            .doc(userId)
+            .collection('Workouts')
+            .doc(userId)
+            .get().then((value) {
           List.from(value.data()!['SavedWorkouts']).forEach((element) {
             if (element['Type'] == 'Cardio') {
               RunningWorkout workout = new RunningWorkout(
@@ -102,17 +102,17 @@ class SingletonStorage {
 
   Future<void> _getWeightWorkouts() async {
     // Check if doc exists then grab events
-    bool weightExists = await _checkExist('Workouts'); 
+    bool weightExists = await _checkExist('Workouts');
 
     if (weightExists) {
       try {
         weightWorkouts = [];
 
         await dbRef
-        .doc(userId)
-        .collection('Workouts')
-        .doc(userId)
-        .get().then((value) {
+            .doc(userId)
+            .collection('Workouts')
+            .doc(userId)
+            .get().then((value) {
           List.from(value.data()!['SavedWorkouts']).forEach((element) {
             if (element['Type'] == 'Weight') {
               // Make list to add to exercises
@@ -121,15 +121,15 @@ class SingletonStorage {
               List<dynamic> elementExercises = element['Exercises'];
               elementExercises.forEach( (element) {
                 SavedExercise exercise = new SavedExercise(
-                  name: element['ExerciseName'],
-                  setCount: element['SetCount'],
-                  repCount: element['RepCount']
+                    name: element['ExerciseName'],
+                    setCount: element['SetCount'],
+                    repCount: element['RepCount']
                 );
                 exercises.add(exercise);
               });
               WeightWorkout workout = new WeightWorkout(
-                workoutName: element['WorkoutName'],
-                exercises: exercises
+                  workoutName: element['WorkoutName'],
+                  exercises: exercises
               );
               weightWorkouts.add(workout);
             }
@@ -151,24 +151,24 @@ class SingletonStorage {
 
     if (eventExists) {
       try {
-       events = [];
+        events = [];
 
-       await dbRef
-       .doc(userId)
-       .collection('Events')
-       .doc(userId)
-       .get().then((value) {
-         List.from(value.data()!['EventList']).forEach((element) {
-           Event event = new Event(
-             eventName: element['EventName'],
-             description: element['Description'],
-             date: DateTime.fromMillisecondsSinceEpoch(element['Date']),
-             location: element['Location']
-           );
+        await dbRef
+            .doc(userId)
+            .collection('Events')
+            .doc(userId)
+            .get().then((value) {
+          List.from(value.data()!['EventList']).forEach((element) {
+            Event event = new Event(
+                eventName: element['EventName'],
+                description: element['Description'],
+                date: DateTime.fromMillisecondsSinceEpoch(element['Date']),
+                location: element['Location']
+            );
 
-           events.add(event);
-         });
-       });
+            events.add(event);
+          });
+        });
       }
       catch (e) {
         throw new Future.error("ERROR $e");
@@ -182,10 +182,10 @@ class SingletonStorage {
   Future<void> _getFitnessTips() async {
     //check if FitnessTips exists
     DocumentSnapshot<Map<String, dynamic>> document =
-      await FirebaseFirestore
-          .instance.collection('FitnessTips')
-          .doc('Tips')
-          .get();
+    await FirebaseFirestore
+        .instance.collection('FitnessTips')
+        .doc('Tips')
+        .get();
     bool fitnessExists = document.exists;
 
     if (fitnessExists) {
@@ -196,11 +196,11 @@ class SingletonStorage {
             .instance.collection('FitnessTips')
             .doc('Tips')
             .get().then((value) {
-              List.from(value.data()!['FitnessTips']).forEach((element) {
-                FitnessTip tip = new FitnessTip(tip: element.toString());
-                fitnessTips.add(tip);
-              });
-            });
+          List.from(value.data()!['FitnessTips']).forEach((element) {
+            FitnessTip tip = new FitnessTip(tip: element.toString());
+            fitnessTips.add(tip);
+          });
+        });
       } catch (e) {
         throw new Future.error("ERROR $e");
       }
@@ -215,34 +215,34 @@ class SingletonStorage {
 
     if (eventExists) {
       try {
-       completedWorkouts = [];
+        completedWorkouts = [];
 
-       await dbRef
-       .doc(userId)
-       .collection('CompletedWorkouts')
-       .doc(userId)
-       .get().then((value) {
-         List.from(value.data()!['Workouts']).forEach((element) {
+        await dbRef
+            .doc(userId)
+            .collection('CompletedWorkouts')
+            .doc(userId)
+            .get().then((value) {
+          List.from(value.data()!['Workouts']).forEach((element) {
             // Make list to add to exercises
             Map<String, List<int>> loggedExercises = {};
             Map<String, dynamic> tempList = element['Exercises'];
-              tempList.forEach( (exercise, weights) {
-                List<int> weightList = [];
-                weights.forEach( (value) {
-                  weightList.add(value);
-                });
-                loggedExercises[exercise] = weightList;
+            tempList.forEach( (exercise, weights) {
+              List<int> weightList = [];
+              weights.forEach( (value) {
+                weightList.add(value);
+              });
+              loggedExercises[exercise] = weightList;
             });
 
-           CompletedWorkout workout = new CompletedWorkout(
-            uuid: element['UniqueId'],
-            date: DateTime.fromMillisecondsSinceEpoch(element['Date']),
-            exerciseWeights: loggedExercises,
-           );
+            CompletedWorkout workout = new CompletedWorkout(
+              uuid: element['UniqueId'],
+              date: DateTime.fromMillisecondsSinceEpoch(element['Date']),
+              exerciseWeights: loggedExercises,
+            );
 
-           completedWorkouts.add(workout);
-         });
-       });
+            completedWorkouts.add(workout);
+          });
+        });
       }
       catch (e) {
         throw new Future.error("ERROR $e");
@@ -266,14 +266,14 @@ class SingletonStorage {
             .collection('Achievements')
             .doc(userId)
             .get().then((value) {
-           List.from(value.data()!['AchievementList']).forEach((element) {
-             Achievement achievement = new Achievement(
-                 dateCaptured: DateTime.fromMillisecondsSinceEpoch(element['Date']),
-                 description: element['Description'],
-                 image: element['Image']
-             );
-             achievements.add(achievement);
-           });
+          List.from(value.data()!['AchievementList']).forEach((element) {
+            Achievement achievement = new Achievement(
+                dateCaptured: DateTime.fromMillisecondsSinceEpoch(element['Date']),
+                description: element['Description'],
+                image: element['Image']
+            );
+            achievements.add(achievement);
+          });
         });
       }
       catch (e) {

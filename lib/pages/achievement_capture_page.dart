@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:BetaFitness/arguments/captured_achievement_arguments.dart';
 
 class AchievementCapturePage extends StatefulWidget {
-  AchievementCapturePage({Key? key,
+  AchievementCapturePage({
+    Key? key,
     required this.camera,
-    required this.updateList
+    required this.updateList,
   }) : super(key: key);
 
   final CameraDescription camera;
@@ -26,8 +27,8 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
 
     // create cameraController
     _cameraController = CameraController(
-        widget.camera,
-        ResolutionPreset.low,
+      widget.camera,
+      ResolutionPreset.low,
     );
 
     _initializeControllerFeature = _cameraController.initialize();
@@ -42,10 +43,8 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold (
-      appBar: AppBar(
-        title: const Text('BetaFitness')
-      ),
+    return Scaffold(
+      appBar: AppBar(title: const Text('BetaFitness')),
       body: FutureBuilder<void>(
         future: _initializeControllerFeature,
         builder: (context, snapshot) {
@@ -56,45 +55,35 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          try {
-            await _initializeControllerFeature;
+      floatingActionButton: Container(
+        alignment: Alignment.bottomCenter,
+        margin: const EdgeInsets.only(bottom: 100),
+        child: FloatingActionButton(
+          onPressed: () async {
+            try {
+              await _initializeControllerFeature;
 
-            _cameraController.setFlashMode(FlashMode.off);
-            final image = await _cameraController.takePicture();
+              _cameraController.setFlashMode(FlashMode.off);
+              final image = await _cameraController.takePicture();
 
-            if (!mounted) return;
+              if (!mounted) return;
 
-            await Navigator.pushNamed(
+              await Navigator.pushNamed(
                 context,
                 displayCapturedAchievementPageRoute,
                 arguments: CapturedAchievementArguments(
                   image: image,
                   updateList: widget.updateList,
-                )
-            );
-          } catch (e) {
-            print("ERROR $e");
-          }
-        },
-        child: const Icon(Icons.camera_alt),
+                ),
+              );
+            } catch (e) {
+              print("ERROR $e");
+            }
+          },
+          child: Icon(Icons.camera_alt, size: 40),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
-
-// class DisplayCapturedAchievement extends StatelessWidget{
-//   final XFile image;
-//
-//   const DisplayCapturedAchievement({Key? key, required this.image}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('BetaFitness')),
-//       body: Image.file(image as File),
-//     );
-//   }
-// }
