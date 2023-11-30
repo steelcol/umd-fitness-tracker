@@ -6,7 +6,7 @@ import 'package:BetaFitness/arguments/captured_achievement_arguments.dart';
 class AchievementCapturePage extends StatefulWidget {
   AchievementCapturePage({Key? key,
     required this.camera,
-    required this.updateList
+    required this.updateList,
   }) : super(key: key);
 
   final CameraDescription camera;
@@ -97,17 +97,3 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
     );
   }
 }
-
-// class DisplayCapturedAchievement extends StatelessWidget{
-//   final XFile image;
-//
-//   const DisplayCapturedAchievement({Key? key, required this.image}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('BetaFitness')),
-//       body: Image.file(image as File),
-//     );
-//   }
-// }

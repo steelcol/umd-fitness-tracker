@@ -16,6 +16,12 @@ class AchievementPage extends StatefulWidget {
 }
 
 class _AchievementPageState extends State<AchievementPage> {
+
+  void updateAchievements() async {
+    await widget.storage.updateAchievementData();
+    this.setState(() {});
+  }
+
   @override
   void initState() {
     // TODO: initialize your data or perform any necessary actions
@@ -75,7 +81,16 @@ class _AchievementPageState extends State<AchievementPage> {
                                           backgroundColor: Theme.of(context).primaryColor,
                                         ),
                                         onPressed: () {
-                                          print("opens image later");
+                                          showDialog(
+                                            useSafeArea: false,
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              content:  Image.memory(
+                                                base64Decode(widget.storage.achievements[index].image),
+                                                scale: .1,
+                                              ),
+                                            )
+                                          );
                                         },
                                         child: Image.memory(base64Decode(widget.storage.achievements[index].image)),
                                       ),
@@ -96,14 +111,6 @@ class _AchievementPageState extends State<AchievementPage> {
                                   ],
                                 ),
                               ),
-                              // IconButton(
-                              //     onPressed: () {
-                              //       _workoutController.deleteRunningWorkout(
-                              //           widget.storage.runningWorkouts[index]
-                              //       );
-                              //       updateList();
-                              //     },
-                              //     icon: Icon(Icons.delete))
                             ],
                           ),
                         ),
@@ -123,9 +130,9 @@ class _AchievementPageState extends State<AchievementPage> {
             achievementCapturePageRoute,
             arguments: CameraArguments(
               camera: usableCamera,
-              updateList: widget.storage.updateAchievementData,
+              updateList: updateAchievements,
             ),
-          );
+          ).then((_) => setState(() {}));
         },
         backgroundColor: Theme.of(context).primaryColor,
         icon: const Icon(
