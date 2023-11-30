@@ -9,7 +9,7 @@ import 'dart:io';
 class DisplayCapturedAchievementPage extends StatefulWidget {
   DisplayCapturedAchievementPage({Key? key,
     required this.image,
-    required this.updateList
+    required this.updateList,
   })
       : super(key: key);
 
@@ -34,6 +34,7 @@ class _DisplayCapturedAchievementPageState extends
   initState() {
     super.initState();
     setState(() {});
+    //widget.cameraController.dispose();
   }
 
   @override
@@ -54,7 +55,6 @@ class _DisplayCapturedAchievementPageState extends
                     scale: 0.55,
                   ),
                 ),
-                Spacer(),
                 Column(
                     children: [
                       TextFormField(
@@ -109,7 +109,10 @@ class _DisplayCapturedAchievementPageState extends
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () => Navigator.of(context).pop(),
+                                onPressed: () {
+                                  //widget.cameraController.initialize();
+                                  Navigator.of(context).pop();
+                                },
                                 child: Text(
                                   'Retake',
                                 ),
@@ -120,15 +123,16 @@ class _DisplayCapturedAchievementPageState extends
                                   backgroundColor: Theme.of(context).primaryColor,
                                 ),
                                 onPressed: () async {
+                                  Achievement newAchievement = new Achievement(
+                                    dateCaptured: DateTime.now(),
+                                    description: _descriptionField
+                                        .text,
+                                    image: base64Encode(
+                                        await widget.image
+                                            .readAsBytes()),
+                                  );
                                   _achievementController.addAchievement(
-                                      new Achievement(
-                                        dateCaptured: DateTime.now(),
-                                        description: _descriptionField
-                                            .text,
-                                        image: base64Encode(
-                                            await widget.image
-                                                .readAsBytes()),
-                                      )
+                                    newAchievement
                                   );
                                   widget.updateList();
                                   Navigator.of(context).pop();
