@@ -10,15 +10,30 @@ class EventController {
 
   // Adds an event to the database
   Future<void> addEvent(Event event) async {
-    await dbRef
-        .doc(userId)
-        .collection('Events')
-        .doc(userId)
-        .update({"EventList": FieldValue.arrayUnion([{
-          "EventName": event.eventName,
-          "Description": event.description,
-          "Date": event.date.millisecondsSinceEpoch,
-          "Location": event.location
-    }])});
+    final snapshot = await dbRef.doc(userId).collection('Events').get();
+    if (snapshot.size == 0) {
+      await dbRef
+          .doc(userId)
+          .collection('Events')
+          .doc(userId)
+          .set({"EventList": FieldValue.arrayUnion([{
+            "EventName": event.eventName,
+            "Description": event.description,
+            "Date": event.date.millisecondsSinceEpoch,
+            "Location": event.location
+      }])});
+    }
+    else {
+      await dbRef
+          .doc(userId)
+          .collection('Events')
+          .doc(userId)
+          .update({"EventList": FieldValue.arrayUnion([{
+            "EventName": event.eventName,
+            "Description": event.description,
+            "Date": event.date.millisecondsSinceEpoch,
+            "Location": event.location
+      }])});
+    }
   }
 }

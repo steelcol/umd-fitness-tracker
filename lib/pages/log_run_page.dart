@@ -65,7 +65,8 @@ class LogRunPage extends StatelessWidget {
                    // Create new object and send to database
                    RunningWorkout workout = new RunningWorkout(
                        workoutName: _runningNameController.text,
-                       distance: double.parse(_distanceController.text)
+                       distance: double.parse(_distanceController.text),
+                       date: DateTime.now()
                    );
                    await controller.addRunningWorkout(workout);
                    await updateList();
