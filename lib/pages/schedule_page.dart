@@ -64,7 +64,7 @@ class _SchedulePageState extends State<SchedulePage> {
             print("iteration done");
             if(test.checkSelectedDayIsNotNull() == true) {
               final args = EventArguments(
-                storeDateTime: test
+                storeDateTime: test, storage: widget.storage
               );
               Navigator.pushNamed(
                   context, listedEventsMapWorkoutsPageRoute, arguments: args);
