@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:BetaFitness/arguments/camera_arguments.dart';
 import 'package:BetaFitness/controllers/achievement_controller.dart';
 import 'package:BetaFitness/models/achievement_model.dart';
@@ -7,6 +6,7 @@ import 'package:BetaFitness/utilities/routes.dart';
 import 'package:BetaFitness/storage/singleton_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:intl/intl.dart';
 
 class AchievementPage extends StatefulWidget {
   AchievementPage({Key? key, required this.storage}) : super(key: key);
@@ -18,20 +18,7 @@ class AchievementPage extends StatefulWidget {
 }
 
 class _AchievementPageState extends State<AchievementPage> {
-
   final AchievementController _achievementController = AchievementController();
-
-  void updateAchievements() async {
-    await widget.storage.updateAchievementData();
-    this.setState(() {});
-  }
-
-  @override
-  void initState() {
-    // TODO: initialize your data or perform any necessary actions
-    super.initState();
-    setState(() {});
-  }
 
   Future<bool?> _confirmDeleteAchievement(Achievement achievement) async {
     return showDialog<bool?>(
@@ -60,12 +47,10 @@ class _AchievementPageState extends State<AchievementPage> {
     );
   }
 
-
   Future<void> _deleteAchievement(Achievement achievement) async {
     await _achievementController.deleteAchievement(achievement);
     widget.storage.updateAchievementData();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -89,76 +74,94 @@ class _AchievementPageState extends State<AchievementPage> {
             ),
             Container(
               padding: EdgeInsets.symmetric(vertical: 10),
-              child: ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: widget.storage.achievements.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    child: SizedBox(
-                      height: 120,
-                      child: Card(
-                        color: Theme.of(context).primaryColor,
-                        elevation: 10,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                        Theme.of(context).primaryColor,
+              child: Expanded(
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: widget.storage.achievements.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 10),
+                      child: SizedBox(
+                        height: 120,
+                        child: Card(
+                          color: Theme.of(context).primaryColor,
+                          elevation: 10,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Theme.of(context)
+                                              .primaryColor,
+                                        ),
+                                        onPressed: () {
+                                          print("opens image later");
+                                        },
+                                        child: Image.memory(
+                                            base64Decode(widget.storage
+                                                .achievements[index].image)),
                                       ),
-                                      onPressed: () {
-                                        print("opens image later");
-                                      },
-                                      child: Image.memory(
-                                          base64Decode(widget.storage
-                                              .achievements[index].image)),
                                     ),
-                                  ),
-                                  Padding(
-                                      padding:
-                                      EdgeInsets.symmetric(horizontal: 5)),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(widget.storage
-                                          .achievements[index].description),
-                                      Text(widget.storage
-                                          .achievements[index].dateCaptured
-                                          .toString())
-                                    ],
-                                  ),
-                                ],
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                    ),
+                                    Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          widget.storage
+                                              .achievements[index]
+                                              .description,
+                                        ),
+                                        Text(
+                                          _formatDate(
+                                            widget.storage
+                                                .achievements[index]
+                                                .dateCaptured,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            IconButton(
-                              onPressed: () async {
-                                bool? confirmed = await _confirmDeleteAchievement(
-                                  widget.storage.achievements[index],
-                                );
-                                if (confirmed ?? false) {
-                                  widget.storage.updateAchievementData();
-                                }
-                              },
-                              icon: Icon(Icons.delete, color: Colors.white),
-                            ),
-                          ],
+                              Container(
+                                width: 40, // Adjust this width as needed
+                                child: IconButton(
+                                  onPressed: () async {
+                                    bool? confirmed =
+                                    await _confirmDeleteAchievement(
+                                      widget.storage.achievements[index],
+                                    );
+                                    if (confirmed ?? false) {
+                                      widget.storage.updateAchievementData();
+                                    }
+                                  },
+                                  icon: Icon(Icons.delete, color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ],
@@ -173,7 +176,7 @@ class _AchievementPageState extends State<AchievementPage> {
             achievementCapturePageRoute,
             arguments: CameraArguments(
               camera: usableCamera,
-              updateList: updateAchievements,
+              updateList: widget.storage.updateAchievementData,
             ),
           );
         },
@@ -190,5 +193,9 @@ class _AchievementPageState extends State<AchievementPage> {
         ),
       ),
     );
+  }
+
+  String _formatDate(DateTime date) {
+    return DateFormat('MMMM d, y hh:mm a').format(date);
   }
 }
