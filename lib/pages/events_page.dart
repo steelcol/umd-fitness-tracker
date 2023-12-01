@@ -157,7 +157,7 @@ class _EventsPageState extends State<EventsPage> {
   Widget _buildMapButton() {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
         textStyle: TextStyle(fontSize: 18),
       ),
       onPressed: () => _push(InteractiveMapPage(updateLocation: updateLocation)),
@@ -176,7 +176,7 @@ class _EventsPageState extends State<EventsPage> {
     return ElevatedButton(
       onPressed: () => onPressed(),
       style: ElevatedButton.styleFrom(
-        primary: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
         textStyle: TextStyle(fontSize: 18),
       ),
       child: Text(label),
