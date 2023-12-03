@@ -169,6 +169,9 @@ class RouteNavigator {
                   "email" : user.email
                 });
               }
+
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pushReplacementNamed(context, signInRoute);
             })
           ],
         ));
