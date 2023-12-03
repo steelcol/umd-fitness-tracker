@@ -1,282 +1,523 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:BetaFitness/models/running_workout_model.dart';
+import 'package:intl/intl.dart';
+import 'dart:math';
 
 import '../storage/singleton_storage.dart';
+import '../controllers/graph_controller.dart';
+import '../models/running_workout_model.dart';
+import '../models/completed_workout_model.dart';
 
-// TODO: Implement Datetime values in database
-// TODO: Populate X-axis based on Datetime values rather than DB element
-// TODO: Implement weightlifting graph (state switch from dropdown)
+
 
 class StatsPage extends StatefulWidget {
-  const StatsPage({Key? key, required this.storage}) : super(key: key);
-
   final SingletonStorage storage;
 
+  const StatsPage({Key? key, required this.storage}) : super(key: key);
+
   @override
-  State<StatsPage> createState() => _StatsPageState();
+  _StatsPageState createState() => _StatsPageState();
 }
 
-class _StatsPageState extends State<StatsPage> {
-  List<String> selectedWorkoutType = ['Cardio', 'Weight'];
+class _StatsPageState extends State<StatsPage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final GraphController _controller = GraphController();
+  DateTime currentDate = DateTime.now();
   String selectedExercise = "";
 
   @override
   void initState() {
     super.initState();
     widget.storage.updateRunData();
-    // Initial dropdown display
-    if (widget.storage.runningWorkouts.isNotEmpty){
-      selectedExercise = widget.storage.runningWorkouts[0].workoutName;
+    widget.storage.updateWeightData();
+    _tabController = TabController(length: 2, vsync: this);
+
+    // Pick first exercise for dropdown menu initialization
+    if (widget.storage.completedWorkouts.isNotEmpty && widget.storage.completedWorkouts.first.exerciseWeights.isNotEmpty) {
+      selectedExercise = widget.storage.completedWorkouts.first.exerciseWeights.keys.first;
     }
   }
 
-  // Used to standardize y-axis of graph
-  double getMaxY() {
-  final distances = widget.storage.runningWorkouts.map((e) => e.distance).toList();
-
-  return distances.isNotEmpty ? distances.reduce((value, element) => value > element ? value : element): 10;
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
-  // TODO: Implement with datetime values
-  // Used to standardize x-axis of graph
-  double getMaxX() {
-    return widget.storage.runningWorkouts.length.toDouble();
+  void _changeMonth(bool isNext) {
+    setState(() {
+      if (isNext) {
+        currentDate = DateTime(currentDate.year, currentDate.month + 1, 1);
+      } else {
+        currentDate = DateTime(currentDate.year, currentDate.month - 1, 1);
+      }
+    });
   }
 
-  // Get lists of exercise names
-  List<String> getExerciseNames(String workoutType) {
-    if (workoutType == 'Cardio') {
-      return widget.storage.runningWorkouts.map((workout) => workout.workoutName).toList();
-
-      // TODO: Implement weightlifting state
-    // } else if (workoutType == 'Weightlifting') {
-      //return widget.storage.weightWorkouts.map((workout) => workout.exerciseName).toList();
-    }
-    return [];
-  }
-
-  /// GRAPH DATA & DATA VISUAL FORMATTING ///
-  LineChartBarData getChartData() {
-    // Convert the list of RunningWorkout to LineChartBarData
-    List<FlSpot> spots = widget.storage.runningWorkouts
-        .asMap()
-        .entries
-        .map((entry) => FlSpot(entry.key.toDouble(), entry.value.distance))
-        .toList();
-
-    return LineChartBarData(
-      spots: spots,
-
-      /// GRAPH LINE ///
-      isCurved: false,
-      color: Colors.red,
-      barWidth: 5,
-      isStrokeCapRound: true, // Start cubic or round
-      dotData: FlDotData(
-        show: true,
-
-        /// DOTS ///
-        getDotPainter: (spot, percent, barData, index) =>
-            FlDotCirclePainter(
-              radius: 3,
-              color: Colors.red,
-              strokeWidth: 2.5,
-              strokeColor: Colors.black,
-            ),
-      ),
-      belowBarData: BarAreaData(show: false),
-    );
-  }
-
-  /// BUILD ///
   @override
   Widget build(BuildContext context) {
-    double maxX = getMaxX();
-    double maxY = getMaxY();
-
-    // TODO: Use for state switch on weightlifting graph
-    // List<String> workoutNames = getWorkoutNames();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Workout Stats'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              height: 400,
-              padding: EdgeInsets.only(left: 10, right: 30, bottom: 30),
-              child: LineChart(
-                LineChartData(
-                  backgroundColor: Colors.grey[500],
-                  gridData: FlGridData(show: false),
-
-                  /// AXIS TITLES FORMATTING ///
-                  titlesData: FlTitlesData(
-                    show: true,
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (double value, TitleMeta meta) {
-                          const EdgeInsets geomPadding = EdgeInsets.only(top: 0, right: 10, bottom: 0);
-                          if (value == 0) { // Put label on lowest val
-                            return Padding(
-                              padding: geomPadding,
-                              /// Y-AXIS LABEL ///
-                              child: Text(
-                                'Distance (mi)',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.right,
-                              ),
-                            );
-                          } else if (value >= maxY) { // Fix superimposed max Y-values
-                            return SizedBox.shrink();
-                          } else {
-                            // Return the def widget for anything else
-                            return Padding(
-                              padding: geomPadding,
-                              child: Text(
-                                value.toInt().toString(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.right,
-                              ),
-                            );
-                          }
-                        },
-                        reservedSize: 70, // label spacing
-                      ),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (double value, TitleMeta meta) {
-                          if (value % 1 == 0) {
-                            return Text(value.toInt().toString());
-                          } else {
-                            return SizedBox.shrink(); // Remove non-whole numbers
-                          }
-                        },
-                        reservedSize: 30,
-                      ),
-                    ),
-                    topTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false), // Remove top titles
-                    ),
-                    rightTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false), // Remove right titles
-                    ),
-                  ),
-
-                  /// BORDER DATA & FORMATTING ///
-                  borderData: FlBorderData(
-                    show: true,
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 1,
-                    ),
-                  ),
-                  minX: 0,
-                  maxX: maxX,
-                  minY: 0,
-                  maxY: maxY,
-                  lineBarsData: [getChartData()],
-                ),
-
-              ),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-
-                /// DROP DOWN MENUS ///
-                DropdownButton<String>(
-                  value: selectedWorkoutType[0], // Display the first workout in the list
-                  items: ['Cardio', 'Weight'].map((String type) {
-                    return DropdownMenuItem<String>(
-                      value: type,
-                      child: Text(type),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    // TODO: Weightlifting state change
-                    if (newValue != null) {
-                      setState(() {
-                        selectedWorkoutType = [newValue];
-
-                        // Update dropdown based on the selected workout type
-                        var exerciseNames = getExerciseNames(newValue);
-                        selectedExercise = exerciseNames.isNotEmpty ? exerciseNames.first : "";
-                      });
-                    }
-                  },
-                ),
-                DropdownButton<String>(
-                  value: selectedExercise.isNotEmpty ? selectedExercise : null, // If selectedExercise is not empty, use it as the current value, otherwise it's null
-                  items: getExerciseNames(selectedWorkoutType[0]).map((String exerciseName) {
-                    return DropdownMenuItem<String>(
-                      value: exerciseName,
-                      child: Text(exerciseName),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedExercise = newValue ?? "";
-                    });
-                  },
-                ),
-      ]),
-
-                /// DISTANCE TEXT BOX ///
-                /// Will explode if not future'd as data needs to be loaded
-                if (selectedWorkoutType[0] == 'Cardio' && selectedExercise.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FutureBuilder<RunningWorkout?>(
-                      future: _findWorkoutByName(selectedExercise),
-                      builder: (BuildContext context, AsyncSnapshot<RunningWorkout?> snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.hasData) {
-                            return Text(
-                                'Distance: ${snapshot.data!.distance.toString()}',
-                                 style:TextStyle(
-                                   fontSize: 18,
-                                 ),
-                        );
-                          } else {
-                            return Text('No data found for this workout.');
-                          }
-                        } else {
-                          return CircularProgressIndicator();
-                        }
-                      },
-                    ),
-                  ),
-              ],
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: Colors.white,
+          /// Menu Tabs
+          tabs: [
+            Tab(text: 'Run Log'),
+            Tab(text: 'Strength Log'),
+          ],
         ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildRunningTab(),
+          _buildWeightTab(),
+        ],
       ),
     );
   }
 
-  //
-  Future<RunningWorkout?> _findWorkoutByName(String workoutName) async {
-    try {
-      // Try to find workout by name
-      return widget.storage.runningWorkouts.firstWhere(
-            (workout) => workout.workoutName == workoutName,
-      );
-    } on StateError {
-      // When no element found throw a null
-      return null;
-    }
-  }
-}
+  Widget _buildRunningTab() {
+    int year = currentDate.year;
+    int month = currentDate.month;
 
+    double maxX = _controller.getMaxX(year, month);
+    double maxY = _controller.getMaxYRun(widget.storage, year, month);
+
+    List<RunningWorkout> recentRuns = _controller.getRunsForMonth(widget.storage, year,month);
+
+    return Column(
+      children: [
+        SizedBox(height: 10),
+
+        /// R - Month selection
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_left),
+              onPressed: () => _changeMonth(false),
+            ),
+            Text(
+              DateFormat.yMMM().format(currentDate),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            IconButton(
+              icon: Icon(Icons.arrow_right),
+              onPressed: () => _changeMonth(true),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 2,
+          child: Container(
+            padding: EdgeInsets.only(top: 10, left: 0, right: 10, bottom: 10),
+            child: LineChart(
+              LineChartData(
+                backgroundColor: Colors.grey[500],
+
+                /// R - Grid
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: true,
+                  drawHorizontalLine: true,
+                  horizontalInterval: 2,
+
+                  getDrawingVerticalLine: (value) {
+                    return FlLine(
+                      color: Colors.black.withOpacity(.25),
+                      strokeWidth: 1,
+                      dashArray: [5],
+                    );
+                  },
+
+                  getDrawingHorizontalLine: (value) {
+                    return FlLine(
+                      color: Colors.black.withOpacity(.25),
+                      strokeWidth: 1,
+                      dashArray: [5],
+                    );
+                  },
+                ),
+
+                /// R - Titles
+                titlesData: FlTitlesData(
+                  show: true,
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: 2,
+                      getTitlesWidget: (double value, TitleMeta meta) {
+                        const EdgeInsets geomPadding = EdgeInsets.only(top: 0, right: 10, bottom: 0);
+
+                        // Y-axis titling workaround
+                        if (value == 0) {
+                          return Padding(
+                            padding: geomPadding,
+                            child: Text(
+                              'Distance (mi.)',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 8.5,
+                                  fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.right,
+                            ),
+                          );
+                        }
+
+                        return value >= maxY
+                            ? SizedBox.shrink() //
+                            : Padding(
+                                padding: geomPadding,
+                                child: Text(
+                                  value.toInt().toString(),
+                                  style: TextStyle(
+                                      /// R - Y label
+                                      color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.right,
+                                ),
+                              );
+                      },
+                      reservedSize: 48,
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: 1, //
+                      getTitlesWidget: (double value, TitleMeta meta) {
+                        // X-axis days as two-digits
+                        String dayString =
+                            value.toInt().toString().padLeft(2, '0');
+                        if (value >= 1 && value <= maxX) {
+                          return Text(dayString,
+                              style:
+                                  /// R - X label
+                                  TextStyle(color: Colors.white, fontSize: 8));
+                        }
+                        return SizedBox
+                            .shrink(); // Hide labels outside current month
+                      },
+                      reservedSize: 30,
+                    ),
+                  ),
+                  topTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                ),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border.all(color: Colors.black, width: 1),
+                ),
+                minX: 1,
+                maxX: maxX,
+                minY: 0,
+                maxY: maxY,
+                lineBarsData: [_controller.getRunningChartData(widget.storage, year, month)],
+              ),
+            ),
+          ),
+        ),
+
+        /// R - Recent Runs title & scrollable box
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Text(
+            'Recent Runs',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(10),
+              ),
+
+              // No recent runs
+              child: recentRuns.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No recent runs for this month',
+                        style: TextStyle(fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+
+                  : SingleChildScrollView(
+                  /// R - COLUMNS: {runName}, {distance}, {date}
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: recentRuns.map((run) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    run.workoutName,
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    '${run.distance.toString()} mi',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    DateFormat('yyyy-MM-dd').format(run.date),
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWeightTab() {
+    int year = currentDate.year;
+    int month = currentDate.month;
+
+    // Get list of completed workouts for dropdown menu
+    List<String> exerciseList = widget.storage.completedWorkouts
+        .expand((workout) => workout.exerciseWeights.keys)
+        .toSet()
+        .toList();
+
+    // Match monthly date window with dates of completed exercises
+    List<CompletedWorkout> recentSets = widget.storage.completedWorkouts
+        .where((workout) =>
+    workout.date.year == year && workout.date.month == month)
+        .where(
+            (workout) => workout.exerciseWeights.containsKey(selectedExercise))
+        .toList();
+
+    // Reselect exercise
+    if (selectedExercise.isEmpty && exerciseList.isNotEmpty) {
+      selectedExercise = exerciseList.first;
+    }
+
+    if (selectedExercise.isEmpty) {
+      return Center(child: Text("No weight data available"));
+    }
+
+    double maxX = _controller.getMaxX(year, month);
+    double maxY = _controller.getMaxYWeight(widget.storage, year, month, selectedExercise);
+
+    return Column(
+      children: [
+        SizedBox(height: 10),
+        /// W - Drop-Down Menu
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            DropdownButton<String>(
+              value: selectedExercise,
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedExercise = newValue!;
+                });
+              },
+              items: exerciseList.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+
+            /// W - Month Selection
+            IconButton(
+              icon: Icon(Icons.arrow_left),
+              onPressed: () => _changeMonth(false),
+            ),
+            Text(
+              DateFormat.yMMM().format(currentDate),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            IconButton(
+              icon: Icon(Icons.arrow_right),
+              onPressed: () => _changeMonth(true),
+            ),
+          ],
+        ),
+
+        /// W - Weight Graph
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 2,
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: LineChart(
+              LineChartData(
+
+                /// W - Grid
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: true,
+                  drawHorizontalLine: true,
+                  horizontalInterval: 15,
+                  getDrawingHorizontalLine: (value) {
+                    return FlLine(
+                      color: Colors.white.withOpacity(.15),
+                      strokeWidth: 1,
+                      dashArray: [5],
+                    );
+                  },
+                  getDrawingVerticalLine: (value) {
+                    return FlLine(
+                      color: Colors.white.withOpacity(.25),
+                      strokeWidth: 1,
+                      dashArray: [5],
+                    );
+                  },
+                ),
+
+
+                /// W - Titles
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        return Text('${value.toInt()} lbs',
+                            /// W - Y label
+                            style:
+                            TextStyle(color: Colors.white, fontSize: 8.5, fontWeight: FontWeight.bold));
+                      },
+                      interval: 15,
+                      reservedSize: 40,
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (double value, TitleMeta meta) {
+                        // X-axis days as two-digits
+                        String dayString =
+                        value.toInt().toString().padLeft(2, '0');
+                        if (value >= 1 && value <= maxX) {
+                          return Text(dayString,
+                              /// W - X label
+                              style:
+                              TextStyle(color: Colors.white, fontSize: 8));
+                        }
+                        return SizedBox
+                            .shrink(); // Hide labels outside current month
+                      },
+                      interval: 1,
+                      reservedSize: 30,
+                    ),
+                  ),
+                  rightTitles:
+                  AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles:
+                  AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                ),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border.all(color: Colors.black, width: 1),
+                ),
+                minX: 1,
+                maxX: maxX,
+                minY: 0,
+                maxY: maxY,
+                lineBarsData: [_controller.getWeightChartData(widget.storage, year, month, selectedExercise),],
+              ),
+            ),
+          ),
+        ),
+
+        /// W - Recent Sets title & scrollable box
+        Padding(
+          padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+          child: Text(
+            'Recent Sets',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(10),
+              ),
+
+              child: recentSets.isEmpty
+                  ? Center(
+                child: Text(
+                  'No recent sets for this month',
+                  style: TextStyle(fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+              )
+
+                  : SingleChildScrollView(
+                padding: EdgeInsets.all(10),
+                /// W - COLUMNS {exerciseName}, {weight}, {date}
+                child: Column(
+                  children: recentSets.map((set) {int maxWeight = set.exerciseWeights[selectedExercise] ?.reduce(max) ?? 0;
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Text(
+                            selectedExercise,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            '$maxWeight lbs',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Text(
+                            DateFormat('yyyy-MM-dd').format(set.date),
+                            textAlign: TextAlign.right,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+}

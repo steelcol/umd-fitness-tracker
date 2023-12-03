@@ -1,76 +1,137 @@
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'dart:math';
+
 import 'package:BetaFitness/storage/singleton_storage.dart';
+import '../models/running_workout_model.dart';
+import '../models/completed_workout_model.dart';
+
 
 class GraphController {
 
-  // Public functions
-  double getMaxXForRun(SingletonStorage storage) {
-    return storage.runningWorkouts.length.toDouble();
+  /// 1.) Formats data for a RUNNING graph
+  LineChartBarData getRunningChartData(SingletonStorage storage, int year, int month) {
+    // Get list of running workouts within date window (monthly)
+    List<RunningWorkout> monthlyWorkouts = storage.runningWorkouts
+        .where((workout) =>
+    workout.date.year == year && workout.date.month == month)
+        .toList();
+
+    // Create points for every run which adheres to date window
+    List<FlSpot> spots = monthlyWorkouts.map((workout) {return FlSpot(workout.date.day.toDouble(), workout.distance);
+    }).toList();
+
+    return LineChartBarData(
+        spots: spots,
+
+        /// 1a.) Graph Line
+        isCurved: true,
+        color: Colors.red,
+        barWidth: 3,
+        isStrokeCapRound: true,
+        // Start cubic or round
+
+        /// 1b.) Graph Points
+        dotData: FlDotData(
+          show: true,
+          getDotPainter: (spot, percent, barData, index) =>
+              FlDotCirclePainter(
+                radius: 1.5,
+                color: Colors.red,
+                strokeWidth: 2,
+                strokeColor: Colors.black,
+              ),
+        ),
+
+        /// 1c.) Area below curve
+        belowBarData: BarAreaData(
+          show: true,
+          color: Colors.red.withOpacity(0.1),
+        ));
   }
 
-  DateTime getMaxXForWeights(SingletonStorage storage) {
-    List<DateTime> dates = [];
-    storage.completedWorkouts.forEach(  (workout) {
-        dates.add(workout.date);
-    });
-    return dates.reduce((a, b) => 
-      a.difference(DateTime.now()).abs() < b.difference(DateTime.now()).abs() 
-      ? a : b
+  /// 2.) Formats data for WEIGHTLIFTING graph
+  LineChartBarData getWeightChartData(SingletonStorage storage, int year,
+      int month, String exerciseKey) {
+
+    // Get list of completed workouts within date window (monthly)
+    List<CompletedWorkout> monthlyWorkouts = storage.completedWorkouts
+        .where((workout) =>
+    workout.date.year == year && workout.date.month == month)
+        .toList();
+
+    // Create point for each completed workout which adheres to date window
+    List<FlSpot> spots = monthlyWorkouts.map((workout) {
+      double weight = (workout.exerciseWeights[exerciseKey]?.reduce(max) ?? 0).toDouble();
+      return FlSpot(workout.date.day.toDouble(), weight);
+    }).toList();
+
+    return LineChartBarData(
+      spots: spots,
+
+      /// 2a.) Graph Line
+      isCurved: true,
+      color: Colors.blueAccent,
+      barWidth: 5,
+      isStrokeCapRound: true,
+
+      /// 2b.) Graph Points
+      dotData: FlDotData(
+        show: true,
+      ),
+
+      /// 2c.) Area below curve
+      belowBarData: BarAreaData(
+        show: true,
+        color: Colors.blueAccent.withOpacity(0.1),
+      ),
     );
   }
 
-  double getMaxY(SingletonStorage storage, 
-  String workoutType,
-  [String? exerciseName]
-  ) {
-    switch(workoutType) {
-      case 'Cardio':
-        final distances = storage.runningWorkouts.map((e) => e.distance).toList();
+  /// 3.) Max X for chart (monthly interval)
+  double getMaxX(int year, int month) {
+    int daysInMonth = DateUtils.getDaysInMonth(year, month);
+    return daysInMonth.toDouble();
+  }
 
-        return distances.isNotEmpty 
-        ? distances.reduce((value, element) => value > element ? value : element)
-        : 10;
-      case 'Weight':
-        return getBestWeightsForExercise(storage, exerciseName!)
-          .reduce(max)
-          .toDouble(); 
-      default: 
-        return 0;
+  /// 4a.) Max Y for RUNNING chart
+  double getMaxYRun(SingletonStorage storage, int year, int month) {
+    // Get list of runs within monthly window
+    List<RunningWorkout> monthlyWorkouts = getRunsForMonth(storage, year, month);
+    if (monthlyWorkouts.isEmpty) {
+      return 0;
     }
+    double maxY = monthlyWorkouts.map((e) => e.distance).reduce(max);
+    return maxY;
   }
 
-  List<int> getBestWeightsForExercise(SingletonStorage storage, 
-  String exerciseKey
-  ) {
-    List<int> bestWeightsForExercise = [];
+  /// 4b.) Max Y for WEIGHT chart
+  double getMaxYWeight(SingletonStorage storage, int year, int month, String exerciseKey) {
+    // Get list of completed workouts within monthly window
+    List<CompletedWorkout> monthlyWorkouts = storage.completedWorkouts
+        .where((workout) =>
+    workout.date.year == year && workout.date.month == month)
+        .toList();
 
-    storage.completedWorkouts.forEach( (workout) {
-      bestWeightsForExercise.add(workout.exerciseWeights[exerciseKey]!.reduce(max));
-    });
-
-    return bestWeightsForExercise;
-  }
-
-  List<String> getExerciseNames(String workoutType, 
-  String workoutName, 
-  SingletonStorage storage
-  ) {
-    switch(workoutType) {
-      case 'Cardio': 
-        return storage.runningWorkouts.map( (workout) => workout.workoutName).toList();
-      case 'Weight':
-        List<String> exercises = [];
-        storage.completedWorkouts.forEach( ( workout) {
-          workout.exerciseWeights.keys.forEach( (exercise) {
-            if (!exercise.contains(exercise)) {
-              exercises.add(exercise);
-            }
-          });
-        });
-        return exercises;
-      // Should not reach this but just in case
-      default:
-        return [];
+    if (monthlyWorkouts.isEmpty) {
+      return 0.0;
     }
+
+    // Extract the maximum weight for the specified exercise (w/ key) from each workout, non-null
+    List<double> maxWeights = monthlyWorkouts.map((workout) {
+      return workout.exerciseWeights[exerciseKey]?.reduce(max).toDouble() ?? 0.0;
+    }).toList();
+
+    // Find the overall maximum weight
+    double maxY = maxWeights.reduce(max);
+    return maxY;
   }
+
+  /// 5.) Get running workouts within monthly window
+  List<RunningWorkout> getRunsForMonth(SingletonStorage storage, int year, int month) {
+    return storage.runningWorkouts
+        .where((workout) => workout.date.year == year && workout.date.month == month)
+        .toList();
+  }
+
 }
