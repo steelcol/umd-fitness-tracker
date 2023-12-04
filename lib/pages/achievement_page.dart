@@ -74,7 +74,7 @@ class _AchievementPageState extends State<AchievementPage> {
             ),
             Container(
               padding: EdgeInsets.symmetric(vertical: 10),
-              child: Expanded(
+              child: Container(
                 child: ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
@@ -95,50 +95,82 @@ class _AchievementPageState extends State<AchievementPage> {
                             mainAxisAlignment:
                             MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Theme.of(context)
-                                              .primaryColor,
-                                        ),
-                                        onPressed: () {
-                                          print("opens image later");
-                                        },
-                                        child: Image.memory(
-                                            base64Decode(widget.storage
-                                                .achievements[index].image)),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        elevation: 0,
+                                        backgroundColor: Theme.of(context)
+                                            .primaryColor,
                                       ),
+                                      onPressed: () {
+                                        showDialog(
+                                          useSafeArea: false,
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            contentPadding: EdgeInsets.all(1),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    IconButton(
+                                                      onPressed: () => Navigator.of(context).pop(),
+                                                      icon: Icon(Icons.arrow_back),
+                                                    )
+                                                  ],
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(10, 5, 10, 10),
+                                                  child: Column(
+                                                    children: [
+                                                      Image.memory(
+                                                        base64Decode(widget.storage.achievements[index].image),
+                                                        scale: .1,
+                                                      ),
+                                                      Text(_formatDate(widget.storage.achievements[index].dateCaptured)),
+                                                      Text(widget.storage.achievements[index].description),
+                                                    ]
+                                                  ),
+                                                ),
+                                              ]
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Image.memory(
+                                          base64Decode(widget.storage
+                                              .achievements[index].image)),
                                     ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 5),
-                                    ),
-                                    Column(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      children: [
-                                        Text(
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        widget.storage
+                                            .achievements[index]
+                                            .description,
+                                      ),
+                                      Text(
+                                        _formatDate(
                                           widget.storage
                                               .achievements[index]
-                                              .description,
+                                              .dateCaptured,
                                         ),
-                                        Text(
-                                          _formatDate(
-                                            widget.storage
-                                                .achievements[index]
-                                                .dateCaptured,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                      )
+                                    ],
+                                  ),
+                                ],
                               ),
                               Container(
                                 width: 40, // Adjust this width as needed

@@ -20,17 +20,22 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
   late CameraController _cameraController;
   late Future<void> _initializeControllerFeature;
 
+  bool _cameraOn = true;
+
+  void _createCameraController() {
+    _cameraController = new CameraController(
+        widget.camera,
+        ResolutionPreset.low
+    );
+    _initializeControllerFeature = _cameraController.initialize();
+  }
+
   @override
   void initState() {
     super.initState();
 
     // create cameraController
-    _cameraController = CameraController(
-        widget.camera,
-        ResolutionPreset.low,
-    );
-
-    _initializeControllerFeature = _cameraController.initialize();
+    _createCameraController();
   }
 
   @override
@@ -52,7 +57,7 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
           if (snapshot.connectionState == ConnectionState.done) {
             return Column(
                 children: [
-                  CameraPreview(_cameraController),
+                  _cameraOn ? CameraPreview(_cameraController) : Container(),
                   Expanded(
                     flex: 3,
                     child: ElevatedButton(
@@ -72,6 +77,10 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
 
                           if (!mounted) return;
 
+                          setState(() {
+                            _cameraOn = false;
+                            _cameraController.pausePreview();
+                          });
                           await Navigator.pushNamed(
                             context,
                             displayCapturedAchievementPageRoute,
@@ -79,7 +88,12 @@ class _AchievementCapturePageState extends State<AchievementCapturePage> {
                               image: image,
                               updateList: widget.updateList,
                             )
-                          );
+                          ).then((_) {
+                            setState(() {
+                              _cameraController.resumePreview();
+                              _cameraOn = true;
+                            });
+                          });
                         } catch (e) {
                           print("ERROR $e");
                         }
