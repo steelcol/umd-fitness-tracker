@@ -20,6 +20,11 @@ class AchievementPage extends StatefulWidget {
 class _AchievementPageState extends State<AchievementPage> {
   final AchievementController _achievementController = AchievementController();
 
+  void updateAchievements() async {
+    await widget.storage.updateAchievementData();
+    setState(() {});
+  }
+
   Future<bool?> _confirmDeleteAchievement(Achievement achievement) async {
     return showDialog<bool?>(
       context: context,
@@ -181,7 +186,7 @@ class _AchievementPageState extends State<AchievementPage> {
                                       widget.storage.achievements[index],
                                     );
                                     if (confirmed ?? false) {
-                                      widget.storage.updateAchievementData();
+                                       updateAchievements();
                                     }
                                   },
                                   icon: Icon(Icons.delete, color: Colors.white),
@@ -208,7 +213,7 @@ class _AchievementPageState extends State<AchievementPage> {
             achievementCapturePageRoute,
             arguments: CameraArguments(
               camera: usableCamera,
-              updateList: widget.storage.updateAchievementData,
+              updateList: updateAchievements,
             ),
           );
         },
