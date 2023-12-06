@@ -105,9 +105,8 @@ class _HomePageState extends State<HomePage> {
           ? Center(
         child: LoadingIndicator(
           indicatorType: Indicator.circleStrokeSpin,
-          colors: [Theme
-              .of(context)
-              .primaryColor
+          colors: [
+            Colors.white
           ],
         ),
       )
