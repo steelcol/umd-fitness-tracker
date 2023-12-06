@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'dart:math';
 
 import '../storage/singleton_storage.dart';
@@ -24,12 +25,22 @@ class _StatsPageState extends State<StatsPage> with SingleTickerProviderStateMix
   final GraphController _controller = GraphController();
   DateTime currentDate = DateTime.now();
   String selectedExercise = "";
+  bool _loading = true;
+
+  void updatePersonalData() async {
+    await widget.storage.updateRunData();
+    await widget.storage.updateWeightData();
+    await widget.storage.updateCompletedData();
+
+    setState(() {
+      _loading = false;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    widget.storage.updateRunData();
-    widget.storage.updateWeightData();
+    updatePersonalData();
     _tabController = TabController(length: 2, vsync: this);
 
     // Pick first exercise for dropdown menu initialization
@@ -69,7 +80,11 @@ class _StatsPageState extends State<StatsPage> with SingleTickerProviderStateMix
           ],
         ),
       ),
-      body: TabBarView(
+      body: _loading
+          ? Center(child: LoadingIndicator(indicatorType: Indicator.circleStrokeSpin, colors: [Theme.of(context).primaryColor
+        ],
+      ))
+          : TabBarView(
         controller: _tabController,
         children: [
           _buildRunningTab(),
