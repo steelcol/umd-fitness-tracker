@@ -30,6 +30,8 @@ class _StatsPageState extends State<StatsPage> with SingleTickerProviderStateMix
   void updatePersonalData() async {
     await widget.storage.updateRunData();
     await widget.storage.updateWeightData();
+    await widget.storage.updateCompletedData();
+
     setState(() {
       _loading = false;
     });
