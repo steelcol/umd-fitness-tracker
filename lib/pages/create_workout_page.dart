@@ -140,11 +140,11 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(8.0),
         child: ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             if (_formKey.currentState!.validate()) {
               _formKey.currentState!.save();
               widget.addWorkout(createdWorkout, _workoutNameField.text);
-              widget.updateList();
+              await widget.updateList();
               Navigator.pop(context);
             }
           },
