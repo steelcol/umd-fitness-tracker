@@ -77,25 +77,27 @@ class _EventsPageState extends State<EventsPage> {
         title: Text("Create Event"),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _buildTextField(nameController, 'Event Name'),
-              const SizedBox(height: 16.0),
-              _buildTextField(descController, 'Event Description'),
-              const SizedBox(height: 16.0),
-              _buildDateSelector(context),
-              const SizedBox(height: 16.0),
-              _buildLocationInfo(),
-              const SizedBox(height: 16.0),
-              _buildMapButton(),
-              const SizedBox(height: 16.0),
-              _buildActionButton(createEvent, createText),
-              const SizedBox(height: 16.0),
-            ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _buildTextField(nameController, 'Event Name'),
+                const SizedBox(height: 16.0),
+                _buildTextField(descController, 'Event Description'),
+                const SizedBox(height: 16.0),
+                _buildDateSelector(context),
+                const SizedBox(height: 16.0),
+                _buildLocationInfo(),
+                const SizedBox(height: 16.0),
+                _buildMapButton(),
+                const SizedBox(height: 16.0),
+                _buildActionButton(createEvent, createText),
+                const SizedBox(height: 16.0),
+              ],
+            ),
           ),
         ),
       ),

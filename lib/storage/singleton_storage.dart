@@ -104,7 +104,7 @@ class SingletonStorage {
   Future<void> _getWeightWorkouts() async {
     // Check if doc exists then grab events
     bool weightExists = await _checkExist('Workouts');
-
+    
     if (weightExists) {
       try {
         weightWorkouts = [];

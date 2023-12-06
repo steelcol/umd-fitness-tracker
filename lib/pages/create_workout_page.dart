@@ -143,8 +143,8 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               _formKey.currentState!.save();
-              widget.addWorkout(createdWorkout, _workoutNameField.text);
-              await widget.updateList();
+              await widget.addWorkout(createdWorkout, _workoutNameField.text);
+              widget.updateList();
               Navigator.pop(context);
             }
           },
